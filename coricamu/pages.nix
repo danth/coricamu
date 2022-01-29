@@ -88,7 +88,13 @@ let
         }
       ) config.templates;
 
-    in (import nixFile) templates;
+      # If this string isn't present, template tags are definitely not used,
+      # so the import-from-derivation can be skipped.
+      mayContainTemplateTag = hasInfix "<templates." body;
+
+    in if mayContainTemplateTag
+       then (import nixFile) templates
+       else body;
 
   makePageFile = name: page: pkgs.writeTextFile {
       name = "${name}.html";
