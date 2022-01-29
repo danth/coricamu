@@ -59,56 +59,76 @@ let
 
   template = functionTo lines;
 
-  makePageFile = name: page:
+  fillTemplates =
+    { name, body }:
     let
-      nixBody = pkgs.runCommand "${name}.html.nix" {
-        python = pkgs.python3.withPackages (ps: [ ps.beautifulsoup4 ]);
-        inherit (page) body;
+      python = pkgs.python3.withPackages (ps: [ ps.beautifulsoup4 ]);
+
+      nixFile = pkgs.runCommand "${name}.html.nix" {
+        inherit body;
         passAsFile = [ "body" ];
+
+        # This is import-from-derivation, and is needed every time a user wants
+        # to preview the site, so must be built quickly.
+        preferLocalBuild = true;
+        allowSubstitutes = false;
       } ''
-        $python/bin/python ${./nixify_templates.py} $bodyPath $out
+        ${python}/bin/python ${./nixify_templates.py} $bodyPath $out
       '';
 
-      htmlBody = (import nixBody) config.templates;
+      # Apply fillTemplates to the HTML returned by each used template,
+      # in case it contains template tags itself
+      templates = mapAttrs (
+        templateName: template:
+        # Wrap the template function
+        templateArgs:
+        fillTemplates {
+          name = templateName;
+          body = template templateArgs;
+        }
+      ) config.templates;
 
-      htmlFile = pkgs.writeTextFile {
-        name = "${name}.html";
+    in (import nixFile) templates;
 
-        text = ''
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <title>${page.title}</title>
-              <meta charset="UTF-8">
-              ${concatStringsSep "\n" (mapAttrsToList (name: content: ''
-                <meta name="${name}" content="${content}">
-              '') page.meta)}
-            </head>
-            <body>
-              ${htmlBody}
-            </body>
-          </html>
-        '';
+  makePageFile = name: page: pkgs.writeTextFile {
+      name = "${name}.html";
 
-        # 3-in-1:
-        # - Raises an error if the HTML is invalid
-        # - Warns the user about accessibility problems
-        # - Cleans up erratic indentation caused by templates
-        checkPhase = ''
-          ${pkgs.html-tidy}/bin/tidy \
-            --accessibility-check 3 \
-            --doctype html5 \
-            --indent auto \
-            --wrap 100 \
-            --clean yes \
-            --logical-emphasis yes \
-            --coerce-endtags no \
-            --quiet yes \
-            -modify $target
-        '';
-      };
+      text = ''
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>${page.title}</title>
+            <meta charset="UTF-8">
+            ${concatStringsSep "\n" (mapAttrsToList (name: content: ''
+              <meta name="${name}" content="${content}">
+            '') page.meta)}
+          </head>
+          <body>
+            ${fillTemplates {
+              inherit name;
+              inherit (page) body;
+            }}
+          </body>
+        </html>
+      '';
 
-    in nameValuePair page.path htmlFile;
+      # 3-in-1:
+      # - Raises an error if the HTML is invalid
+      # - Warns the user about accessibility problems
+      # - Cleans up erratic indentation caused by templates
+      checkPhase = ''
+        ${pkgs.html-tidy}/bin/tidy \
+          --accessibility-check 3 \
+          --doctype html5 \
+          --indent auto \
+          --wrap 100 \
+          --clean yes \
+          --logical-emphasis yes \
+          --coerce-endtags no \
+          --quiet yes \
+          -modify $target
+      '';
+    };
 
 in {
   options = {
@@ -123,5 +143,7 @@ in {
     };
   };
 
-  config.files = mapAttrs' makePageFile config.pages;
+  config.files = mapAttrs' (name: page:
+    nameValuePair page.path (makePageFile name page)
+  ) config.pages;
 }
