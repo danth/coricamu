@@ -16,6 +16,18 @@ let
         type = str;
       };
 
+      meta = mkOption {
+        description = ''
+          HTML metadata.
+
+          Each key-value pair in this attribute set will be transformed into a
+          corresponding HTML <literal>meta</literal> element with
+          <literal>name</literal> set to the attribute name and
+          <literal>content</literal> set to the attribute value.
+        '';
+        type = attrsOf str;
+      };
+
       body = mkOption {
         description = ''
           HTML body of the page.
@@ -34,6 +46,13 @@ let
           </ul>
         '';
         type = lines;
+      };
+    };
+
+    config = {
+      meta = {
+        viewport = mkDefault "width=device-width, initial-scale=1";
+        generator = mkDefault "Coricamu";  # We do a little advertising
       };
     };
   }];
@@ -61,8 +80,9 @@ let
             <head>
               <title>${page.title}</title>
               <meta charset="UTF-8">
-              <meta name="generator" content="Coricamu">
-              <meta name="viewport" content="width=device-width,initial-scale=1">
+              ${concatStringsSep "\n" (mapAttrsToList (name: content: ''
+                <meta name="${name}" content="${content}">
+              '') page.meta)}
             </head>
             <body>
               ${htmlBody}
