@@ -49,24 +49,45 @@ let
       } ''
         $python/bin/python ${./nixify_templates.py} $bodyPath $out
       '';
+
       htmlBody = (import nixBody) config.templates;
+
       htmlFile = pkgs.writeTextFile {
         name = "${name}.html";
+
         text = ''
           <!DOCTYPE html>
           <html>
             <head>
               <title>${page.title}</title>
-              <meta charset="UTF-8" />
-              <meta name="generator" content="Coricamu" />
-              <meta name="viewport" content="width=device-width,initial-scale=1" />
+              <meta charset="UTF-8">
+              <meta name="generator" content="Coricamu">
+              <meta name="viewport" content="width=device-width,initial-scale=1">
             </head>
             <body>
               ${htmlBody}
             </body>
           </html>
         '';
+
+        # 3-in-1:
+        # - Raises an error if the HTML is invalid
+        # - Warns the user about accessibility problems
+        # - Cleans up erratic indentation caused by templates
+        checkPhase = ''
+          ${pkgs.html-tidy}/bin/tidy \
+            --accessibility-check 3 \
+            --doctype html5 \
+            --indent auto \
+            --wrap 100 \
+            --clean yes \
+            --logical-emphasis yes \
+            --coerce-endtags no \
+            --quiet yes \
+            -modify $target
+        '';
       };
+
     in nameValuePair page.path htmlFile;
 
 in {
