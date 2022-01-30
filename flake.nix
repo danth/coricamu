@@ -13,8 +13,13 @@
         pkgs = nixpkgs.legacyPackages.${system};
       };
 
-      packages.exampleWebsite = lib.buildSite {
-        modules = [ ./example/default.nix ];
+      packages = {
+        exampleWebsite = lib.buildSite {
+          modules = [ ./example/default.nix ];
+        };
+        exampleWebsitePreview = lib.buildSitePreview {
+          modules = [ ./example/default.nix ];
+        };
       };
     });
 }

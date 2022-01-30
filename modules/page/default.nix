@@ -91,7 +91,7 @@ with types;
       '') config.meta}
 
       ${mapAttrsToString (name: style: ''
-        <link rel="stylesheet" href="/${style.path}">
+        <link rel="stylesheet" href="${style.path}">
       '') websiteConfig.styles}
     '';
 
