@@ -6,20 +6,33 @@
 
   outputs =
     { nixpkgs, utils, ... }:
-    utils.lib.eachDefaultSystem (system: rec {
-      lib = import ./lib/default.nix {
-        coricamuLib = lib;
-        pkgsLib = nixpkgs.lib;
-        pkgs = nixpkgs.legacyPackages.${system};
-      };
+    with utils.lib;
+    let generateFlakeOutputs =
+      outputName: args:
+      eachDefaultSystem (
+        system:
+        let
+          coricamuLib = import ./lib/default.nix {
+            inherit coricamuLib;
+            pkgsLib = nixpkgs.lib;
+            pkgs = nixpkgs.legacyPackages.${system};
+          };
+        in
+        with coricamuLib;
+        {
+          packages."${outputName}" = buildSite args;
 
-      packages = {
-        exampleWebsite = lib.buildSite {
-          modules = [ ./example/default.nix ];
-        };
-        exampleWebsitePreview = lib.buildSitePreview {
-          modules = [ ./example/default.nix ];
-        };
-      };
+          apps."${outputName}-preview" = mkApp {
+            name = "${outputName}-preview";
+            drv = buildSitePreview args;
+            exePath = "/bin/coricamu-preview";
+          };
+        }
+      );
+    in {
+      lib = { inherit generateFlakeOutputs; };
+    } //
+    (generateFlakeOutputs "example" {
+      modules = [ ./example/default.nix ];
     });
 }

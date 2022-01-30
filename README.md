@@ -13,19 +13,19 @@ Coricamu can be added to `flake.nix` like this:
 {
   inputs.coricamu.url = "github:danth/coricamu";
 
-  outputs = { coricamu, ... }: {
-    packages."x86_64-linux".website =
-      coricamu.lib."x86_64-linux".buildSite {
-        modules = [ ./website.nix ];
-      };
-  };
+  outputs = { coricamu, ... }:
+    coricamu.lib.generateFlakeOutputs "my-website" {
+      modules = [ ./website.nix ];
+    };
 }
 ```
 
 Where `website.nix` is a configuration module, as documented below.
 
-This will produce a single package output (`website`) containing the built HTML
-and other files, ready to be published by a HTTP server such as Nginx.
+This will add two things to your flake outputs:
+- `my-website`, a package containing the built HTML and other files, ready to
+  be published by a HTTP server such as Nginx
+- `my-website-preview`, an app which allows you to open `my-website` locally
 
 ## Configuring a site
 
