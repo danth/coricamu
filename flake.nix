@@ -4,31 +4,17 @@
     utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { nixpkgs, utils, self, ... }: {
-    lib.buildSite =
-      { system, modules, specialArgs ? {} }:
-      let
-        commonModules = [
-          ./coricamu/files.nix
-          ./coricamu/pages.nix
-        ];
+  outputs =
+    { nixpkgs, utils, ... }:
+    utils.lib.eachDefaultSystem (system: rec {
+      lib = import ./lib/default.nix {
+        coricamuLib = lib;
+        pkgsLib = nixpkgs.lib;
+        pkgs = nixpkgs.legacyPackages.${system};
+      };
 
-        commonArgs = {
-          modulesPath = ./coricamu;
-          inherit (nixpkgs) lib;
-          pkgs = nixpkgs.legacyPackages.${system};
-        };
-
-        eval = nixpkgs.lib.evalModules {
-          modules = commonModules ++ modules;
-          specialArgs = commonArgs // specialArgs;
-        };
-      in eval.config.package;
-  } //
-  utils.lib.eachDefaultSystem (system: {
-    packages.exampleWebsite = self.lib.buildSite {
-      inherit system;
-      modules = [ ./example/default.nix ];
-    };
-  });
+      packages.exampleWebsite = lib.buildSite {
+        modules = [ ./example/default.nix ];
+      };
+    });
 }

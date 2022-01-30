@@ -15,8 +15,7 @@ Coricamu can be added to `flake.nix` like this:
 
   outputs = { coricamu, ... }: {
     packages."x86_64-linux".website =
-      coricamu.lib.buildSite {
-        system = "x86_64-linux";
+      coricamu.lib."x86_64-linux".buildSite {
         modules = [ ./website.nix ];
       };
   };
