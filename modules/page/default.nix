@@ -40,6 +40,12 @@ with types;
         Much of the head can be generated automatically based on other
         options. You should check if a more specific option is available
         before using this!
+
+        Note: image sources and other links in your HTML are relative to the
+        root of the website, whereas usually they would be relative to the
+        current page. Therefore, it's recommended not to add a
+        <literal>/</literal> at the beginning of relative links, so that the
+        website can render correctly when it is previewed locally.
       '';
       example = ''
         <templates.metaAuthor name="John Doe" email="someone@example.com" />
@@ -55,6 +61,12 @@ with types;
         the corresponding template. HTML attributes (if present) will be
         passed to the template as an attribute set, along with any HTML
         inside the tag as the <literal>contents</literal> attribute.
+
+        Note: image sources and other links in your HTML are relative to the
+        root of the website, whereas usually they would be relative to the
+        current page. Therefore, it's recommended not to add a
+        <literal>/</literal> at the beginning of relative links, so that the
+        website can render correctly when it is previewed locally.
       '';
       example = ''
         <h1>Contact Us</h1>

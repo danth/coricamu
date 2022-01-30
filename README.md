@@ -82,6 +82,13 @@ boilerplate for you:
 This is all validated by the Nix module system, so you will be warned if any
 information is missing or improperly formatted.
 
+*Note:* image sources and other links in your HTML are relative to the root of
+the website, whereas usually they would be relative to the current page. This
+allows the `path` of pages to be inserted straight into HTML and work no matter
+where the containing page is located on your site. It's recommended *not* to
+add a `/` at the beginning of relative links, so that the website can render
+correctly when it is previewed locally.
+
 ### Templates
 
 Templates can be used to avoid HTML boilerplate even more, and standardise the
