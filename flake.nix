@@ -7,11 +7,14 @@
   outputs =
     { nixpkgs, utils, ... }:
     with utils.lib;
-    let generateFlakeOutputs =
-      outputName: args:
-      eachDefaultSystem (
-        system:
+    let
+      # Generate the outputs for a particular system, in the format
+      # packages.«outputName» = package
+      generateSystemOutputs =
+        { outputName, system, modules, specialArgs ? {} }:
         let
+          siteArgs = { inherit modules specialArgs; };
+
           coricamuLib = import ./lib/default.nix {
             inherit coricamuLib;
             pkgsLib = nixpkgs.lib;
@@ -20,19 +23,28 @@
         in
         with coricamuLib;
         {
-          packages."${outputName}" = buildSite args;
+          packages."${outputName}" = buildSite siteArgs;
 
           apps."${outputName}-preview" = mkApp {
             name = "${outputName}-preview";
-            drv = buildSitePreview args;
+            drv = buildSitePreview siteArgs;
             exePath = "/bin/coricamu-preview";
           };
-        }
-      );
+        };
+
+      # Generate the outputs for all systems, in the format
+      # packages.«system».«outputName» = package
+      generateFlakeOutputs =
+        args:
+        eachDefaultSystem (system:
+          generateSystemOutputs (args // { inherit system; })
+        );
+
     in {
-      lib = { inherit generateFlakeOutputs; };
+      lib = { inherit generateSystemOutputs generateFlakeOutputs; };
     } //
-    (generateFlakeOutputs "example" {
+    (generateFlakeOutputs {
+      outputName = "example";
       modules = [ ./example/default.nix ];
     });
 }
