@@ -83,13 +83,15 @@ with types;
     head = ''
       <title>${config.title}</title>
 
+      <base href="${websiteConfig.baseUrl}">
+
       <meta charset="UTF-8">
       ${mapAttrsToString (name: content: ''
         <meta name="${name}" content="${content}">
       '') config.meta}
 
       ${mapAttrsToString (name: style: ''
-        <link rel="stylesheet" href="${style.path}">
+        <link rel="stylesheet" href="/${style.path}">
       '') websiteConfig.styles}
     '';
 

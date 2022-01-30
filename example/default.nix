@@ -1,6 +1,8 @@
 { config, ... }:
 
 {
+  baseUrl = "https://coricamu.example.com/";
+
   pages = {
     index = {
       path = "index.html";
