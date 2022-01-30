@@ -162,10 +162,10 @@ function, you can format the arguments as pseudo-HTML:
   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
   tempor incididunt ut labore et dolore magna aliqua.
 </p>
-<templates.note title="An important note">
+<templates-note title="An important note">
   Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
   ut aliquip ex ea commodo consequat.
-</templates.note>
+</templates-note>
 <p>
   Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
   dolore eu fugiat nulla pariatur.
@@ -200,7 +200,7 @@ ${config.templates.note {
 ```
 
 Any attributes on the tag are converted to function arguments. Notice how the
-text inside the `<templates.note>` tag has become the `contents` argument; this
+text inside the `<templates-note>` tag has become the `contents` argument; this
 is a special argument intended for templates which fit around other content.
 Text, HTML and even other template tags can be placed inside a template like
 this.

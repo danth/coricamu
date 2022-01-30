@@ -35,7 +35,7 @@ with pkgsLib;
 
       # If this string isn't present, template tags are definitely not used,
       # so the import-from-derivation can be skipped.
-      mayContainTemplateTag = hasInfix "<templates." html;
+      mayContainTemplateTag = hasInfix "<templates-" html;
 
     in if mayContainTemplateTag
        then (import nixFile) wrappedTemplates

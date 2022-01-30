@@ -34,7 +34,7 @@ with types;
       description = ''
         HTML head of the page.
 
-        May contain <literal>templates.«name»</literal> tags which will call
+        May contain <literal>templates-«name»</literal> tags which will call
         the corresponding template. HTML attributes (if present) will be
         passed to the template as an attribute set, along with any HTML
         inside the tag as the <literal>contents</literal> attribute.
@@ -50,7 +50,7 @@ with types;
         website can render correctly when it is previewed locally.
       '';
       example = ''
-        <templates.metaAuthor name="John Doe" email="someone@example.com" />
+        <templates-metaAuthor name="John Doe" email="someone@example.com" />
       '';
       type = lines;
     };
@@ -59,7 +59,7 @@ with types;
       description = ''
         HTML body of the page.
 
-        May contain <literal>templates.«name»</literal> tags which will call
+        May contain <literal>templates-«name»</literal> tags which will call
         the corresponding template. HTML attributes (if present) will be
         passed to the template as an attribute set, along with any HTML
         inside the tag as the <literal>contents</literal> attribute.
@@ -74,8 +74,8 @@ with types;
         <h1>Contact Us</h1>
         <p>You can reach us by contacting any of the following people:</p>
         <ul>
-          <li><templates.user id="12345">Jane Doe</templates.user></li>
-          <li><templates.user id="67890">John Doe</templates.user></li>
+          <li><templates-user id="12345">Jane Doe</templates-user></li>
+          <li><templates-user id="67890">John Doe</templates-user></li>
         </ul>
       '';
       type = lines;
