@@ -7,6 +7,7 @@ with types;
   imports = [
     ./files.nix
     ./pages.nix
+    ./styles.nix
   ];
 
   options.package = mkOption {

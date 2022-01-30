@@ -87,6 +87,10 @@ with types;
       ${mapAttrsToString (name: content: ''
         <meta name="${name}" content="${content}">
       '') config.meta}
+
+      ${mapAttrsToString (name: style: ''
+        <link rel="stylesheet" href="${style.path}">
+      '') websiteConfig.styles}
     '';
 
     file = pkgs.writeTextFile {
