@@ -81,6 +81,42 @@ with types;
       type = lines;
     };
 
+    markdownBody = mkOption {
+      description = ''
+        Markdown body of the page.
+
+        May contain <literal>templates.«name»</literal> HTML tags in places
+        where Markdown allows embedded HTML. This will call the corresponding
+        template. HTML attributes (if present) will be passed to the template
+        as an attribute set, along with any converted Markdown inside the tag
+        as the <literal>contents</literal> attribute. Template tags are not
+        guaranteed to work in all places when using Markdown - if you need more
+        flexibility, consider writing the page directly in HTML instead.
+
+        Note: image sources and other links in your Markdown are relative to
+        the root of the website, whereas usually they would be relative to the
+        current page. Therefore, it's recommended not to add a
+        <literal>/</literal> at the beginning of relative links, so that the
+        website can render correctly when it is previewed locally.
+
+        Markdown will be inserted to <literal>body</literal> after it is
+        converted. If you set <literal>body</literal> to something else, it
+        will override the Markdown; therefore, it's recommended to only use
+        either <literal>body</literal> or <literal>markdownBody</literal>, not
+        both.
+      '';
+      example = ''
+        # Contact Us
+
+        You can reach us by contacting any of the following people:
+
+        - <templates.user id="12345">Jane Doe</templates.user>
+        - <templates.user id="67890">John Doe</templates.user>
+      '';
+      type = nullOr lines;
+      default = null;
+    };
+
     file = mkOption {
       description = "Compiled HTML file for this page.";
       internal = true;
@@ -108,6 +144,13 @@ with types;
         <link rel="stylesheet" href="${style.path}">
       '') websiteConfig.styles}
     '';
+
+    body = mkIf
+      (!(isNull config.markdownBody))
+      (convertMarkdown {
+        name = "${name}-source";
+        markdown = config.markdownBody;
+      });
 
     file = pkgs.writeTextFile {
       name = "${name}.html";

@@ -33,6 +33,32 @@
       };
       body = builtins.readFile ./about.html;
     };
+
+    contact = {
+      path = "contact.html";
+      title = "Contact";
+
+      markdownBody = ''
+        <templates-note title="Office hours">
+          We will only reply between 9AM and 4PM on weekdays.
+        </templates-note>
+
+        You can contact us on:
+
+        - Email A
+        - Email B
+        - Email C
+
+        <templates-note title="Spam">
+          1. Don't send us spam emails
+          2. We'll delete them
+        </templates-note>
+
+        <templates-note title="Phishing">
+          Don't send us phishing emails
+        </templates-note>
+      '';
+    };
   };
 
   files."clouds.png" = ./clouds.png;
