@@ -17,6 +17,11 @@
           '';
         }}
       '';
+      sitemap = {
+        lastModified = "2022-01-30";
+        # Encourage search engines to check the homepage before other pages
+        priority = "1.0";
+      };
     };
 
     about = {

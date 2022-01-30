@@ -5,6 +5,8 @@ with pkgsLib;
 with types;
 
 {
+  imports = [ ./sitemap.nix ];
+
   options = {
     path = mkOption {
       description = "Path of the page relative to the root URL.";
