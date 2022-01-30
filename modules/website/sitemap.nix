@@ -16,7 +16,7 @@ with types;
         </urlset>
       '';
 
-      # 2-in-1:
+      # html-tidy is 2-in-1:
       # - Raises an error if the XML is invalid
       # - Cleans up erratic indentation caused by splices
       checkPhase = ''
@@ -27,6 +27,20 @@ with types;
           --wrap 100 \
           --quiet yes \
           -modify $target
+
+        if [ "$(stat -c%s $target)" -gt 52428800 ]; then
+          echo "Sitemap is larger than the maximum 50MB"
+          exit 1
+        fi
+
+        ${
+          if length (attrNames config.pages) > 50000
+          then ''
+            echo "Sitemap contains more than the maximum 50,000 pages"
+            exit 1
+          ''
+          else ""
+        }
       '';
     };
 
