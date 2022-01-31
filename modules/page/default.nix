@@ -155,21 +155,45 @@ with types;
     file = pkgs.writeTextFile {
       name = "${name}.html";
 
-      text = ''
+      text = let
+        makeTag =
+          { name, tag, html }:
+          ''
+            <${tag}>
+              ${fillTemplates {
+                inherit name html;
+                inherit (websiteConfig) templates;
+              }}
+            </${tag}>
+          '';
+
+        makeOptionalTag =
+          { html, ... }@args:
+          if isNull html then "" else makeTag args;
+
+      in ''
         <!DOCTYPE html>
         <html>
-          <head>
-            ${fillTemplates {
-              name = "${name}-head";
-              html = config.head;
-              inherit (websiteConfig) templates;
-            }}
-          </head>
+          ${makeTag {
+            name = "${name}-head";
+            tag = "head";
+            html = config.head;
+          }}
           <body>
-            ${fillTemplates {
-              name = "${name}-body";
+            ${makeOptionalTag {
+              name = "header";
+              tag = "header";
+              html = websiteConfig.header;
+            }}
+            ${makeTag {
+              name = "${name}-main";
+              tag = "main";
               html = config.body;
-              inherit (websiteConfig) templates;
+            }}
+            ${makeOptionalTag {
+              name = "footer";
+              tag = "footer";
+              html = websiteConfig.footer;
             }}
           </body>
         </html>

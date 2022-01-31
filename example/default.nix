@@ -3,6 +3,15 @@
 {
   baseUrl = "https://coricamu.example.com/";
 
+  header = ''
+    <h1>Coricamu Example Site</h1>
+
+    <templates-note title="Example">
+      This is an example website for
+      <a href="https://github.com/danth/coricamu">Coricamu</a>.
+    </templates-note>
+  '';
+
   pages = {
     index = {
       path = "index.html";
