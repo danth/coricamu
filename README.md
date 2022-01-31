@@ -14,7 +14,8 @@ Coricamu can be added to `flake.nix` like this:
   inputs.coricamu.url = "github:danth/coricamu";
 
   outputs = { coricamu, ... }:
-    coricamu.lib.generateFlakeOutputs "my-website" {
+    coricamu.lib.generateFlakeOutputs {
+      outputName = "my-website";
       modules = [ ./website.nix ];
     };
 }
