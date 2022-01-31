@@ -20,18 +20,20 @@ with pkgsLib;
         ${python}/bin/python ${./template_tags.py} $htmlPath $out
       '';
 
-      # Apply fillTemplates to the HTML returned by each used template,
-      # in case it contains template tags itself
-      wrappedTemplates = mapAttrs (
-        templateName: template:
-        # Wrap the template function
-        templateArgs:
-        coricamuLib.fillTemplates {
-          name = templateName;
-          html = template templateArgs;
-          inherit templates;
-        }
-      ) templates;
+      wrappedTemplates = mapAttrs' (templateName: template: {
+        # HTML tags are case-insensitive, so we convert the name to lowercase
+        name = toLower templateName;
+
+        value =
+          # Wrap the template function to apply fillTemplates to the returned
+          # HTML, in case it contains template tags itself
+          templateArgs:
+          coricamuLib.fillTemplates {
+            name = templateName;
+            html = template templateArgs;
+            inherit templates;
+          };
+      }) templates;
 
       # If this string isn't present, template tags are definitely not used,
       # so the import-from-derivation can be skipped.

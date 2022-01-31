@@ -205,6 +205,9 @@ is a special argument intended for templates which fit around other content.
 Text, HTML and even other template tags can be placed inside a template like
 this.
 
+*Note:* because HTML tags are case-insensitive, template names will also be
+case-insensitive when used via template tags.
+
 *Note:* There is nothing to prevent you from using template tags even when Nix
 splices are available; just be aware that they can require a little extra
 computation when the site is built. Use whichever style you prefer.

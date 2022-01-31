@@ -56,7 +56,12 @@ in {
     };
 
     templates = mkOption {
-      description = "Attribute set of template functions.";
+      description = ''
+        Attribute set of template functions.
+
+        Note that because HTML tags are case-insensitive, template names will
+        also be case-insensitive when used via template tags.
+      '';
       type = attrsOf template;
     };
   };
