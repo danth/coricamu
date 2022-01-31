@@ -41,7 +41,7 @@ for template_tag in soup.find_all(re.compile(r"^templates-\S+$")):
     template_args = template_tag.attrs.copy()
 
     if template_tag.contents:
-        template_args["contents"] = "\n".join(map(str, template_tag.contents))
+        template_args["contents"] = "".join(map(str, template_tag.contents))
 
     template_tag.replace_with(NixSubstitution(
         "templates." + template_name + " " + dict_to_nix(template_args)
