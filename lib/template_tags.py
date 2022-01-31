@@ -36,7 +36,7 @@ with open(input_file_path, "r") as input_file:
     soup = BeautifulSoup(input_file, "html.parser")
 
 for template_tag in soup.find_all(re.compile(r"^templates-\S+$")):
-    template_name = template_tag.name.split("-")[1]
+    template_name = template_tag.name[10:]
 
     template_args = template_tag.attrs.copy()
 
