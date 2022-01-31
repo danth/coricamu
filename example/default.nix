@@ -70,6 +70,39 @@
     };
   };
 
+  posts = [
+    {
+      title = "Lorem Ipsum";
+      datetime = "2022-01-31 20:10:05Z";
+      markdownBody = ''
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+        mollit anim id est laborum.
+      '';
+    }
+    {
+      title = "Lorem Ipsum 2.0";
+      datetime = "2022-01-31 22:50:33Z";
+      body = ''
+        <p>In volutpat dapibus augue et suscipit. Donec sollicitudin sapien non
+        leo interdum, eget porttitor mi convallis. Ut eu mauris et magna
+        vulputate aliquet. Vivamus commodo imperdiet diam, eget commodo elit
+        dignissim a. Proin vulputate metus diam, et molestie turpis pharetra
+        ac. Nunc elementum mattis iaculis. Phasellus suscipit mattis tortor, at
+        ultricies orci placerat ac. Quisque quis tristique lorem.</p>
+
+        <templates-note title="Lipsum">
+          <p>This was generated using
+          <a href="https://lipsum.com">lipsum.com</a>.</p>
+        </templates-note>
+      '';
+    }
+  ];
+
   files."clouds.png" = ./clouds.png;
 
   styles.note = {

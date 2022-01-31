@@ -1,26 +1,14 @@
-{ pkgsLib, pkgs, config, ... }@args:
+{ coricamuLib, pkgsLib, pkgs, config, ... }:
 
 with pkgsLib;
-with types;
+with pkgsLib.types;
+with coricamuLib.types;
 
-let
-
-  page = submoduleWith {
-    modules = [ ../page/default.nix ];
-    specialArgs = {
-      inherit (args) coricamuLib pkgsLib pkgs;
-      websiteConfig = config;
-    };
-    shorthandOnlyDefinesConfig = true;
-  };
-
-  template = functionTo lines;
-
-in {
+{
   options = {
     pages = mkOption {
       description = "Attribute set of all pages.";
-      type = attrsOf page;
+      type = attrsOf (page config);
     };
 
     header = mkOption {
