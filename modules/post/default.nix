@@ -133,12 +133,24 @@ with coricamuLib;
       inherit (config) title;
 
       body = ''
-        <article>
-          <h1>${config.title}</h1>
-          <small>Posted on
-          <time datetime="${config.datetime}">${date}</time>.</small>
+        <article itemscope itemtype="https://schema.org/BlogPosting">
+          <link
+            itemprop="url"
+            href="${websiteConfig.baseUrl}${config.page.path}">
 
-          ${config.body}
+          <h1 itemprop="headline">${config.title}</h1>
+
+          <small>
+            Posted on
+            <time
+              itemprop="datePublished"
+              datetime="${config.datetime}"
+            >${date}</time>.
+          </small>
+
+          <div itemprop="articleBody">
+            ${config.body}
+          </div>
         </article>
       '';
 
