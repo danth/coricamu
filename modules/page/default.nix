@@ -140,6 +140,8 @@ with types;
         <meta name="${name}" content="${content}">
       '') config.meta}
 
+      <link rel="canonical" href="${websiteConfig.baseUrl}${config.path}">
+
       ${mapAttrsToString (name: style: ''
         <link rel="stylesheet" href="${style.path}">
       '') websiteConfig.styles}
