@@ -37,6 +37,12 @@ with coricamuLib;
       ];
     };
 
+    authors = mkOption {
+      description = "Names of the author(s) of this post.";
+      example = [ "John Doe" "Jane Doe" ];
+      type = listOf str;
+    };
+
     body = mkOption {
       description = ''
         HTML body of the post.
@@ -145,7 +151,12 @@ with coricamuLib;
             <time
               itemprop="datePublished"
               datetime="${config.datetime}"
-            >${date}</time>.
+            >${date}</time>
+            by ${
+              concatStringsSep " and " (map
+                (author: "<span itemprop=\"author\">${author}</span>")
+              config.authors)
+            }.
           </small>
 
           <div itemprop="articleBody">
@@ -153,6 +164,8 @@ with coricamuLib;
           </div>
         </article>
       '';
+
+      meta.author = concatStringsSep ", " config.authors;
 
       sitemap.lastModified = date;
     };

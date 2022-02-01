@@ -74,6 +74,7 @@
     {
       title = "Lorem Ipsum";
       datetime = "2022-01-31 20:10:05Z";
+      authors = [ "John Doe" "Jane Doe" ];
       markdownBody = ''
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
@@ -87,6 +88,7 @@
     {
       title = "Lorem Ipsum 2.0";
       datetime = "2022-01-31 22:50:33Z";
+      authors = [ "John Doe" ];
       body = ''
         <p>In volutpat dapibus augue et suscipit. Donec sollicitudin sapien non
         leo interdum, eget porttitor mi convallis. Ut eu mauris et magna
