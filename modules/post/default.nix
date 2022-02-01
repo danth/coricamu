@@ -107,6 +107,11 @@ with coricamuLib;
       default = null;
     };
 
+    indexEntry = mkOption {
+      description = "Entry in the posts index page for this post.";
+      internal = true;
+      type = lines;
+    };
 
     page = mkOption {
       description = ''
@@ -125,6 +130,22 @@ with coricamuLib;
   config = let
     # Extract only the date
     date = substring 0 10 config.datetime;
+
+    postInfo = ''
+      <p>
+        Posted on
+        <time
+          itemprop="datePublished"
+          datetime="${config.datetime}"
+        >${date}</time>
+        by ${
+          concatStringsSep " and " (map
+            (author: "<span itemprop=\"author\">${author}</span>")
+          config.authors)
+        }
+      </p>
+    '';
+
   in {
     body = mkIf
       (!(isNull config.markdownBody))
@@ -133,6 +154,15 @@ with coricamuLib;
         markdown = config.markdownBody;
       });
 
+    indexEntry = ''
+      <article itemscope itemtype="https://schema.org/BlogPosting">
+        <a itemprop="url"
+           href="${websiteConfig.baseUrl}${config.page.path}"
+        ><h2 itemprop="headline">${config.title}</h2></a>
+        ${postInfo}
+      </article>
+    '';
+
     page = {
       path = "posts/${config.slug}.html";
 
@@ -140,28 +170,11 @@ with coricamuLib;
 
       body = ''
         <article itemscope itemtype="https://schema.org/BlogPosting">
-          <link
-            itemprop="url"
-            href="${websiteConfig.baseUrl}${config.page.path}">
-
+          <link itemprop="url"
+                href="${websiteConfig.baseUrl}${config.page.path}">
           <h1 itemprop="headline">${config.title}</h1>
-
-          <small>
-            Posted on
-            <time
-              itemprop="datePublished"
-              datetime="${config.datetime}"
-            >${date}</time>
-            by ${
-              concatStringsSep " and " (map
-                (author: "<span itemprop=\"author\">${author}</span>")
-              config.authors)
-            }.
-          </small>
-
-          <div itemprop="articleBody">
-            ${config.body}
-          </div>
+          ${postInfo}
+          <div itemprop="articleBody">${config.body}</div>
         </article>
       '';
 

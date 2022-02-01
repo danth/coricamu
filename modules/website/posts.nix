@@ -11,6 +11,22 @@ with coricamuLib.types;
   };
 
   config.pages =
-    listToAttrs
-    (map (post: nameValuePair post.slug post.page) config.posts);
+    (listToAttrs (map
+      (post: nameValuePair post.slug post.page)
+      config.posts))
+    // {
+      postsIndex = {
+        path = "posts/index.html";
+        title = "All posts";
+        body = ''
+          <ol style="list-style-type: none">
+            ${
+              concatMapStringsSep "\n"
+              (post: "<li>${post.indexEntry}</li>")
+              config.posts
+            }
+          </ol>
+        '';
+      };
+    };
 }
