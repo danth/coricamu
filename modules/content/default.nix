@@ -74,6 +74,10 @@ in {
         current page. Therefore, it's recommended not to add a
         <literal>/</literal> at the beginning of relative links, so that the
         website can render correctly when it is previewed locally.
+
+        This uses MultiMarkdown, which is an extension to the common Markdown
+        syntax. A full cheat sheet can be found on
+        <link xlink:href="https://rawgit.com/fletcher/MultiMarkdown-6-Syntax-Guide/master/index.html">the MultiMarkdown website</link>.
       '';
       example = ''
         # Contact Us
