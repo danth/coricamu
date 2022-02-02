@@ -12,6 +12,9 @@
     </templates-note>
   '';
 
+  # Discourage search engines from indexing this site
+  meta.robots = "noindex";
+
   pages = {
     index = {
       path = "index.html";

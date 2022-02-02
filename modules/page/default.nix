@@ -20,12 +20,14 @@ with types;
 
     meta = mkOption {
       description = ''
-        HTML metadata.
+        HTML metadata for this page.
 
         Each key-value pair in this attribute set will be transformed into a
         corresponding HTML <literal>meta</literal> element with
         <literal>name</literal> set to the attribute name and
         <literal>content</literal> set to the attribute value.
+
+        Note: there is also an option to set metadata shared between all pages.
       '';
       type = attrsOf str;
     };
@@ -136,9 +138,11 @@ with types;
       <base href="${websiteConfig.baseUrl}">
 
       <meta charset="UTF-8">
-      ${mapAttrsToString (name: content: ''
-        <meta name="${name}" content="${content}">
-      '') config.meta}
+      ${
+        mapAttrsToString
+        (name: content: "<meta name=\"${name}\" content=\"${content}\">")
+        (websiteConfig.meta // config.meta)
+      }
 
       <link rel="canonical" href="${websiteConfig.baseUrl}${config.path}">
 

@@ -23,6 +23,20 @@ in {
       type = attrsOf page;
     };
 
+    meta = mkOption {
+      description = ''
+        HTML metadata shared by all pages.
+
+        Each key-value pair in this attribute set will be transformed into a
+        corresponding HTML <literal>meta</literal> element with
+        <literal>name</literal> set to the attribute name and
+        <literal>content</literal> set to the attribute value.
+
+        Note: there is also an option to set metadata for a particular page.
+      '';
+      type = attrsOf str;
+    };
+
     header = mkOption {
       description = ''
         HTML header content, inserted before the body of every page.
