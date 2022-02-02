@@ -92,6 +92,37 @@ where the containing page is located on your site. It's recommended *not* to
 add a `/` at the beginning of relative links, so that the website can render
 correctly when it is previewed locally.
 
+### Posts
+
+If you are building a blog-style site, you should use the post option.
+Posts can be defined in a list:
+
+```nix
+{
+  posts = [
+    {
+      title = "Lorem Ipsum";
+      datetime = "2022-01-31 20:10:05Z";
+      authors = [ "John Doe" "Jane Doe" ];
+      body.markdown = builtins.readFile ./lorem_ipsum.md;
+    }
+    {
+      title = "Ut Enim Ad Minim";
+      datetime = "2022-01-31 20:10:05Z";
+      authors = [ "Jane Doe" ];
+      body.html = builtins.readFile ./ut_enim_ad_minim.html;
+    }
+  ];
+}
+```
+
+If at least one post is present, the page `posts/index.html` will be enabled;
+this is an automatically generated list of all your posts, with a link to the
+post's individual page.
+
+Posts also include rich metadata which allows search engines to present your
+content in the most appropriate manner.
+
 ### Templates
 
 Templates can be used to avoid HTML boilerplate even more, and standardise the
