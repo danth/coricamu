@@ -59,14 +59,16 @@ boilerplate for you:
     index = {
       path = "index.html";
       title = "Home";
-      body = ''
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+
+      # Currently supports either HTML or Markdown input
+      body.markdown = ''
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
         eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
         minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
         ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
         voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
         sint occaecat cupidatat non proident, sunt in culpa qui officia
-        deserunt mollit anim id est laborum.</p>
+        deserunt mollit anim id est laborum.
       '';
     };
 
@@ -74,7 +76,7 @@ boilerplate for you:
       path = "about.html";
       title = "About Us";
       # File only needs to contain the insides of <body>, not an entire page
-      body = builtins.readFile ./about.html;
+      body.html = builtins.readFile ./about.html;
     };
   };
 }
@@ -89,6 +91,37 @@ allows the `path` of pages to be inserted straight into HTML and work no matter
 where the containing page is located on your site. It's recommended *not* to
 add a `/` at the beginning of relative links, so that the website can render
 correctly when it is previewed locally.
+
+### Posts
+
+If you are building a blog-style site, you should use the post option.
+Posts can be defined in a list:
+
+```nix
+{
+  posts = [
+    {
+      title = "Lorem Ipsum";
+      datetime = "2022-01-31 20:10:05Z";
+      authors = [ "John Doe" "Jane Doe" ];
+      body.markdown = builtins.readFile ./lorem_ipsum.md;
+    }
+    {
+      title = "Ut Enim Ad Minim";
+      datetime = "2022-01-31 20:10:05Z";
+      authors = [ "Jane Doe" ];
+      body.html = builtins.readFile ./ut_enim_ad_minim.html;
+    }
+  ];
+}
+```
+
+If at least one post is present, the page `posts/index.html` will be enabled;
+this is an automatically generated list of all your posts, with a link to the
+post's individual page.
+
+Posts also include rich metadata which allows search engines to present your
+content in the most appropriate manner.
 
 ### Templates
 
@@ -124,7 +157,7 @@ the return value into your HTML:
 { config, ... }:
 
 {
-  pages.example.body = ''
+  pages.example.body.html = ''
     <p>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
       tempor incididunt ut labore et dolore magna aliqua.
@@ -149,7 +182,7 @@ separate HTML file:
 
 ```nix
 {
-  pages.example.body = builtins.readFile ./example.html;
+  pages.example.body.html = builtins.readFile ./example.html;
 }
 ```
 

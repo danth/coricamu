@@ -7,6 +7,7 @@ with types;
   imports = [
     ./files.nix
     ./pages.nix
+    ./posts.nix
     ./sitemap.nix
     ./styles.nix
   ];
