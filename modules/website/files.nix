@@ -7,6 +7,7 @@ with types;
   options.files = mkOption {
     description = "Attribute set containing files by path.";
     type = attrsOf (either package path);
+    default = {};
   };
 
   config.package = pkgs.linkFarm "website"

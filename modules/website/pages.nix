@@ -21,6 +21,7 @@ in {
     pages = mkOption {
       description = "Attribute set of all pages.";
       type = attrsOf page;
+      default = {};
     };
 
     meta = mkOption {
@@ -35,6 +36,7 @@ in {
         Note: there is also an option to set metadata for a particular page.
       '';
       type = attrsOf str;
+      default = {};
     };
 
     header = mkOption {
@@ -77,6 +79,7 @@ in {
         also be case-insensitive when used via template tags.
       '';
       type = attrsOf template;
+      default = {};
     };
   };
 

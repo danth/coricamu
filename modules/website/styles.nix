@@ -17,6 +17,7 @@ in {
   options.styles = mkOption {
     description = "Attribute set of CSS styles included in all pages.";
     type = attrsOf style;
+    default = {};
   };
 
   config.files = mapAttrs' (name: style:

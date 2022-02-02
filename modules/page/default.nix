@@ -30,6 +30,7 @@ with types;
         Note: there is also an option to set metadata shared between all pages.
       '';
       type = attrsOf str;
+      default = {};
     };
 
     head = mkOption {
