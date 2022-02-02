@@ -18,7 +18,7 @@ with coricamuLib.types;
       postsIndex = {
         path = "posts/index.html";
         title = "All posts";
-        body = ''
+        body.html = ''
           <ol style="list-style-type: none">
             ${
               concatMapStringsSep "\n"

@@ -12,34 +12,20 @@ with coricamuLib.types;
     };
 
     header = mkOption {
-      description = ''
-        HTML header content, inserted before the body of every page.
-
-        May contain <literal>templates-«name»</literal> tags which will call
-        the corresponding template. HTML attributes (if present) will be passed
-        to the template as an attribute set, along with any HTML inside the tag
-        as the <literal>contents</literal> attribute.
-      '';
-      example = ''
+      description = "Header inserted before the body of every page.";
+      example.html = ''
         <h1>My Website</h1>
       '';
-      type = nullOr lines;
+      type = nullOr (content config.templates);
       default = null;
     };
 
     footer = mkOption {
-      description = ''
-        HTML footer content, inserted after the body of every page.
-
-        May contain <literal>templates-«name»</literal> tags which will call
-        the corresponding template. HTML attributes (if present) will be passed
-        to the template as an attribute set, along with any HTML inside the tag
-        as the <literal>contents</literal> attribute.
-      '';
-      example = ''
+      description = "Footer inserted after the body of every page.";
+      example.html = ''
         <a href="privacy.html">Privacy Policy</a>
       '';
-      type = nullOr lines;
+      type = nullOr (content config.templates);
       default = null;
     };
 

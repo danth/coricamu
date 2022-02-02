@@ -3,7 +3,7 @@
 {
   baseUrl = "https://coricamu.example.com/";
 
-  header = ''
+  header.html = ''
     <h1>Coricamu Example Site</h1>
 
     <templates-note title="Example">
@@ -16,7 +16,7 @@
     index = {
       path = "index.html";
       title = "Home";
-      body = ''
+      body.html = ''
         <h1>Home</h1>
 
         ${config.templates.note {
@@ -40,14 +40,13 @@
         author = "Jane Doe";
         description = "An example page for Coricamu";
       };
-      body = builtins.readFile ./about.html;
+      body.html = builtins.readFile ./about.html;
     };
 
     contact = {
       path = "contact.html";
       title = "Contact";
-
-      markdownBody = ''
+      body.markdown = ''
         <templates-note title="Office hours">
           We will only reply between 9AM and 4PM on weekdays.
         </templates-note>
@@ -75,7 +74,7 @@
       title = "Lorem Ipsum";
       datetime = "2022-01-31 20:10:05Z";
       authors = [ "John Doe" "Jane Doe" ];
-      markdownBody = ''
+      body.markdown = ''
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
         veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
@@ -89,7 +88,7 @@
       title = "Lorem Ipsum 2.0";
       datetime = "2022-01-31 22:50:33Z";
       authors = [ "John Doe" ];
-      body = ''
+      body.markdown = ''
         <p>In volutpat dapibus augue et suscipit. Donec sollicitudin sapien non
         leo interdum, eget porttitor mi convallis. Ut eu mauris et magna
         vulputate aliquet. Vivamus commodo imperdiet diam, eget commodo elit

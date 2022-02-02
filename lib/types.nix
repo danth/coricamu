@@ -5,6 +5,15 @@ with pkgsLib.types;
 
 {
   types = {
+    content = templates: submoduleWith {
+      modules = [ ../modules/content/default.nix ];
+      specialArgs = {
+        inherit (args) coricamuLib pkgsLib pkgs;
+        inherit templates;
+      };
+      shorthandOnlyDefinesConfig = true;
+    };
+
     post = websiteConfig: submoduleWith {
       modules = [ ../modules/post/default.nix ];
       specialArgs = {

@@ -59,14 +59,16 @@ boilerplate for you:
     index = {
       path = "index.html";
       title = "Home";
-      body = ''
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+
+      # Currently supports either HTML or Markdown input
+      body.markdown = ''
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
         eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
         minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
         ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
         voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
         sint occaecat cupidatat non proident, sunt in culpa qui officia
-        deserunt mollit anim id est laborum.</p>
+        deserunt mollit anim id est laborum.
       '';
     };
 
@@ -74,7 +76,7 @@ boilerplate for you:
       path = "about.html";
       title = "About Us";
       # File only needs to contain the insides of <body>, not an entire page
-      body = builtins.readFile ./about.html;
+      body.html = builtins.readFile ./about.html;
     };
   };
 }
@@ -124,7 +126,7 @@ the return value into your HTML:
 { config, ... }:
 
 {
-  pages.example.body = ''
+  pages.example.body.html = ''
     <p>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
       tempor incididunt ut labore et dolore magna aliqua.
@@ -149,7 +151,7 @@ separate HTML file:
 
 ```nix
 {
-  pages.example.body = builtins.readFile ./example.html;
+  pages.example.body.html = builtins.readFile ./example.html;
 }
 ```
 

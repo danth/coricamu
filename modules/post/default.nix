@@ -3,6 +3,7 @@
 with pkgsLib;
 with pkgsLib.types;
 with coricamuLib;
+with coricamuLib.types;
 
 {
   options = {
@@ -44,67 +45,17 @@ with coricamuLib;
     };
 
     body = mkOption {
-      description = ''
-        HTML body of the post.
-
-        May contain <literal>templates-«name»</literal> tags which will call
-        the corresponding template. HTML attributes (if present) will be
-        passed to the template as an attribute set, along with any HTML
-        inside the tag as the <literal>contents</literal> attribute.
-
-        Note: image sources and other links in your HTML are relative to the
-        root of the website, whereas usually they would be relative to the
-        current page. Therefore, it's recommended not to add a
-        <literal>/</literal> at the beginning of relative links, so that the
-        website can render correctly when it is previewed locally.
-      '';
-      example = ''
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+      description = "Main post content.";
+      example.markdown = ''
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
         eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
         minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
         ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
         voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
         sint occaecat cupidatat non proident, sunt in culpa qui officia
-        deserunt mollit anim id est laborum.</p>
+        deserunt mollit anim id est laborum.
       '';
-      type = lines;
-    };
-
-    markdownBody = mkOption {
-      description = ''
-        Markdown body of the post.
-
-        May contain <literal>templates.«name»</literal> HTML tags in places
-        where Markdown allows embedded HTML. This will call the corresponding
-        template. HTML attributes (if present) will be passed to the template
-        as an attribute set, along with any converted Markdown inside the tag
-        as the <literal>contents</literal> attribute. Template tags are not
-        guaranteed to work in all places when using Markdown - if you need more
-        flexibility, consider writing the post directly in HTML instead.
-
-        Note: image sources and other links in your Markdown are relative to
-        the root of the website, whereas usually they would be relative to the
-        current page. Therefore, it's recommended not to add a
-        <literal>/</literal> at the beginning of relative links, so that the
-        website can render correctly when it is previewed locally.
-
-        Markdown will be inserted to <literal>body</literal> after it is
-        converted. If you set <literal>body</literal> to something else, it
-        will override the Markdown; therefore, it's recommended to only use
-        either <literal>body</literal> or <literal>markdownBody</literal>, not
-        both.
-      '';
-      example = ''
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum.
-      '';
-      type = nullOr lines;
-      default = null;
+      type = content websiteConfig.templates;
     };
 
     indexEntry = mkOption {
@@ -147,13 +98,6 @@ with coricamuLib;
     '';
 
   in {
-    body = mkIf
-      (!(isNull config.markdownBody))
-      (convertMarkdown {
-        name = "${config.slug}-source";
-        markdown = config.markdownBody;
-      });
-
     indexEntry = ''
       <article itemscope itemtype="https://schema.org/BlogPosting">
         <a itemprop="url"
@@ -168,13 +112,13 @@ with coricamuLib;
 
       inherit (config) title;
 
-      body = ''
+      body.html = ''
         <article itemscope itemtype="https://schema.org/BlogPosting">
           <link itemprop="url"
                 href="${websiteConfig.baseUrl}${config.page.path}">
           <h1 itemprop="headline">${config.title}</h1>
           ${postInfo}
-          <div itemprop="articleBody">${config.body}</div>
+          <div itemprop="articleBody">${config.body.output}</div>
         </article>
       '';
 

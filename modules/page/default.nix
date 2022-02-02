@@ -1,8 +1,9 @@
 { coricamuLib, pkgsLib, pkgs, config, websiteConfig, name, ... }:
 
-with coricamuLib;
 with pkgsLib;
-with types;
+with pkgsLib.types;
+with coricamuLib;
+with coricamuLib.types;
 
 {
   imports = [ ./sitemap.nix ];
@@ -34,11 +35,6 @@ with types;
       description = ''
         HTML head of the page.
 
-        May contain <literal>templates-«name»</literal> tags which will call
-        the corresponding template. HTML attributes (if present) will be
-        passed to the template as an attribute set, along with any HTML
-        inside the tag as the <literal>contents</literal> attribute.
-
         Much of the head can be generated automatically based on other
         options. You should check if a more specific option is available
         before using this!
@@ -50,62 +46,14 @@ with types;
         website can render correctly when it is previewed locally.
       '';
       example = ''
-        <templates-metaAuthor name="John Doe" email="someone@example.com" />
+        <script type="text/javascript" src="https://example.com/externalscript.js" />
       '';
       type = lines;
     };
 
     body = mkOption {
-      description = ''
-        HTML body of the page.
-
-        May contain <literal>templates-«name»</literal> tags which will call
-        the corresponding template. HTML attributes (if present) will be
-        passed to the template as an attribute set, along with any HTML
-        inside the tag as the <literal>contents</literal> attribute.
-
-        Note: image sources and other links in your HTML are relative to the
-        root of the website, whereas usually they would be relative to the
-        current page. Therefore, it's recommended not to add a
-        <literal>/</literal> at the beginning of relative links, so that the
-        website can render correctly when it is previewed locally.
-      '';
-      example = ''
-        <h1>Contact Us</h1>
-        <p>You can reach us by contacting any of the following people:</p>
-        <ul>
-          <li><templates-user id="12345">Jane Doe</templates-user></li>
-          <li><templates-user id="67890">John Doe</templates-user></li>
-        </ul>
-      '';
-      type = lines;
-    };
-
-    markdownBody = mkOption {
-      description = ''
-        Markdown body of the page.
-
-        May contain <literal>templates.«name»</literal> HTML tags in places
-        where Markdown allows embedded HTML. This will call the corresponding
-        template. HTML attributes (if present) will be passed to the template
-        as an attribute set, along with any converted Markdown inside the tag
-        as the <literal>contents</literal> attribute. Template tags are not
-        guaranteed to work in all places when using Markdown - if you need more
-        flexibility, consider writing the page directly in HTML instead.
-
-        Note: image sources and other links in your Markdown are relative to
-        the root of the website, whereas usually they would be relative to the
-        current page. Therefore, it's recommended not to add a
-        <literal>/</literal> at the beginning of relative links, so that the
-        website can render correctly when it is previewed locally.
-
-        Markdown will be inserted to <literal>body</literal> after it is
-        converted. If you set <literal>body</literal> to something else, it
-        will override the Markdown; therefore, it's recommended to only use
-        either <literal>body</literal> or <literal>markdownBody</literal>, not
-        both.
-      '';
-      example = ''
+      description = "Main content of the page.";
+      example.markdown = ''
         # Contact Us
 
         You can reach us by contacting any of the following people:
@@ -113,13 +61,13 @@ with types;
         - <templates.user id="12345">Jane Doe</templates.user>
         - <templates.user id="67890">John Doe</templates.user>
       '';
-      type = nullOr lines;
-      default = null;
+      type = content websiteConfig.templates;
     };
 
     file = mkOption {
       description = "Compiled HTML file for this page.";
       internal = true;
+      readOnly = true;
       type = package;
     };
   };
@@ -147,56 +95,25 @@ with types;
       '') websiteConfig.styles}
     '';
 
-    body = mkIf
-      (!(isNull config.markdownBody))
-      (convertMarkdown {
-        name = "${name}-source";
-        markdown = config.markdownBody;
-      });
-
     file = pkgs.writeTextFile {
       name = "${name}.html";
 
-      text = let
-        makeTag =
-          { name, tag, html }:
-          ''
-            <${tag}>
-              ${fillTemplates {
-                inherit name html;
-                inherit (websiteConfig) templates;
-              }}
-            </${tag}>
-          '';
-
-        makeOptionalTag =
-          { html, ... }@args:
-          if isNull html then "" else makeTag args;
-
-      in ''
+      text = ''
         <!DOCTYPE html>
         <html>
-          ${makeTag {
-            name = "${name}-head";
-            tag = "head";
-            html = config.head;
-          }}
+          <head>${config.head}</head>
           <body>
-            ${makeOptionalTag {
-              name = "header";
-              tag = "header";
-              html = websiteConfig.header;
-            }}
-            ${makeTag {
-              name = "${name}-main";
-              tag = "main";
-              html = config.body;
-            }}
-            ${makeOptionalTag {
-              name = "footer";
-              tag = "footer";
-              html = websiteConfig.footer;
-            }}
+            ${
+              optionalString
+              (notNull websiteConfig.header)
+              "<header>${websiteConfig.header.output}</header>"
+            }
+            <main>${config.body.output}</main>
+            ${
+              optionalString
+              (notNull websiteConfig.footer)
+              "<footer>${websiteConfig.footer.output}</footer>"
+            }
           </body>
         </html>
       '';
