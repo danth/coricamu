@@ -8,6 +8,7 @@ with coricamuLib.types;
   options.posts = mkOption {
     description = "List of all posts.";
     type = listOf (post config);
+    default = [];
   };
 
   config.pages =
