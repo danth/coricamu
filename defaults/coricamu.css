@@ -1,0 +1,43 @@
+body {
+  font-family: sans-serif;
+  font-size: 1em;
+  background-color: #eee7d7;
+}
+
+body > * {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+code, samp, kbd {
+  font-family: monospace;
+}
+
+header {
+  padding-bottom: 10px;
+  border-bottom: 2px solid black;
+  margin-bottom: 10px;
+
+  text-align: center;
+}
+
+footer {
+  padding-top: 10px;
+  border-top: 2px solid black;
+  margin-top: 10px;
+
+  font-size: 0.7em;
+}
+
+h1 {
+  text-align: center;
+}
+
+figure, img {
+  max-width: 100%;
+}
+
+figcaption {
+  font-size: 0.7em;
+}

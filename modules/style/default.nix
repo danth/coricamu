@@ -24,7 +24,7 @@ with types;
         file used instead. You should only set one of <literal>body</literal>
         or <literal>file</literal>.
       '';
-      type = package;
+      type = either path package;
     };
   };
 

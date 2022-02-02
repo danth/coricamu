@@ -109,17 +109,8 @@
 
   files."clouds.png" = ./clouds.png;
 
-  styles.note = {
-    path = "note.css";
-    css = ''
-      .note {
-        border: 2px solid black;
-      }
-    '';
-  };
-
   templates.note = { title, contents }: ''
-    <div class="note">
+    <div class="note" style="border: 2px dotted black">
       <h3>${title}</h3>
       ${contents}
     </div>

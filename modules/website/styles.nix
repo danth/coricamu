@@ -17,7 +17,13 @@ in {
   options.styles = mkOption {
     description = "Attribute set of CSS styles included in all pages.";
     type = attrsOf style;
-    default = {};
+    default = {
+      coricamu = {
+        path = "coricamu.css";
+        file = ../../defaults/coricamu.css;
+      };
+    };
+    defaultText = "Basic style sheet bundled with Coricamu.";
   };
 
   config.files = mapAttrs' (name: style:
