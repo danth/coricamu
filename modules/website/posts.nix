@@ -11,23 +11,25 @@ with coricamuLib.types;
     default = [];
   };
 
-  config.pages =
-    (listToAttrs (map
-      (post: nameValuePair post.slug post.page)
-      config.posts))
-    // {
-      postsIndex = {
-        path = "posts/index.html";
-        title = "All posts";
-        body.html = ''
-          <ol style="list-style-type: none">
-            ${
-              concatMapStringsSep "\n"
-              (post: "<li>${post.indexEntry}</li>")
-              config.posts
-            }
-          </ol>
-        '';
+  config = mkIf (length config.posts > 0) {
+    pages =
+      (listToAttrs (map
+        (post: nameValuePair post.slug post.page)
+        config.posts))
+      // {
+        postsIndex = {
+          path = "posts/index.html";
+          title = "All posts";
+          body.html = ''
+            <ol style="list-style-type: none">
+              ${
+                concatMapStringsSep "\n"
+                (post: "<li>${post.indexEntry}</li>")
+                config.posts
+              }
+            </ol>
+          '';
+        };
       };
-    };
+  };
 }
