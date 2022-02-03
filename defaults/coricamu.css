@@ -14,6 +14,12 @@ code, samp, kbd {
   font-family: monospace;
 }
 
+code, samp {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+}
+
 header {
   padding-bottom: 10px;
   border-bottom: 2px solid black;
