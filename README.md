@@ -123,6 +123,40 @@ post's individual page.
 Posts also include rich metadata which allows search engines to present your
 content in the most appropriate manner.
 
+### Styles
+
+Coricamu comes with a bare-bones CSS file which is imported by default. This
+style sheet aims to make small improvements to most web browsers' defaults,
+while not introducing any outstanding design elements.
+
+If you define any style-sheets of your own...
+
+```nix
+{
+  styles.custom = {
+    path = "style.css";
+    file = ./style.css;
+  };
+}
+```
+
+...then the default styling will be removed. If you would like to build on top
+of Coricamu's CSS rather than replacing it, you can re-insert the default like
+this:
+
+```nix
+{ options, ... }:
+
+{
+  styles = options.styles.default // {
+    custom = {
+      path = "style.css";
+      file = ./style.css;
+    };
+  };
+}
+```
+
 ### Templates
 
 Templates can be used to avoid HTML boilerplate even more, and standardise the
