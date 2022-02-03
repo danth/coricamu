@@ -92,6 +92,24 @@ where the containing page is located on your site. It's recommended *not* to
 add a `/` at the beginning of relative links, so that the website can render
 correctly when it is previewed locally.
 
+### Header / Footer
+
+You can define a header and footer which will be repeated on every page of
+your site.
+
+```nix
+{
+  header.html = ''
+    <h1>My Website</h1>
+  '';
+
+  footer.markdown = ''
+    Content on this site is available under the *Lorem Ipsum License* unless
+    otherwise stated.
+  '';
+}
+```
+
 ### Posts
 
 If you are building a blog-style site, you should use the post option.
