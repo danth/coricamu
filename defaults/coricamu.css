@@ -47,3 +47,8 @@ figure, img {
 figcaption {
   font-size: 0.7em;
 }
+
+abbr {
+  border: none;
+  text-decoration: none;
+}
