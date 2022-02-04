@@ -19,7 +19,7 @@ with pkgsLib;
     args:
     let
       previewModule = { config, ... }: {
-        baseUrl = mkForce "%BASE_URL%/";
+        baseUrl = mkForce "file://coricamu-preview/";
       };
 
       newArgs = args // {
@@ -43,7 +43,7 @@ with pkgsLib;
           ${previewSite} "$dir/preview"
 
         find "$dir" -type f | while read -r file; do
-          sed -e "s|%BASE_URL%|file://$dir/preview|g" -i "$file"
+          sed -e "s|file://coricamu-preview|file://$dir/preview|g" -i "$file"
         done
 
         xdg-open "$dir/preview/''${1:-index}.html"

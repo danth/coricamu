@@ -101,7 +101,7 @@ with coricamuLib.types;
     indexEntry = ''
       <article itemscope itemtype="https://schema.org/BlogPosting">
         <a itemprop="url"
-           href="${websiteConfig.baseUrl}${config.page.path}"
+           href="/${config.page.path}"
         ><h2 itemprop="headline">${config.title}</h2></a>
         ${postInfo}
       </article>
@@ -114,8 +114,7 @@ with coricamuLib.types;
 
       body.html = ''
         <article itemscope itemtype="https://schema.org/BlogPosting">
-          <link itemprop="url"
-                href="${websiteConfig.baseUrl}${config.page.path}">
+          <link itemprop="url" href="/${config.page.path}">
           <h1 itemprop="headline">${config.title}</h1>
           ${postInfo}
           <div itemprop="articleBody">${config.body.output}</div>

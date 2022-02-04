@@ -38,12 +38,6 @@ in {
         the corresponding template. HTML attributes (if present) will be
         passed to the template as an attribute set, along with any HTML
         inside the tag as the <literal>contents</literal> attribute.
-
-        Note: image sources and other links in your HTML are relative to the
-        root of the website, whereas usually they would be relative to the
-        current page. Therefore, it's recommended not to add a
-        <literal>/</literal> at the beginning of relative links, so that the
-        website can render correctly when it is previewed locally.
       '';
       example = ''
         <h1>Contact Us</h1>
@@ -68,12 +62,6 @@ in {
         as the <literal>contents</literal> attribute. Template tags are not
         guaranteed to work in all places when using Markdown - if you need more
         flexibility, consider writing in pure HTML instead.
-
-        Note: image sources and other links in your Markdown are relative to
-        the root of the website, whereas usually they would be relative to the
-        current page. Therefore, it's recommended not to add a
-        <literal>/</literal> at the beginning of relative links, so that the
-        website can render correctly when it is previewed locally.
 
         This uses MultiMarkdown, which is an extension to the common Markdown
         syntax. A full cheat sheet can be found on

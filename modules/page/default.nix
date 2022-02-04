@@ -41,12 +41,6 @@ with coricamuLib.types;
         Much of the head can be generated automatically based on other
         options. You should check if a more specific option is available
         before using this!
-
-        Note: image sources and other links in your HTML are relative to the
-        root of the website, whereas usually they would be relative to the
-        current page. Therefore, it's recommended not to add a
-        <literal>/</literal> at the beginning of relative links, so that the
-        website can render correctly when it is previewed locally.
       '';
       example = ''
         <script type="text/javascript" src="https://example.com/externalscript.js" />
@@ -84,8 +78,6 @@ with coricamuLib.types;
     head = ''
       <title>${config.title}</title>
 
-      <base href="${websiteConfig.baseUrl}">
-
       <meta charset="UTF-8">
       ${
         mapAttrsToString
@@ -93,10 +85,10 @@ with coricamuLib.types;
         (websiteConfig.meta // config.meta)
       }
 
-      <link rel="canonical" href="${websiteConfig.baseUrl}${config.path}">
+      <link rel="canonical" href="/${config.path}">
 
       ${mapAttrsToString (name: style: ''
-        <link rel="stylesheet" href="${style.path}">
+        <link rel="stylesheet" href="/${style.path}">
       '') websiteConfig.styles}
     '';
 
@@ -123,11 +115,18 @@ with coricamuLib.types;
         </html>
       '';
 
-      # 3-in-1:
-      # - Raises an error if the HTML is invalid
-      # - Warns the user about accessibility problems
-      # - Cleans up erratic indentation caused by templates
       checkPhase = ''
+        # Convert relative paths into absolute URLs
+        ${absolutifyCommand {
+          file = "$target";
+          inherit (websiteConfig) baseUrl;
+          inherit (config) path;
+        }}
+
+        # 3-in-1:
+        # - Raises an error if the HTML is invalid
+        # - Warns the user about accessibility problems
+        # - Cleans up erratic indentation caused by templates
         ${pkgs.html-tidy}/bin/tidy \
           --accessibility-check 3 \
           --doctype html5 \
