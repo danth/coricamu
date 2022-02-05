@@ -97,7 +97,7 @@ with coricamuLib.types;
 
       text = ''
         <!DOCTYPE html>
-        <html>
+        <html lang="${websiteConfig.language}">
           <head>${config.head}</head>
           <body>
             ${
