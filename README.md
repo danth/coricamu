@@ -134,6 +134,16 @@ post's individual page.
 Posts also include rich metadata which allows search engines to present your
 content in the most appropriate manner.
 
+### Post Lists
+
+Coricamu pre-defines two templates related to posts:
+
+- `all-posts` inserts a chronological list of all posts, as is found on
+  `posts/index.html`.
+- `recent-posts` inserts a chronological list of the newest `count` posts.
+
+You will learn more about how to use templates later in this document.
+
 ### Styles
 
 Coricamu comes with a bare-bones CSS file which is imported by default. This

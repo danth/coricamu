@@ -28,6 +28,8 @@
             <img src="clouds.png" alt="A cloudy sky.">
           '';
         }}
+
+        <templates-recent-posts count="1" />
       '';
       sitemap = {
         lastModified = "2022-01-30";
