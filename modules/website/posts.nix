@@ -154,15 +154,27 @@ in {
         { author, itemprop ? false }:
         if authorIndexIsUseful
         then ''
-          <li><a
+          <li
             ${optionalString itemprop "itemprop=\"author\""}
+            itemscope
+            itemtype="https://schema.org/Person"
+          ><a
+            itemprop="url"
             href="/posts/authors/${makeSlug author}.html"
             title="View all posts by ${author}"
             aria-label="View all posts by ${author}"
-          >${author}</a></li>
+          ><span
+            itemprop="name"
+          >${author}</span></a></li>
         ''
         else ''
-          <li>${author}</li>
+          <li
+            ${optionalString itemprop "itemprop=\"author\""}
+            itemscope
+            itemtype="https://schema.org/Person"
+          ><span
+            itemprop="name"
+          >${author}</span></li>
         '';
 
       keyword-pill =
