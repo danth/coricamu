@@ -61,3 +61,40 @@ hr {
   border: 0;
   border-top: 2px solid black;
 }
+
+/********** Posts **********/
+
+h1 + nav.post-explore {
+  margin-top: -1.4em;
+  text-align: center;
+}
+
+.post-summary h2 {
+  margin-bottom: 0.2em;
+}
+
+.post-list,
+ul.pills {
+  padding-left: 0;
+  list-style-type: none;
+}
+
+.post-meta {
+  font-size: 0.8em;
+}
+
+.post-meta ul.pills {
+  display: inline;
+}
+
+time[itemprop=datePublished],
+ul.pills > li {
+  display: inline-block;
+  border: 1px solid black;
+  border-radius: 0.5em;
+  padding: 0 3px;
+}
+
+ul.pills a {
+  text-decoration: none;
+}

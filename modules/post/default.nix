@@ -31,17 +31,20 @@ with coricamuLib.types;
       description = "Simplified title suitable for use as a file name.";
       example = "lorem_ipsum";
       type = strMatching "[a-z0-9_]+";
-      default = pipe config.title [
-        toLower
-        (builtins.split "[^a-z0-9]+")
-        (concatMapStrings (s: if isList s then "_" else s))
-      ];
+      default = makeSlug config.title;
     };
 
     authors = mkOption {
       description = "Names of the author(s) of this post.";
       example = [ "John Doe" "Jane Doe" ];
       type = listOf str;
+    };
+
+    keywords = mkOption {
+      description = "Key words or phrases related to this post.";
+      example = [ "lorem" "ipsum dolor" ];
+      type = listOf str;
+      default = [];
     };
 
     body = mkOption {
@@ -82,46 +85,77 @@ with coricamuLib.types;
     # Extract only the date
     date = substring 0 10 config.datetime;
 
+    authors = sort (a: b: a < b) config.authors;
+    keywords = sort (a: b: a < b) config.keywords;
+
     postInfo = ''
-      <p>
-        Posted on
-        <time
-          itemprop="datePublished"
-          datetime="${config.datetime}"
-        >${date}</time>
-        by ${
-          concatStringsSep " and " (map
-            (author: "<span itemprop=\"author\">${author}</span>")
-          config.authors)
+      Posted on
+      <time
+        itemprop="datePublished"
+        datetime="${config.datetime}"
+      >${date}</time>
+
+      by
+      <ul class="pills">
+        ${
+          concatMapStringsSep "\n"
+          (author: websiteConfig.templates.author-pill {
+            inherit author;
+            itemprop = true;
+          })
+          authors
         }
-      </p>
+      </ul>
+
+      ${optionalString (length keywords > 0) ''
+        with keywords
+        <ul itemprop="keywords" class="pills">
+          ${
+            concatMapStringsSep "\n"
+            (keyword: websiteConfig.templates.keyword-pill {
+              inherit keyword;
+            })
+            keywords
+          }
+        </ul>
+      ''}
     '';
 
   in {
     indexEntry = ''
-      <article itemscope itemtype="https://schema.org/BlogPosting">
+      <article
+        itemscope
+        itemtype="https://schema.org/BlogPosting"
+        class="post-summary"
+      >
         <a itemprop="url"
            href="/${config.page.path}"
         ><h2 itemprop="headline">${config.title}</h2></a>
-        ${postInfo}
+        <div class="post-meta">${postInfo}</div>
       </article>
     '';
 
     page = {
-      path = "posts/${config.slug}.html";
+      path = "posts/post/${config.slug}.html";
 
       inherit (config) title;
 
       body.html = ''
         <article itemscope itemtype="https://schema.org/BlogPosting">
           <link itemprop="url" href="/${config.page.path}">
+          <div class="post-meta">
+            ${postInfo}
+            ${websiteConfig.templates.posts-navigation {}}
+          </div>
           <h1 itemprop="headline">${config.title}</h1>
-          ${postInfo}
           <div itemprop="articleBody">${config.body.output}</div>
         </article>
       '';
 
-      meta.author = concatStringsSep ", " config.authors;
+      meta = {
+        author = concatStringsSep ", " config.authors;
+        keywords = concatStringsSep ", " keywords;
+      };
 
       sitemap.lastModified = date;
     };

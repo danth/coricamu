@@ -127,14 +127,27 @@ Posts can be defined in a list:
 }
 ```
 
+Posts include rich metadata in the generated page, which allows search engines
+to present your content in the most appropriate manner.
+
+#### Indices
+
 If at least one post is present, the page `posts/index.html` will be enabled;
-this is an automatically generated list of all your posts, with a link to the
-post's individual page.
+this is an automatically generated, chronological list of all your posts, with
+a link to each post's individual page.
 
-Posts also include rich metadata which allows search engines to present your
-content in the most appropriate manner.
+If you have more than one author on your site, or have added lists of
+`keywords` to your posts, the page `posts/pills.html` will be enabled; this is
+an automatically generated tool which allows visitors to filter posts by author
+or keyword.
 
-### Post Lists
+Coricamu asks search engines not to index `posts/index.html`,
+`posts/pills.html` and any filtered post lists which they link to; this allows
+them to spend more time indexing your actual content instead. Search engines
+don't need these pages to discover your posts because `sitemap.xml` is
+generated for that.
+
+#### Lists
 
 Coricamu pre-defines two templates related to posts:
 
