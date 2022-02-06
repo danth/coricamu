@@ -47,9 +47,6 @@ let
     </ol>
   '';
 
-  makePostPages = posts:
-    listToAttrs (map (post: nameValuePair post.slug post.page) posts);
-
 in {
   options.posts = mkOption {
     description = "List of all posts.";
@@ -60,7 +57,7 @@ in {
   config = {
     pages = mkMerge [
       # Individual posts
-      (makePostPages allPosts)
+      (listToAttrs (map (post: nameValuePair post.slug post.page) allPosts))
 
       # All posts chronologically
       (mkIf (length allPosts > 0) {

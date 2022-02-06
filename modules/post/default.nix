@@ -136,7 +136,7 @@ with coricamuLib.types;
     '';
 
     page = {
-      path = "posts/${config.slug}.html";
+      path = "posts/post/${config.slug}.html";
 
       inherit (config) title;
 
