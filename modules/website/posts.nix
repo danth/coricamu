@@ -171,8 +171,8 @@ in {
         then ''
           <li><a
             href="/posts/keywords/${makeSlug keyword}.html"
-            title="View all posts about ${keyword}"
-            aria-label="View all posts about ${keyword}"
+            title="View all posts about &quot;${keyword}&quot;"
+            aria-label="View all posts about &quot;${keyword}&quot;"
           >${keyword}</a></li>
         ''
         else ''
