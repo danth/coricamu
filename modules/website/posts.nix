@@ -30,6 +30,17 @@ let
 
   pillsIndexIsUseful = authorIndexIsUseful || keywordIndexIsUseful;
 
+  indexConfig = {
+    # There is no point having index pages appear on a search engine,
+    # and they're not needed by the engine itself to discover other
+    # pages because sitemap.xml exists
+    meta.robots = "noindex";
+
+    # Suggest that search engines look at this page last
+    # (although this is not honoured by Google}
+    sitemap.priority = "0.0";
+  };
+
   makePostList = posts: ''
     <ol class="post-list">
       ${concatMapStringsSep "\n" (post: "<li>${post.indexEntry}</li>") posts}
@@ -53,15 +64,9 @@ in {
 
       # All posts chronologically
       (mkIf (length allPosts > 0) {
-        postsIndex = rec {
+        postsIndex = indexConfig // rec {
           path = "posts/index.html";
           title = "All posts";
-
-          # There is no point having this index appear on a search engine,
-          # and it's not needed by the engine itself to discover other
-          # pages because sitemap.xml exists
-          meta.robots = "noindex";
-
           body.html = ''
             <h1>${title}</h1>
             ${config.templates.posts-navigation {}}
@@ -74,28 +79,26 @@ in {
       # Individual authors
       (mkIf authorIndexIsUseful (mapAttrs' (
         author: posts:
-        nameValuePair "author-${author}" rec {
+        nameValuePair
+        "author-${author}"
+        (indexConfig // rec {
           path = "posts/authors/${makeSlug author}.html";
           title = "Posts by ${author}";
-
-          # There is no point having this index appear on a search engine,
-          # and it's not needed by the engine itself to discover other
-          # pages because sitemap.xml exists
-          meta.robots = "noindex";
-
           body.html = ''
             <h1>${title}</h1>
             ${config.templates.posts-navigation {}}
 
             ${makePostList posts}
           '';
-        }
+        })
       ) allAuthors))
 
       # Individual keywords
       (mkIf keywordIndexIsUseful (mapAttrs' (
         keyword: posts:
-        nameValuePair "keyword-${keyword}" {
+        nameValuePair
+        "keyword-${keyword}"
+        (indexConfig // {
           path = "posts/keywords/${makeSlug keyword}.html";
           title = "Posts about \"${keyword}\"";
 
@@ -110,19 +113,14 @@ in {
 
             ${makePostList posts}
           '';
-        }
+        })
       ) allKeywords))
 
       # All posts by author / keyword
       (mkIf pillsIndexIsUseful {
-        postsByPill = rec {
+        postsByPill = indexConfig // rec {
           path = "posts/pills.html";
           title = "Posts index";
-
-          # There is no point having this index appear on a search engine,
-          # and it's not needed by the engine itself to discover other
-          # pages because sitemap.xml exists
-          meta.robots = "noindex";
 
           body.html = ''
             <h1>${title}</h1>
