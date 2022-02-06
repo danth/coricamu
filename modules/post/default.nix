@@ -85,6 +85,7 @@ with coricamuLib.types;
     # Extract only the date
     date = substring 0 10 config.datetime;
 
+    authors = sort (a: b: a < b) config.authors;
     keywords = sort (a: b: a < b) config.keywords;
 
     postInfo = ''
@@ -93,22 +94,29 @@ with coricamuLib.types;
         itemprop="datePublished"
         datetime="${config.datetime}"
       >${date}</time>
-      by ${
-        concatStringsSep " and " (map
-          (author: "<span itemprop=\"author\">${author}</span>")
-        config.authors)
-      }
+
+      by
+      <ul class="pills">
+        ${
+          concatMapStringsSep "\n"
+          (author: websiteConfig.templates.author-pill {
+            inherit author;
+            itemprop = true;
+          })
+          authors
+        }
+      </ul>
 
       ${optionalString (length keywords > 0) ''
         with keywords
-        <ul itemprop="keywords" class="keywords">
-          ${concatMapStringsSep "\n" (keyword: ''
-            <li><a
-              href="/posts/keywords/${makeSlug keyword}.html"
-              title="View all posts about ${keyword}"
-              aria-label="View all posts about ${keyword}"
-            >${keyword}</a></li>
-          '') keywords}
+        <ul itemprop="keywords" class="pills">
+          ${
+            concatMapStringsSep "\n"
+            (keyword: websiteConfig.templates.keyword-pill {
+              inherit keyword;
+            })
+            keywords
+          }
         </ul>
       ''}
     '';
