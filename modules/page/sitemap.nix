@@ -7,6 +7,19 @@ with types;
   options.sitemap = {
     # https://www.sitemaps.org/protocol.html
 
+    included = mkOption {
+      description = "Whether to include this page in the sitemap.";
+      example = false;
+      type = bool;
+      defaultText = literalDocbook ''
+        True unless <literal>meta.robots == "noindex"</literal>.
+      '';
+      default =
+        if config.meta?robots
+        then config.meta.robots != "noindex"
+        else true;
+    };
+
     lastModified = mkOption {
       description = "Date this page was last modified.";
       example = "2022-01-30";
@@ -44,11 +57,12 @@ with types;
     xml = mkOption {
       description = "Raw XML sitemap entry.";
       internal = true;
+      readOnly = true;
       type = lines;
     };
   };
 
-  config.sitemap.xml = ''
+  config.sitemap.xml = optionalString config.sitemap.included ''
     <url>
       <loc>${websiteConfig.baseUrl}${config.path}</loc>
       ${

@@ -36,9 +36,8 @@ let
     # pages because sitemap.xml exists
     meta.robots = "noindex";
 
-    # Suggest that search engines look at this page last
-    # (although this is not honoured by Google}
-    sitemap.priority = "0.0";
+    # Don't instruct search engines to look at the page
+    sitemap.included = false;
   };
 
   makePostList = posts: ''
