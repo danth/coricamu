@@ -112,7 +112,12 @@
     }
   ];
 
-  files."clouds.png" = ./clouds.png;
+  images = [
+    {
+      path = "clouds.png";
+      file = ./clouds.png;
+    }
+  ];
 
   templates.note = { title, contents }: ''
     <div class="note" style="border: 2px dotted black">

@@ -47,10 +47,29 @@ set:
 }
 ```
 
+For lots of file types, there are smarter options, for example:
+
+### Images
+
+There is a separate option for image files which will perform some compression
+to improve website loading speed, with minimal quality reduction. Currently,
+[`image_optim`](https://github.com/toy/image_optim) is used behind the scenes.
+
+```nix
+{
+  images = [
+    {
+      path = "clouds.png";
+      file = ./clouds.png;
+    }
+  ];
+}
+```
+
 ### Pages
 
-However, rather than writing out entire HTML documents by hand and adding them
-to files, Coricamu includes a layer of abstraction which can generate a lot of
+Rather than writing out entire HTML documents by hand and adding them to files,
+Coricamu includes a layer of abstraction which can generate a lot of
 boilerplate for you:
 
 ```nix
