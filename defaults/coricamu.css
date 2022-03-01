@@ -24,7 +24,7 @@ pre {
   overflow-x: auto;
 }
 
-header {
+body > header {
   padding-bottom: 10px;
   border-bottom: 2px solid black;
   margin-bottom: 10px;
@@ -32,7 +32,7 @@ header {
   text-align: center;
 }
 
-footer {
+body > footer {
   padding-top: 10px;
   border-top: 2px solid black;
   margin-top: 10px;
@@ -40,7 +40,10 @@ footer {
   font-size: 0.7em;
 }
 
-h1 {
+header h1,
+footer h1,
+main > h1,
+article > h1 {
   text-align: center;
 }
 

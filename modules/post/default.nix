@@ -123,16 +123,16 @@ with coricamuLib.types;
 
   in {
     indexEntry = ''
-      <article
+      <section
         itemscope
         itemtype="https://schema.org/BlogPosting"
         class="post-summary"
       >
         <a itemprop="url"
            href="/${config.page.path}"
-        ><h2 itemprop="headline">${config.title}</h2></a>
+        ><h1 itemprop="headline">${config.title}</h1></a>
         <div class="post-meta">${postInfo}</div>
-      </article>
+      </section>
     '';
 
     page = {
@@ -141,14 +141,20 @@ with coricamuLib.types;
       inherit (config) title;
 
       body.html = ''
-        <article itemscope itemtype="https://schema.org/BlogPosting">
-          <link itemprop="url" href="/${config.page.path}">
-          <div class="post-meta">
-            ${postInfo}
-            ${websiteConfig.templates.posts-navigation {}}
-          </div>
+        <article
+          itemscope
+          itemtype="https://schema.org/BlogPosting"
+          class="post"
+        >
           <h1 itemprop="headline">${config.title}</h1>
-          <div itemprop="articleBody">${config.body.output}</div>
+          <div itemprop="articleBody">
+            ${config.body.output}
+          </div>
+          <footer class="post-meta">
+            ${postInfo}
+            <link itemprop="url" href="/${config.page.path}">
+            ${websiteConfig.templates.posts-navigation {}}
+          </footer>
         </article>
       '';
 
