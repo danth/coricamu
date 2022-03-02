@@ -20,13 +20,13 @@ in {
     default = {
       coricamu = {
         path = "coricamu.css";
-        file = ../../defaults/coricamu.css;
+        css = builtins.readFile ../../defaults/coricamu.css;
       };
     };
     defaultText = "Basic style sheet bundled with Coricamu.";
   };
 
   config.files = mapAttrs' (name: style:
-    nameValuePair style.path style.file
+    nameValuePair style.path style.output
   ) config.styles;
 }

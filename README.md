@@ -199,7 +199,7 @@ If you define any style-sheets of your own...
 {
   styles.custom = {
     path = "style.css";
-    file = ./style.css;
+    css = builtins.readFile ./style.css;
   };
 }
 ```
@@ -215,8 +215,22 @@ this:
   styles = options.styles.default // {
     custom = {
       path = "style.css";
-      file = ./style.css;
+      css = builtins.readFile ./style.css;
     };
+  };
+}
+```
+
+[Sass / SCSS](https://sass-lang.com/guide) style sheets are also supported:
+
+```nix
+{
+  styles.custom = {
+    # This is the path of the output file, so it is still .css
+    path = "style.css";
+
+    # This is the input file
+    scss = builtins.readFile ./style.scss;
   };
 }
 ```
