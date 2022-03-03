@@ -123,20 +123,17 @@ with coricamuLib.types;
           inherit (config) path;
         }}
 
-        # 3-in-1:
-        # - Raises an error if the HTML is invalid
-        # - Warns the user about accessibility problems
-        # - Cleans up erratic indentation caused by templates
-        ${pkgs.html-tidy}/bin/tidy \
-          --accessibility-check 3 \
-          --doctype html5 \
-          --indent auto \
-          --wrap 100 \
-          --clean yes \
-          --logical-emphasis yes \
-          --coerce-endtags no \
-          --quiet yes \
-          -modify $target
+        ${pkgs.nodePackages.html-minifier}/bin/html-minifier \
+          --collapse-boolean-attributes \
+          --collapse-whitespace --conservative-collapse \
+          --remove-comments \
+          --remove-optional-tags \
+          --remove-redundant-attributes \
+          --remove-script-type-attributes \
+          --remove-style-link-type-attributes \
+          --sort-attributes \
+          --sort-class-name \
+          $target --output $target
       '';
     };
   };
