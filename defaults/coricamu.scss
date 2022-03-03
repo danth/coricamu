@@ -1,0 +1,172 @@
+/***** Sass initialisation *****/
+
+$background-color: null;
+$foreground-color: null;
+
+@mixin themed {
+  $background-color: #eee7d7 !global;
+  $foreground-color: black !global;
+  @media (prefers-color-scheme: light) {
+    & { @content; }
+  }
+
+  $background-color: #1f1f2b !global;
+  $foreground-color: white !global;
+  @media (prefers-color-scheme: dark) {
+    & { @content; }
+  }
+
+  $background-color: null !global;
+  $foreground-color: null !global;
+}
+
+@mixin hidden-list {
+  padding-left: 0;
+  list-style-type: none;
+}
+
+/***** Page layout *****/
+
+body {
+  font-family: sans-serif;
+
+  @include themed {
+    color: $foreground-color;
+    background-color: $background-color;
+  }
+
+  /* Prevent scrollbar from making centered content shift */
+  margin-right: 5px;
+  margin-left: calc(100vw - 100% + 5px);
+
+  > * {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  > header {
+    padding-bottom: 10px;
+    @include themed {
+      border-bottom: 2px solid $foreground-color;
+    }
+    margin-bottom: 10px;
+
+    text-align: center;
+  }
+
+  > footer {
+    padding-top: 10px;
+    @include themed {
+      border-top: 2px solid $foreground-color;
+    }
+    margin-top: 10px;
+
+    font-size: 0.7em;
+  }
+}
+
+/***** General elements *****/
+
+header h1,
+footer h1,
+main > h1,
+article > h1 {
+  text-align: center;
+}
+
+a {
+  color: inherit;
+}
+
+abbr {
+  border: none;
+  text-decoration: none;
+}
+
+pre {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+}
+
+code, samp, kbd {
+  font-family: monospace;
+}
+
+figure, img {
+  max-width: 100%;
+}
+
+figcaption {
+  font-size: 0.7em;
+}
+
+hr {
+  @include themed {
+    border: none;
+    border-top: 2px solid $foreground-color;
+  }
+}
+
+/***** General post elements *****/
+
+.post-meta {
+  font-size: 0.8em;
+}
+
+/***** Pills (author name, date and keywords) *****/
+
+%pill {
+  display: inline;
+  padding: 0 3px;
+  @include themed {
+    border: 1px solid $foreground-color;
+  }
+  border-radius: 0.5em;
+
+  a {
+    text-decoration: none;
+  }
+}
+
+time[itemprop=datePublished] {
+  @extend %pill;
+}
+
+ul.pills {
+  @include hidden-list;
+  display: inline;
+
+  > li {
+    @extend %pill;
+  }
+}
+
+/***** Post pages *****/
+
+.post .post-meta {
+  margin-top: 1.5em;
+}
+
+/***** Post list pages *****/
+
+h1 + .post-explore {
+  margin-top: -1.4em;
+  text-align: center;
+}
+
+.post-list {
+  @include hidden-list;
+
+  $margin: 1.5em;
+  $gap: 0.4em;
+
+  margin-top: $margin - $gap;
+  margin-bottom: $margin;
+
+  .post-summary h1 {
+    margin-top: $gap;
+    margin-bottom: $gap / 2;
+  }
+}

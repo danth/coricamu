@@ -20,7 +20,7 @@ in {
     default = {
       coricamu = {
         path = "coricamu.css";
-        css = builtins.readFile ../../defaults/coricamu.css;
+        scss = builtins.readFile ../../defaults/coricamu.scss;
       };
     };
     defaultText = "Basic style sheet bundled with Coricamu.";
