@@ -5,38 +5,28 @@ with pkgsLib.types;
 with coricamuLib;
 
 let
+  minifyFile =
+    file:
+    pkgs.runCommand "${config.path}-minified" {} ''
+      ${pkgs.nodePackages.clean-css-cli}/bin/cleancss -O2 -o $out ${file}
+    '';
+
+  convertSass =
+    source: isSCSS:
+    pkgs.runCommand config.path {
+      inherit source;
+      passAsFile = [ "source" ];
+    } ''
+      ${pkgs.sass}/bin/sass \
+        ${optionalString isSCSS "--scss"} \
+        --sourcemap=none \
+        $sourcePath $out
+    '';
+
   sourceFunctions = rec {
-    css =
-      source:
-      pkgs.writeTextFile {
-        name = config.path;
-        text = source;
-      };
-
-    scss =
-      source:
-      pkgs.runCommand config.path {
-        inherit source;
-        passAsFile = [ "source" ];
-      } ''
-        ${pkgs.sass}/bin/sass \
-          --scss \
-          --style=compressed \
-          --sourcemap=none \
-          $sourcePath $out
-      '';
-
-    sass =
-      source:
-      pkgs.runCommand config.path {
-        inherit source;
-        passAsFile = [ "source" ];
-      } ''
-        ${pkgs.sass}/bin/sass \
-          --style=compressed \
-          --sourcemap=none \
-          $sourcePath $out
-      '';
+    css = source: minifyFile (pkgs.writeText config.path source);
+    scss = source: minifyFile (convertSass source true);
+    sass = source: minifyFile (convertSass source false);
   };
 
   # Name of the source type which was used,
