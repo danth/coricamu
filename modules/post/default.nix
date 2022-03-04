@@ -67,6 +67,12 @@ with coricamuLib.types;
       type = lines;
     };
 
+    rssEntry = mkOption {
+      description = "Entry in the RSS feed for this post.";
+      internal = true;
+      type = lines;
+    };
+
     page = mkOption {
       description = ''
         Main page definition for this post.
@@ -134,6 +140,22 @@ with coricamuLib.types;
         <div class="post-meta">${postInfo}</div>
       </section>
     '';
+
+    rssEntry =
+      let link = "${websiteConfig.baseUrl}${config.page.path}";
+      in ''
+        <item>
+          <guid isPermaLink="true">${link}</guid>
+          <link>${link}</link>
+          <pubDate>${config.datetime}</pubDate>
+          <title>${config.title}</title>
+          ${
+            optionalString
+            (config.page.meta ? description)
+            "<description>${config.page.meta.description}</description>"
+          }
+        </item>
+      '';
 
     page = {
       path = "posts/post/${config.slug}.html";

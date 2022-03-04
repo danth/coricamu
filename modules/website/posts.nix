@@ -144,6 +144,52 @@ in {
       })
     ];
 
+    footer.html = mkIf (length allPosts > 0) (mkDefault ''
+      <a class="rss-link" href="/rss/posts.xml">
+        <svg
+          class="rss-icon"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 512 512"
+        >
+          <path d="M27.906 27.28v91.44a365.765 365.765 0 0 1 365.75 365.78h91.438A457.207 457.207 0 0 0 27.906 27.28zm0 154.157v88.813a214.234 214.234 0 0 1 214.22 214.25h88.843A303.063 303.063 0 0 0 27.905 181.437zM88.75 359.125a62.703 62.703 0 0 0-60.844 62.656 62.703 62.703 0 0 0 125.375 0 62.703 62.703 0 0 0-64.53-62.655z" />
+        </svg>
+        RSS feed
+      </a>
+    '');
+
+    files."rss/posts.xml" = mkIf (length allPosts > 0) (pkgs.writeTextFile {
+      name = "posts.xml";
+      text = ''
+        <?xml version="1.0" encoding="UTF-8" ?>
+        <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+          <channel>
+            <atom:link
+              href="${config.baseUrl}rss/posts.xml"
+              rel="self"
+              type="application/rss+xml"
+            />
+            <link>${config.baseUrl}${config.pages.postsIndex.path}</link>
+
+            <language>${config.language}</language>
+            <title>${config.baseUrl} posts</title>
+            <description>All posts from ${config.baseUrl}.</description>
+            <generator>Coricamu</generator>
+
+            <pubDate>${
+              # Date of latest post
+              (elemAt allPosts 0).datetime
+            }</pubDate>
+
+            ${concatMapStringsSep "\n" (post: post.rssEntry) allPosts}
+          </channel>
+        </rss>
+      '';
+      checkPhase = ''
+        ${pkgs.xmlformat}/bin/xmlformat -i $target
+      '';
+    });
+
     templates = {
       all-posts = { }: makePostList allPosts;
 

@@ -62,7 +62,7 @@ body {
     }
     margin-top: 10px;
 
-    font-size: 0.7em;
+    font-size: 0.8em;
   }
 }
 
@@ -113,6 +113,17 @@ hr {
 
 .post-meta {
   font-size: 0.8em;
+}
+
+.rss-link {
+  text-decoration: none;
+}
+
+.rss-icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  fill: currentColor;
 }
 
 /***** Pills (author name, date and keywords) *****/
