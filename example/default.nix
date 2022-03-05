@@ -2,6 +2,7 @@
 
 {
   baseUrl = "https://coricamu.example.com/";
+  siteTitle = "Coricamu Example Site";
   language = "en-gb";
 
   header.html = ''

@@ -172,8 +172,8 @@ in {
             <link>${config.baseUrl}${config.pages.postsIndex.path}</link>
 
             <language>${config.language}</language>
-            <title>${config.baseUrl} posts</title>
-            <description>All posts from ${config.baseUrl}.</description>
+            <title>${config.siteTitle}</title>
+            <description>All posts from ${config.siteTitle}.</description>
             <generator>Coricamu</generator>
 
             <pubDate>${

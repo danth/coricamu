@@ -36,6 +36,22 @@ available is different. You can use imports, create custom options, use `mkIf`,
 `mkMerge`, `mkForce`, in fact pretty much anything you can do in a NixOS module
 can also be done in a Coricamu module.
 
+### Basic information
+
+- `baseUrl` must contain the root URL where your site will be served.
+- `siteTitle` optionally provides a human-readable title for the site.
+  If it's not given, this will be `baseUrl` minus the protocol name and
+  special characters.
+- `language` is the language the site's content is written in.
+
+```nix
+{
+  baseUrl = "https://coricamu.example.com/";
+  siteTitle = "Coricamu Example Site";
+  language = "en-gb";
+}
+```
+
 ### Files
 
 You can directly add a file to your site by putting it in the `files` attribute

@@ -33,7 +33,10 @@ with coricamuLib.types;
         <h1>My Website</h1>
       '';
       type = nullOr (content config.templates);
-      default = null;
+      defaultText = "Heading containing <literal>siteTitle</literal>.";
+      default = {
+        html = "<h1>${config.siteTitle}</h1>";
+      };
     };
 
     footer = mkOption {
