@@ -1,4 +1,4 @@
-{ coricamuLib, pkgsLib, pkgs, config, websiteConfig, name, ... }:
+{ coricamuLib, pkgsLib, pkgs, config, websiteConfig, ... }:
 
 with pkgsLib;
 with pkgsLib.types;
@@ -93,7 +93,7 @@ with coricamuLib.types;
     '';
 
     file = pkgs.writeTextFile {
-      name = "${name}.html";
+      name = config.path;
 
       text = ''
         <!DOCTYPE html>

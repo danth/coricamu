@@ -7,9 +7,13 @@ with coricamuLib.types;
 {
   options = {
     pages = mkOption {
-      description = "Attribute set of all pages.";
-      type = attrsOf (page config);
-      default = {};
+      description = "List of all posts.";
+      type =
+        # Backwards compatibility - this used to be an attribute set
+        coercedTo attrs attrValues
+        # Current type
+        (listOf (page config));
+      default = [];
     };
 
     meta = mkOption {
@@ -63,7 +67,6 @@ with coricamuLib.types;
     };
   };
 
-  config.files = mapAttrs' (name: page:
-    nameValuePair page.path page.file
-  ) config.pages;
+  config.files =
+    listToAttrs (map (page: nameValuePair page.path page.file) config.pages);
 }

@@ -54,30 +54,26 @@ in {
   };
 
   config = {
-    pages = mkMerge [
+    pages =
       # Individual posts
-      (listToAttrs (map (post: nameValuePair post.slug post.page) allPosts))
+      catAttrs "page" allPosts
 
       # All posts chronologically
-      (mkIf (length allPosts > 0) {
-        postsIndex = indexConfig // rec {
-          path = "posts/index.html";
-          title = "All posts";
-          body.html = ''
-            <h1>${title}</h1>
-            ${config.templates.posts-navigation {}}
+      ++ optional (length allPosts > 0) (indexConfig // rec {
+        path = "posts/index.html";
+        title = "All posts";
+        body.html = ''
+          <h1>${title}</h1>
+          ${config.templates.posts-navigation {}}
 
-            ${makePostList allPosts}
-          '';
-        };
+          ${makePostList allPosts}
+        '';
       })
 
       # Individual authors
-      (mkIf authorIndexIsUseful (mapAttrs' (
+      ++ optionals authorIndexIsUseful (mapAttrsToList (
         author: posts:
-        nameValuePair
-        "author-${author}"
-        (indexConfig // rec {
+        indexConfig // rec {
           path = "posts/authors/${makeSlug author}.html";
           title = "Posts by ${author}";
           body.html = ''
@@ -86,15 +82,13 @@ in {
 
             ${makePostList posts}
           '';
-        })
-      ) allAuthors))
+        }
+      ) allAuthors)
 
       # Individual keywords
-      (mkIf keywordIndexIsUseful (mapAttrs' (
+      ++ optionals keywordIndexIsUseful (mapAttrsToList (
         keyword: posts:
-        nameValuePair
-        "keyword-${keyword}"
-        (indexConfig // {
+        indexConfig // {
           path = "posts/keywords/${makeSlug keyword}.html";
           title = "Posts about \"${keyword}\"";
 
@@ -109,40 +103,37 @@ in {
 
             ${makePostList posts}
           '';
-        })
-      ) allKeywords))
+        }
+      ) allKeywords)
 
       # All posts by author / keyword
-      (mkIf pillsIndexIsUseful {
-        postsByPill = indexConfig // rec {
-          path = "posts/pills.html";
-          title = "Posts index";
+      ++ optional pillsIndexIsUseful (indexConfig // rec {
+        path = "posts/pills.html";
+        title = "Posts index";
 
-          body.html = ''
-            <h1>${title}</h1>
-            ${config.templates.posts-navigation {}}
+        body.html = ''
+          <h1>${title}</h1>
+          ${config.templates.posts-navigation {}}
 
-            ${optionalString authorIndexIsUseful ''
-              <h2>By author</h2>
-              <ul class="pills">
-                ${concatStringsSep "\n" (mapAttrsToList (author: posts:
-                  config.templates.author-pill { inherit author; }
-                ) allAuthors)}
-              </ul>
-            ''}
+          ${optionalString authorIndexIsUseful ''
+            <h2>By author</h2>
+            <ul class="pills">
+              ${concatStringsSep "\n" (mapAttrsToList (author: posts:
+                config.templates.author-pill { inherit author; }
+              ) allAuthors)}
+            </ul>
+          ''}
 
-            ${optionalString keywordIndexIsUseful ''
-              <h2>By keyword</h2>
-              <ul class="pills">
-                ${concatStringsSep "\n" (mapAttrsToList (keyword: posts:
-                  config.templates.keyword-pill { inherit keyword; }
-                ) allKeywords)}
-              </ul>
-            ''}
-          '';
-        };
-      })
-    ];
+          ${optionalString keywordIndexIsUseful ''
+            <h2>By keyword</h2>
+            <ul class="pills">
+              ${concatStringsSep "\n" (mapAttrsToList (keyword: posts:
+                config.templates.keyword-pill { inherit keyword; }
+              ) allKeywords)}
+            </ul>
+          ''}
+        '';
+      });
 
     footer.html = mkIf (length allPosts > 0) (mkDefault ''
       <a class="rss-link" href="/rss/posts.xml">
@@ -169,7 +160,7 @@ in {
               rel="self"
               type="application/rss+xml"
             />
-            <link>${config.baseUrl}${config.pages.postsIndex.path}</link>
+            <link>${config.baseUrl}posts/index.html</link>
 
             <language>${config.language}</language>
             <title>${config.siteTitle}</title>
@@ -239,10 +230,9 @@ in {
       posts-navigation = { }: ''
         <nav class="post-explore">
           Explore
-          <a href="/${config.pages.postsIndex.path}">all posts</a>
+          <a href="/posts/index.html">all posts</a>
           ${optionalString pillsIndexIsUseful ''
-            or the
-            <a href="/${config.pages.postsByPill.path}">index</a>
+            or the <a href="/posts/pills.html">index</a>
           ''}
         </nav>
       '';

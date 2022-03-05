@@ -12,7 +12,7 @@ with types;
       text = ''
         <?xml version="1.0" encoding="UTF-8"?>
         <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
-          ${mapAttrsToString (name: page: page.sitemap.xml) config.pages}
+          ${concatMapStringsSep "\n" (page: page.sitemap.xml) config.pages}
         </urlset>
       '';
 
@@ -34,7 +34,7 @@ with types;
         fi
 
         ${
-          if length (attrNames config.pages) > 50000
+          if length config.pages > 50000
           then ''
             echo "Sitemap contains more than the maximum 50,000 pages"
             exit 1

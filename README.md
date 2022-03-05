@@ -90,8 +90,8 @@ boilerplate for you:
 
 ```nix
 {
-  pages = {
-    index = {
+  pages = [
+    {
       path = "index.html";
       title = "Home";
 
@@ -105,15 +105,15 @@ boilerplate for you:
         sint occaecat cupidatat non proident, sunt in culpa qui officia
         deserunt mollit anim id est laborum.
       '';
-    };
+    }
 
-    about = {
+    {
       path = "about.html";
       title = "About Us";
       # File only needs to contain the insides of <body>, not an entire page
       body.html = builtins.readFile ./about.html;
-    };
-  };
+    }
+  ];
 }
 ```
 
@@ -285,34 +285,32 @@ the return value into your HTML:
 { config, ... }:
 
 {
-  pages.example.body.html = ''
-    <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua.
-    </p>
-    ${config.templates.note {
-      title = "An important note";
-      contents = ''
-        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-        ut aliquip ex ea commodo consequat.
-      '';
-    }}
-    <p>
-      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-      dolore eu fugiat nulla pariatur.
-    </p>
-  '';
+  pages = [{
+    path = "lorem_ipsum.html";
+    title = "Lorem Ipsum";
+    body.html = ''
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+      </p>
+      ${config.templates.note {
+        title = "An important note";
+        contents = ''
+          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+          nisi ut aliquip ex ea commodo consequat.
+        '';
+      }}
+      <p>
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+        dolore eu fugiat nulla pariatur.
+      </p>
+    '';
+  }];
 }
 ```
 
 This relies on a Nix feature, so you can no longer import the body from a
-separate HTML file:
-
-```nix
-{
-  pages.example.body.html = builtins.readFile ./example.html;
-}
-```
+separate HTML file.
 
 #### Template tags
 

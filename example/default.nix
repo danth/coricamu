@@ -17,8 +17,8 @@
   # Discourage search engines from indexing this site
   meta.robots = "noindex";
 
-  pages = {
-    index = {
+  pages = [
+    {
       path = "index.html";
       title = "Home";
       body.html = ''
@@ -38,9 +38,8 @@
         # Encourage search engines to check the homepage before other pages
         priority = "1.0";
       };
-    };
-
-    about = {
+    }
+    {
       path = "about.html";
       title = "About";
       meta = {
@@ -48,9 +47,8 @@
         description = "An example page for Coricamu";
       };
       body.html = builtins.readFile ./about.html;
-    };
-
-    contact = {
+    }
+    {
       path = "contact.html";
       title = "Contact";
       body.markdown = ''
@@ -73,8 +71,8 @@
           Don't send us phishing emails
         </templates-note>
       '';
-    };
-  };
+    }
+  ];
 
   posts = [
     {
