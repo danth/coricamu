@@ -87,7 +87,7 @@ with coricamuLib.types;
 
       <link rel="canonical" href="/${config.path}">
 
-      ${mapAttrsToString (name: style: ''
+      ${concatMapStringsSep "\n" (style: ''
         <link rel="stylesheet" href="/${style.path}">
       '') websiteConfig.styles}
     '';

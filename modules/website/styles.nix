@@ -16,17 +16,19 @@ let
 in {
   options.styles = mkOption {
     description = "Attribute set of CSS styles included in all pages.";
-    type = attrsOf style;
-    default = {
-      coricamu = {
-        path = "coricamu.css";
-        scss = builtins.readFile ../../defaults/coricamu.scss;
-      };
-    };
+    type =
+      # Backwards compatibility - this used to be an attribute set
+      coercedTo attrs attrValues
+      # Current type
+      (listOf style);
+    default = [{
+      path = "coricamu.css";
+      scss = builtins.readFile ../../defaults/coricamu.scss;
+    }];
     defaultText = "Basic style sheet bundled with Coricamu.";
   };
 
-  config.files = mapAttrs' (name: style:
+  config.files = listToAttrs (map (style:
     nameValuePair style.path style.output
-  ) config.styles;
+  ) config.styles);
 }

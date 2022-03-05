@@ -213,10 +213,10 @@ If you define any style-sheets of your own...
 
 ```nix
 {
-  styles.custom = {
+  styles = [{
     path = "style.css";
     css = builtins.readFile ./style.css;
-  };
+  }];
 }
 ```
 
@@ -228,12 +228,12 @@ this:
 { options, ... }:
 
 {
-  styles = options.styles.default // {
+  styles = options.styles.default ++ [{
     custom = {
       path = "style.css";
       css = builtins.readFile ./style.css;
     };
-  };
+  }];
 }
 ```
 
@@ -241,13 +241,13 @@ this:
 
 ```nix
 {
-  styles.custom = {
+  styles = [{
     # This is the path of the output file, so it is still .css
     path = "style.css";
 
     # This is the input file
     scss = builtins.readFile ./style.scss;
-  };
+  }];
 }
 ```
 
