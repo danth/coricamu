@@ -72,6 +72,17 @@
         </templates-note>
       '';
     }
+    {
+      path = "mermaid.html";
+      title = "Mermaid diagram";
+      body.markdown = ''
+        ```mermaid
+        graph LR
+        Client ---> Server
+        Server ---> Client
+        ```
+      '';
+    }
   ];
 
   posts = [
