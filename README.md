@@ -372,6 +372,26 @@ case-insensitive when used via template tags.
 splices are available; just be aware that they can require a little extra
 computation when the site is built. Use whichever style you prefer.
 
+### Diagrams
+
+[Mermaid diagrams](https://mermaid-js.github.io/) can be inserted by using the
+built-in `mermaid` template.
+
+```html
+<templates-mermaid>
+flowchart TD
+insert template ---> get diagram
+</templates-mermaid>
+```
+
+This will trigger the appropriate JavaScript to be installed on that particular
+page where a diagram is used.
+
+Using a `mermaid` code block in Markdown has the same visual output, however it
+will insert an unnecessary `code` tag into the generated page. You should
+prefer using the template to keep your page compatible with future updates to
+Coricamu.
+
 ## Credits
 
 Coricamu was heavily inspired by [Styx](https://github.com/styx-static/styx).
