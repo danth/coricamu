@@ -75,13 +75,14 @@
     {
       path = "mermaid.html";
       title = "Mermaid diagram";
-      body.markdown = ''
-        ```mermaid
-        graph LR
-        Client ---> Server
-        Server ---> Client
-        ```
-      '';
+      body.html = config.templates.mermaid {
+        contents = ''
+          graph LR
+          Client ---> Server
+          Server ---> Client
+          </templates-mermaid>
+        '';
+      };
     }
   ];
 

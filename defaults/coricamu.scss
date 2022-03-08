@@ -84,7 +84,7 @@ abbr {
   text-decoration: none;
 }
 
-pre {
+pre:not(.mermaid) {
   display: block;
   width: 100%;
   overflow-x: auto;
