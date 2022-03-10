@@ -163,8 +163,8 @@ in {
             <link>${config.baseUrl}posts/index.html</link>
 
             <language>${config.language}</language>
-            <title>${config.siteTitle}</title>
-            <description>All posts from ${config.siteTitle}.</description>
+            <title>${escapeXML config.siteTitle}</title>
+            <description>All posts from ${escapeXML config.siteTitle}.</description>
             <generator>Coricamu</generator>
 
             <pubDate>${

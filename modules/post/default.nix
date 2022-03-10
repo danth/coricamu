@@ -166,11 +166,11 @@ in {
           <guid isPermaLink="true">${link}</guid>
           <link>${link}</link>
           <pubDate>${config.datetime}</pubDate>
-          <title>${config.title}</title>
+          <title>${escapeXML config.title}</title>
           ${
             optionalString
             (config.page.meta ? description)
-            "<description>${config.page.meta.description}</description>"
+            "<description>${escapeXML config.page.meta.description}</description>"
           }
         </item>
       '';
