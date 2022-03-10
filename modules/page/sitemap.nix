@@ -1,7 +1,8 @@
-{ pkgsLib, config, websiteConfig, ... }:
+{ coricamuLib, pkgsLib, config, websiteConfig, ... }:
 
 with pkgsLib;
-with types;
+with pkgsLib.types;
+with coricamuLib;
 
 {
   options.sitemap = {
@@ -66,16 +67,18 @@ with types;
     <url>
       <loc>${websiteConfig.baseUrl}${config.path}</loc>
       ${
-        if !(isNull config.sitemap.lastModified)
-        then "<lastmod>${config.sitemap.lastModified}</lastmod>"
-        else ""
+        optionalString (notNull config.sitemap.lastModified)
+        "<lastmod>${config.sitemap.lastModified}</lastmod>"
       }
       ${
-        if !(isNull config.sitemap.changeFrequency)
-        then "<changefreq>${config.sitemap.changeFrequency}</changefreq>"
-        else ""
+        optionalString (notNull config.sitemap.changeFrequency)
+        "<changefreq>${config.sitemap.changeFrequency}</changefreq>"
       }
-      <priority>${config.sitemap.priority}</priority>
+      ${
+        # 0.5 is specified as the default priority and can be omitted.
+        optionalString (config.sitemap.priority != "0.5")
+        "<priority>${config.sitemap.priority}</priority>"
+      }
     </url>
   '';
 }
