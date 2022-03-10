@@ -5,20 +5,29 @@ with pkgsLib.types;
 with coricamuLib;
 with coricamuLib.types;
 
-{
+let datetime =
+  let pattern =
+    "[0-9]{4}-[0-9]{2}-[0-9]{2}([T ][0-9]{2}(:[0-9]{2}(:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2}|[0-9]{4})?)?)?)?";
+  in mkOptionType {
+    name = "HTML datetime";
+    description = "YYYY-MM-DDThh:mm:ssTZD";
+    check = x: str.check x && builtins.match pattern x != null;
+    inherit (str) merge;
+  };
+
+in {
   options = {
     datetime = mkOption {
       description = "Date and time of this post.";
       example = "2022-01-31 20:10:05";
-      type =
-        let pattern =
-          "[0-9]{4}-[0-9]{2}-[0-9]{2}([T ][0-9]{2}(:[0-9]{2}(:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2}|[0-9]{4})?)?)?)?";
-        in mkOptionType {
-          name = "HTML datetime";
-          description = "YYYY-MM-DDThh:mm:ssTZD";
-          check = x: str.check x && builtins.match pattern x != null;
-          inherit (str) merge;
-        };
+      type = datetime;
+    };
+
+    edited = mkOption {
+      description = "Date and time this post was last edited.";
+      example = "2022-03-10 07:50:40";
+      type = nullOr datetime;
+      default = null;
     };
 
     title = mkOption {
@@ -89,7 +98,8 @@ with coricamuLib.types;
 
   config = let
     # Extract only the date
-    date = substring 0 10 config.datetime;
+    datePosted = substring 0 10 config.datetime;
+    dateEdited = substring 0 10 config.edited;
 
     authors = sort (a: b: a < b) config.authors;
     keywords = sort (a: b: a < b) config.keywords;
@@ -99,7 +109,15 @@ with coricamuLib.types;
       <time
         itemprop="datePublished"
         datetime="${config.datetime}"
-      >${date}</time>
+      >${datePosted}</time>
+
+      ${optionalString (notNull config.edited) ''
+        and edited on
+        <time
+          itemprop="dateModified"
+          datetime="${config.edited}"
+        >${dateEdited}</time>
+      ''}
 
       by
       <ul class="pills">
@@ -185,7 +203,8 @@ with coricamuLib.types;
         keywords = concatStringsSep ", " keywords;
       };
 
-      sitemap.lastModified = date;
+      sitemap.lastModified =
+        if isNull config.edited then datePosted else dateEdited;
     };
   };
 }

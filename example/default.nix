@@ -105,6 +105,7 @@
     {
       title = "Lorem Ipsum 2.0";
       datetime = "2022-01-31 22:50:33Z";
+      edited = "2022-03-10 07:55:00Z";
       authors = [ "John Doe" ];
       keywords = [ "lorem" "ipsum" "in volutpat" ];
       body.markdown = ''

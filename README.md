@@ -155,6 +155,7 @@ Posts can be defined in a list:
     {
       title = "Ut Enim Ad Minim";
       datetime = "2022-01-31 20:10:05Z";
+      edited = "2022-03-10 07:55:00Z";
       authors = [ "Jane Doe" ];
       body.html = builtins.readFile ./ut_enim_ad_minim.html;
     }

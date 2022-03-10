@@ -141,7 +141,7 @@ hr {
   }
 }
 
-time[itemprop=datePublished] {
+time[itemprop] {
   @extend %pill;
 }
 
