@@ -6,7 +6,7 @@ with types;
 
 {
   files = {
-    "sitemap.xml" = pkgs.writeTextFile {
+    "sitemap.xml" = writeMinified {
       name = "sitemap.xml";
 
       text = ''
@@ -16,18 +16,7 @@ with types;
         </urlset>
       '';
 
-      # html-tidy is 2-in-1:
-      # - Raises an error if the XML is invalid
-      # - Cleans up erratic indentation caused by splices
       checkPhase = ''
-        ${pkgs.html-tidy}/bin/tidy \
-          --input-xml yes \
-          --output-xml yes \
-          --indent auto \
-          --wrap 100 \
-          --quiet yes \
-          -modify $target
-
         if [ "$(stat -c%s $target)" -gt 52428800 ]; then
           echo "Sitemap is larger than the maximum 50MB"
           exit 1

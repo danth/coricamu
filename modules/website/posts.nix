@@ -149,7 +149,7 @@ in {
       </a>
     '');
 
-    files."rss/posts.xml" = mkIf (length allPosts > 0) (pkgs.writeTextFile {
+    files."rss/posts.xml" = mkIf (length allPosts > 0) (writeMinified {
       name = "posts.xml";
       text = ''
         <?xml version="1.0" encoding="UTF-8" ?>
@@ -175,9 +175,6 @@ in {
             ${concatMapStringsSep "\n" (post: post.rssEntry) allPosts}
           </channel>
         </rss>
-      '';
-      checkPhase = ''
-        ${pkgs.xmlformat}/bin/xmlformat -i $target
       '';
     });
 

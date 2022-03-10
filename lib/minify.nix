@@ -1,0 +1,60 @@
+{ pkgsLib, pkgs, ... }:
+
+with pkgsLib;
+
+let
+  minifyCommands = {
+    css = path: ''
+      ${pkgs.nodePackages.clean-css-cli}/bin/cleancss \
+        -O2 \
+        -o ${path} ${path}
+    '';
+
+    html = path: ''
+      ${pkgs.nodePackages.html-minifier}/bin/html-minifier \
+        --collapse-boolean-attributes \
+        --collapse-whitespace --conservative-collapse \
+        --remove-comments \
+        --remove-optional-tags \
+        --remove-redundant-attributes \
+        --remove-script-type-attributes \
+        --remove-style-link-type-attributes \
+        --sort-attributes \
+        --sort-class-name \
+        ${path} --output ${path}
+    '';
+
+    xml = path: ''
+      ${pkgs.xmlformat}/bin/xmlformat -i ${path}
+    '';
+  };
+
+  splitName =
+    name:
+    let list = builtins.match "(.*)\\.([a-z]+)" name;
+    in {
+      baseName = elemAt list 0;
+      extension = elemAt list 1;
+    };
+
+in {
+  minifyFile =
+    file:
+    let inherit (splitName file.name) baseName extension;
+    in pkgs.runCommand "${baseName}.min.${extension}" { } ''
+      cp --no-preserve=mode,ownership ${file} $out
+      ${minifyCommands.${extension} "$out"}
+    '';
+
+  writeMinified =
+    { name, text, checkPhase ? "" }:
+    let inherit (splitName name) baseName extension;
+    in pkgs.writeTextFile {
+      name = "${baseName}.min.${extension}";
+      inherit text;
+      checkPhase = ''
+        ${checkPhase}
+        ${minifyCommands.${extension} "$target"}
+      '';
+    };
+}

@@ -92,7 +92,7 @@ with coricamuLib.types;
       '') websiteConfig.styles}
     '';
 
-    file = pkgs.writeTextFile {
+    file = writeMinified {
       name = config.path;
 
       text = ''
@@ -115,26 +115,12 @@ with coricamuLib.types;
         </html>
       '';
 
-      checkPhase = ''
-        # Convert relative paths into absolute URLs
-        ${absolutifyCommand {
-          file = "$target";
-          inherit (websiteConfig) baseUrl;
-          inherit (config) path;
-        }}
-
-        ${pkgs.nodePackages.html-minifier}/bin/html-minifier \
-          --collapse-boolean-attributes \
-          --collapse-whitespace --conservative-collapse \
-          --remove-comments \
-          --remove-optional-tags \
-          --remove-redundant-attributes \
-          --remove-script-type-attributes \
-          --remove-style-link-type-attributes \
-          --sort-attributes \
-          --sort-class-name \
-          $target --output $target
-      '';
+      # Convert relative paths into absolute URLs
+      checkPhase = absolutifyCommand {
+        file = "$target";
+        inherit (websiteConfig) baseUrl;
+        inherit (config) path;
+      };
     };
   };
 }

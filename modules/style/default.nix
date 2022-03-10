@@ -5,12 +5,6 @@ with pkgsLib.types;
 with coricamuLib;
 
 let
-  minifyFile =
-    file:
-    pkgs.runCommand "${config.path}-minified" {} ''
-      ${pkgs.nodePackages.clean-css-cli}/bin/cleancss -O2 -o $out ${file}
-    '';
-
   convertSass =
     source: isSCSS:
     pkgs.runCommand config.path {
@@ -24,7 +18,10 @@ let
     '';
 
   sourceFunctions = rec {
-    css = source: minifyFile (pkgs.writeText config.path source);
+    css = source: writeMinified {
+      name = config.path;
+      text = source;
+    };
     scss = source: minifyFile (convertSass source true);
     sass = source: minifyFile (convertSass source false);
   };
