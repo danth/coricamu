@@ -116,11 +116,12 @@ with coricamuLib.types;
       '';
 
       # Convert relative paths into absolute URLs
-      checkPhase = absolutifyCommand {
-        file = "$target";
-        inherit (websiteConfig) baseUrl;
-        inherit (config) path;
-      };
+      checkPhase =
+        let python = pkgs.python3.withPackages (ps: [ ps.beautifulsoup4 ]);
+        in ''
+          ${python}/bin/python ${./absolutify.py} \
+            $target $target "${websiteConfig.baseUrl}${config.path}"
+        '';
     };
   };
 }
