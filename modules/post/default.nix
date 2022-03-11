@@ -7,7 +7,7 @@ with coricamuLib.types;
 
 let datetime =
   let pattern =
-    "[0-9]{4}-[0-9]{2}-[0-9]{2}([T ][0-9]{2}(:[0-9]{2}(:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2}|[0-9]{4})?)?)?)?";
+    "[0-9]{4}-[0-9]{2}-[0-9]{2}([T ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\\.[0-9]+)?)?(Z|[+-][0-9]{2}:[0-9]{2}|[0-9]{4})?)?";
   in mkOptionType {
     name = "HTML datetime";
     description = "YYYY-MM-DDThh:mm:ssTZD";
@@ -160,8 +160,16 @@ in {
     '';
 
     rssEntry =
-      let link = "${websiteConfig.baseUrl}${config.page.path}";
-      in ''
+      let
+        # This pattern will only match if both a time and timezone are present.
+        pattern = "[0-9]{4}-[0-9]{2}-[0-9]{2}[T ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\\.[0-9]+)?)?(Z|[+-][0-9]{2}:[0-9]{2}|[0-9]{4})";
+        match = builtins.match pattern config.datetime;
+        showWarning = if notNull match then id else warn
+            "Specify a time with a time zone for \"${config.title}\" to increase compatibility with RSS feed readers.";
+
+        link = "${websiteConfig.baseUrl}${config.page.path}";
+
+      in showWarning ''
         <item>
           <guid isPermaLink="true">${link}</guid>
           <link>${link}</link>
