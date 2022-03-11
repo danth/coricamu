@@ -151,6 +151,7 @@ in {
 
     files."rss/posts.xml" = mkIf (length allPosts > 0) (writeMinified {
       name = "posts.xml";
+
       text = ''
         <?xml version="1.0" encoding="UTF-8" ?>
         <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -176,6 +177,12 @@ in {
           </channel>
         </rss>
       '';
+
+      # Convert all dates to RFC-822 format as required by RSS.
+      checkPhase =
+        let python = pkgs.python3.withPackages
+          (ps: with ps; [ beautifulsoup4 dateutil ]);
+        in "${python}/bin/python ${./rss_dates.py} $target $target";
     });
 
     templates = {
