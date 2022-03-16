@@ -9,7 +9,6 @@ with pkgsLib.types;
       modules = [ ../modules/content/default.nix ];
       specialArgs = {
         inherit (args) coricamuLib pkgsLib pkgs;
-        inherit templates;
       };
       shorthandOnlyDefinesConfig = true;
     };

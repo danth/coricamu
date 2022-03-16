@@ -1,14 +1,16 @@
 { coricamuLib, pkgsLib, pkgs, ... }:
 
 with pkgsLib;
+with coricamuLib;
 
 {
   fillTemplates =
-    { name, html, templates }:
+    { name, html, templates, phase ? 1 }:
     let
-      python = pkgs.python3.withPackages (ps: [ ps.beautifulsoup4 ]);
+      inherit (splitFilename name) baseName extension;
+      nixName = "${baseName}-templates-phase${toString phase}.nix";
 
-      nixFile = pkgs.runCommand "${name}.html.nix" {
+      nixFile = pkgs.runCommand nixName {
         inherit html;
         passAsFile = [ "html" ];
 
@@ -17,22 +19,13 @@ with pkgsLib;
         preferLocalBuild = true;
         allowSubstitutes = false;
       } ''
-        ${python}/bin/python ${./template_tags.py} $htmlPath $out
+        ${pkgs.coricamu.fill-templates}/bin/fill-templates <$htmlPath >$out
       '';
 
       wrappedTemplates = mapAttrs' (templateName: template: {
         # HTML tags are case-insensitive, so we convert the name to lowercase
         name = toLower templateName;
-
-        value =
-          # Wrap the template function to apply fillTemplates to the returned
-          # HTML, in case it contains template tags itself
-          templateArgs:
-          coricamuLib.fillTemplates {
-            name = templateName;
-            html = template templateArgs;
-            inherit templates;
-          };
+        value = template;
       }) templates;
 
       # If this string isn't present, template tags are definitely not used,
@@ -40,6 +33,10 @@ with pkgsLib;
       mayContainTemplateTag = hasInfix "<templates-" html;
 
     in if mayContainTemplateTag
-       then (import nixFile) wrappedTemplates
+       then fillTemplates {
+         inherit name templates;
+         phase = phase + 1;
+         html = (import nixFile) wrappedTemplates;
+       }
        else html;
 }

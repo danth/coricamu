@@ -95,25 +95,29 @@ with coricamuLib.types;
     file = writeMinified {
       name = config.path;
 
-      text = ''
-        <!DOCTYPE html>
-        <html lang="${websiteConfig.language}">
-          <head>${config.head}</head>
-          <body>
-            ${
-              optionalString
-              (notNull websiteConfig.header)
-              "<header>${websiteConfig.header.output}</header>"
-            }
-            <main>${config.body.output}</main>
-            ${
-              optionalString
-              (notNull websiteConfig.footer)
-              "<footer>${websiteConfig.footer.output}</footer>"
-            }
-          </body>
-        </html>
-      '';
+      text = fillTemplates {
+        html = ''
+          <!DOCTYPE html>
+          <html lang="${websiteConfig.language}">
+            <head>${config.head}</head>
+            <body>
+              ${
+                optionalString
+                (notNull websiteConfig.header)
+                "<header>${websiteConfig.header.output}</header>"
+              }
+              <main>${config.body.output}</main>
+              ${
+                optionalString
+                (notNull websiteConfig.footer)
+                "<footer>${websiteConfig.footer.output}</footer>"
+              }
+            </body>
+          </html>
+        '';
+        name = config.path;
+        inherit (websiteConfig) templates;
+      };
 
       # Convert relative paths into absolute URLs
       checkPhase =

@@ -1,4 +1,4 @@
-{ coricamuLib, pkgsLib, config, name, templates, ... }:
+{ coricamuLib, pkgsLib, config, name, ... }:
 
 with pkgsLib;
 with pkgsLib.types;
@@ -6,15 +6,12 @@ with coricamuLib;
 
 let
   sourceFunctions = rec {
-    html = source: fillTemplates {
-      html = source;
-      inherit name templates;
-    };
+    html = id;
 
-    markdown = source: html (convertMarkdown {
+    markdown = source: convertMarkdown {
       inherit name;
       markdown = source;
-    });
+    };
   };
 
   # Name of the source type which was used,

@@ -10,4 +10,12 @@ with pkgsLib;
   escapeXML = replaceStrings
     ["\"" "'" "<" ">" "&"]
     ["&quot;" "&qpos;" "&lt;" "&gt;" "&amp;"];
+
+  splitFilename =
+    name:
+    let list = builtins.match "(.*)\\.([a-z]+)" name;
+    in {
+      baseName = elemAt list 0;
+      extension = elemAt list 1;
+    };
 }

@@ -1,6 +1,7 @@
-{ pkgsLib, pkgs, ... }:
+{ coricamuLib, pkgsLib, pkgs, ... }:
 
 with pkgsLib;
+with coricamuLib;
 
 let
   minifyCommands = {
@@ -29,18 +30,10 @@ let
     '';
   };
 
-  splitName =
-    name:
-    let list = builtins.match "(.*)\\.([a-z]+)" name;
-    in {
-      baseName = elemAt list 0;
-      extension = elemAt list 1;
-    };
-
 in {
   minifyFile =
     file:
-    let inherit (splitName file.name) baseName extension;
+    let inherit (splitFilename file.name) baseName extension;
     in pkgs.runCommand "${baseName}.min.${extension}" { } ''
       cp --no-preserve=mode,ownership ${file} $out
       ${minifyCommands.${extension} "$out"}
@@ -48,7 +41,7 @@ in {
 
   writeMinified =
     { name, text, checkPhase ? "" }:
-    let inherit (splitName name) baseName extension;
+    let inherit (splitFilename name) baseName extension;
     in pkgs.writeTextFile {
       name = "${baseName}.min.${extension}";
       inherit text;
