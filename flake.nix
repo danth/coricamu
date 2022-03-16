@@ -1,7 +1,13 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+
     utils.url = "github:numtide/flake-utils";
+
+    # We could use `rustPlatform` from Nixpkgs to build the Rust helper
+    # programs, but Crane splits the build into multiple derivations which may
+    # be cached during development. It also provides the Clippy linter which is
+    # used in the checks output.
     crane = {
       url = "github:ipetkov/crane";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -10,85 +16,32 @@
   };
 
   outputs =
-    { nixpkgs, utils, crane, ... }:
-    with utils.lib;
+    { nixpkgs, ... }@inputs:
+
     let
-      makeRustPackage =
-        { system, src }:
-        with crane.lib.${system};
-        let
-          cargoArtifacts = buildDepsOnly {
-            inherit src;
-          };
-        in {
-          package = buildPackage {
-            inherit src cargoArtifacts;
-          };
-          check = cargoClippy {
-            inherit src cargoArtifacts;
-            cargoClippyExtraArgs = "-- --deny warnings";
-          };
-        };
+      # Coricamu's flake outputs are coded across multiple Nix files.
+      # The following two functions help to collect the outputs into
+      # one value so that they can be returned here.
 
-      makeOutputs =
-        system:
-        let
-          fill-templates = makeRustPackage {
-            inherit system;
-            src = ./fill-templates;
-          };
-        in {
-          packages = {
-            fill-templates = fill-templates.package;
-          };
-          checks = {
-            fill-templates = fill-templates.check;
-          };
-        };
+      mergeOutputs = 
+        outputs:
+        with nixpkgs.lib;
+        fold recursiveUpdate {} outputs;
 
-      # Generate the outputs for a particular system, in the format
-      # packages.«outputName» = package
-      generateSystemOutputs =
-        { outputName, system, modules, specialArgs ? {} }:
-        let
-          siteArgs = { inherit modules specialArgs; };
+      callOutputs = file: import file inputs;
 
-          coricamuLib = import ./lib/default.nix {
-            inherit coricamuLib;
-            pkgsLib = nixpkgs.lib;
-            pkgs = import nixpkgs {
-              inherit system;
-              overlays = [(self: super: {
-                coricamu = (makeOutputs self.system).packages;
-              })];
-            };
-          };
-        in
-        with coricamuLib;
-        {
-          packages."${outputName}" = buildSite siteArgs;
+      # libOutputs contains the value of `«Coricamu's flake».lib`,
+      # which is used to build the example website.
 
-          apps."${outputName}-preview" = mkApp {
-            name = "${outputName}-preview";
-            drv = buildSitePreview siteArgs;
-            exePath = "/bin/coricamu-preview";
-          };
-        };
+      libOutputs = mergeOutputs (map callOutputs [
+        ./lib/flake-tools.nix
+        ./lib/fill-templates/outputs.nix
+      ]);
 
-      # Generate the outputs for all systems, in the format
-      # packages.«system».«outputName» = package
-      generateFlakeOutputs =
-        args:
-        eachDefaultSystem (system:
-          generateSystemOutputs (args // { inherit system; })
-        );
+      exampleOutputs = libOutputs.lib.generateFlakeOutputs {
+        outputName = "example";
+        modules = [ ./example/default.nix ];
+      };
 
-    in {
-      lib = { inherit generateSystemOutputs generateFlakeOutputs; };
-    } //
-    (eachDefaultSystem makeOutputs) //
-    (generateFlakeOutputs {
-      outputName = "example";
-      modules = [ ./example/default.nix ];
-    });
+    in mergeOutputs [ libOutputs exampleOutputs ];
 }

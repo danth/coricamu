@@ -1,4 +1,4 @@
-{ coricamuLib, pkgsLib, pkgs, config, websiteConfig, ... }:
+{ coricamuLib, pkgsLib, config, websiteConfig, ... }:
 
 with pkgsLib;
 with pkgsLib.types;
@@ -6,8 +6,6 @@ with coricamuLib;
 with coricamuLib.types;
 
 {
-  imports = [ ./mermaid.nix ./sitemap.nix ];
-
   options = {
     path = mkOption {
       description = "Path of the page relative to the root URL.";
@@ -58,7 +56,7 @@ with coricamuLib.types;
         - <templates.user id="12345">Jane Doe</templates.user>
         - <templates.user id="67890">John Doe</templates.user>
       '';
-      type = content websiteConfig.templates;
+      type = content;
     };
 
     file = mkOption {
@@ -92,10 +90,10 @@ with coricamuLib.types;
       '') websiteConfig.styles}
     '';
 
-    file = writeMinified {
+    file = absolutifyUrls {
       name = config.path;
-
-      text = fillTemplates {
+      baseUrl = "${websiteConfig.baseUrl}${config.path}";
+      html = fillTemplates {
         html = ''
           <!DOCTYPE html>
           <html lang="${websiteConfig.language}">
@@ -118,14 +116,6 @@ with coricamuLib.types;
         name = config.path;
         inherit (websiteConfig) templates;
       };
-
-      # Convert relative paths into absolute URLs
-      checkPhase =
-        let python = pkgs.python3.withPackages (ps: [ ps.beautifulsoup4 ]);
-        in ''
-          ${python}/bin/python ${./absolutify.py} \
-            $target $target "${websiteConfig.baseUrl}${config.path}"
-        '';
     };
   };
 }

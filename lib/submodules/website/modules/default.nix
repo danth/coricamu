@@ -4,16 +4,6 @@ with pkgsLib;
 with types;
 
 {
-  imports = [
-    ./files.nix
-    ./images.nix
-    ./mermaid.nix
-    ./pages.nix
-    ./posts.nix
-    ./sitemap.nix
-    ./styles.nix
-  ];
-
   options = {
     baseUrl = mkOption {
       description = "URL of the root of your website.";

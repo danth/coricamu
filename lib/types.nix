@@ -1,36 +1,15 @@
 { pkgsLib, ... }@args:
 
-with pkgsLib;
 with pkgsLib.types;
 
 {
   types = {
-    content = templates: submoduleWith {
-      modules = [ ../modules/content/default.nix ];
-      specialArgs = {
-        inherit (args) coricamuLib pkgsLib pkgs;
-      };
-      shorthandOnlyDefinesConfig = true;
-    };
-
-    post = websiteConfig: submoduleWith {
-      modules = [ ../modules/post/default.nix ];
-      specialArgs = {
-        inherit (args) coricamuLib pkgsLib pkgs;
-        inherit websiteConfig;
-      };
-      shorthandOnlyDefinesConfig = true;
-    };
-
-    page = websiteConfig: submoduleWith {
-      modules = [ ../modules/page/default.nix ];
-      specialArgs = {
-        inherit (args) coricamuLib pkgsLib pkgs;
-        inherit websiteConfig;
-      };
-      shorthandOnlyDefinesConfig = true;
-    };
-
     template = functionTo lines;
+
+    content = import ./submodules/content/type.nix args;
+    image = import ./submodules/image/type.nix args;
+    page = import ./submodules/page/type.nix args;
+    post = import ./submodules/post/type.nix args;
+    style = import ./submodules/style/type.nix args;
   };
 }

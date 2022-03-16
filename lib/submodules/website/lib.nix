@@ -7,10 +7,17 @@ with pkgsLib;
   evalSite =
     { modules, specialArgs ? {} }:
     evalModules {
-      modules = [ ../modules/website ] ++ modules;
-      specialArgs = {
-        inherit (args) coricamuLib pkgsLib pkgs;
-      } // specialArgs;
+      modules = [
+        ./modules/default.nix
+        ./modules/files.nix
+        ./modules/images.nix
+        ./modules/mermaid.nix
+        ./modules/pages.nix
+        ./modules/posts.nix
+        ./modules/sitemap.nix
+        ./modules/styles.nix
+      ] ++ modules;
+      specialArgs = args // specialArgs;
     };
 
   buildSite = args: (evalSite args).config.package;

@@ -3,13 +3,19 @@
 with pkgsLib;
 
 {
-  notNull = value: !isNull value;
-
-  mapAttrsToString = f: attrs: concatStringsSep "\n" (mapAttrsToList f attrs);
-
   escapeXML = replaceStrings
     ["\"" "'" "<" ">" "&"]
     ["&quot;" "&qpos;" "&lt;" "&gt;" "&amp;"];
+
+  makeSlug = text: pipe text [
+    toLower
+    (builtins.split "[^a-z0-9]+")
+    (concatMapStrings (s: if isList s then "_" else s))
+  ];
+
+  mapAttrsToString = f: attrs: concatStringsSep "\n" (mapAttrsToList f attrs);
+
+  notNull = value: !isNull value;
 
   splitFilename =
     name:

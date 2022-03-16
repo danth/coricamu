@@ -67,7 +67,7 @@ in {
         sint occaecat cupidatat non proident, sunt in culpa qui officia
         deserunt mollit anim id est laborum.
       '';
-      type = content websiteConfig.templates;
+      type = content;
     };
 
     indexEntry = mkOption {

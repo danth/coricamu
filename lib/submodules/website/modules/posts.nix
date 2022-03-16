@@ -182,7 +182,7 @@ in {
       checkPhase =
         let python = pkgs.python3.withPackages
           (ps: with ps; [ beautifulsoup4 dateutil ]);
-        in "${python}/bin/python ${./rss_dates.py} $target $target";
+        in "${python}/bin/python ${../rss_dates.py} $target $target";
     });
 
     templates = {
