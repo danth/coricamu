@@ -101,13 +101,13 @@ with coricamuLib.types;
             <body>
               ${
                 optionalString
-                (notNull websiteConfig.header)
+                (websiteConfig.header != null)
                 "<header>${websiteConfig.header.output}</header>"
               }
               <main>${config.body.output}</main>
               ${
                 optionalString
-                (notNull websiteConfig.footer)
+                (websiteConfig.footer != null)
                 "<footer>${websiteConfig.footer.output}</footer>"
               }
             </body>

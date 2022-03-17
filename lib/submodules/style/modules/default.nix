@@ -31,7 +31,7 @@ let
   # or MANY if multiple sources were defined
   usedSource = pipe sourceFunctions [
     attrNames
-    (findSingle (name: notNull config.${name}) "NONE" "MANY")
+    (findSingle (name: config.${name} != null) "NONE" "MANY")
   ];
 
   # Names of all the source options, comma-separated

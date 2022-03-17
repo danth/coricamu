@@ -186,7 +186,7 @@ in {
     });
 
     templates = {
-      all-posts = { }: makePostList allPosts;
+      all-posts = _: makePostList allPosts;
 
       recent-posts = { count }: makePostList (take (toInt count) allPosts);
 
@@ -231,7 +231,7 @@ in {
           <li>${keyword}</li>
         '';
 
-      posts-navigation = { }: ''
+      posts-navigation = _: ''
         <nav class="post-explore">
           Explore
           <a href="/posts/index.html">all posts</a>

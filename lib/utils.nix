@@ -15,8 +15,6 @@ with pkgsLib;
 
   mapAttrsToString = f: attrs: concatStringsSep "\n" (mapAttrsToList f attrs);
 
-  notNull = value: !isNull value;
-
   splitFilename =
     name:
     let list = builtins.match "(.*)\\.([a-z]+)" name;

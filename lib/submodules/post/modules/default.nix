@@ -111,7 +111,7 @@ in {
         datetime="${config.datetime}"
       >${datePosted}</time>
 
-      ${optionalString (notNull config.edited) ''
+      ${optionalString (config.edited != null) ''
         and edited on
         <time
           itemprop="dateModified"
@@ -164,7 +164,7 @@ in {
         # This pattern will only match if both a time and timezone are present.
         pattern = "[0-9]{4}-[0-9]{2}-[0-9]{2}[T ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\\.[0-9]+)?)?(Z|[+-][0-9]{2}:[0-9]{2}|[0-9]{4})";
         match = builtins.match pattern config.datetime;
-        showWarning = if notNull match then id else warn
+        showWarning = if match != null then id else warn
             "Specify a time with a time zone for \"${config.title}\" to increase compatibility with RSS feed readers.";
 
         link = "${websiteConfig.baseUrl}${config.page.path}";
@@ -212,7 +212,7 @@ in {
       };
 
       sitemap.lastModified =
-        if isNull config.edited then datePosted else dateEdited;
+        if (config.edited == null) then datePosted else dateEdited;
     };
   };
 }

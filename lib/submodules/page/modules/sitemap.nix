@@ -67,11 +67,11 @@ with coricamuLib;
     <url>
       <loc>${websiteConfig.baseUrl}${config.path}</loc>
       ${
-        optionalString (notNull config.sitemap.lastModified)
+        optionalString (config.sitemap.lastModified != null)
         "<lastmod>${config.sitemap.lastModified}</lastmod>"
       }
       ${
-        optionalString (notNull config.sitemap.changeFrequency)
+        optionalString (config.sitemap.changeFrequency != null)
         "<changefreq>${config.sitemap.changeFrequency}</changefreq>"
       }
       ${
