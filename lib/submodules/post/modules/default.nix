@@ -7,7 +7,7 @@ with coricamuLib.types;
 
 let datetime =
   let pattern =
-    "[0-9]{4}-[0-9]{2}-[0-9]{2}([T ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\\.[0-9]+)?)?(Z|[+-][0-9]{2}:[0-9]{2}|[0-9]{4})?)?";
+    "[0-9]{4}-[0-9]{2}-[0-9]{2}([T ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\\.[0-9]+)?)?(Z|[+-][0-9]{2}:[0-9]{2}|[+-][0-9]{4})?)?";
   in mkOptionType {
     name = "HTML datetime";
     description = "YYYY-MM-DDThh:mm:ssTZD";
@@ -162,7 +162,7 @@ in {
     rssEntry =
       let
         # This pattern will only match if both a time and timezone are present.
-        pattern = "[0-9]{4}-[0-9]{2}-[0-9]{2}[T ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\\.[0-9]+)?)?(Z|[+-][0-9]{2}:[0-9]{2}|[0-9]{4})";
+        pattern = "[0-9]{4}-[0-9]{2}-[0-9]{2}[T ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\\.[0-9]+)?)?(Z|[+-][0-9]{2}:[0-9]{2}|[+-][0-9]{4})";
         match = builtins.match pattern config.datetime;
         showWarning = if match != null then id else warn
             "Specify a time with a time zone for \"${config.title}\" to increase compatibility with RSS feed readers.";
