@@ -1,12 +1,13 @@
-{ pkgsLib, pkgs, config, ... }:
+{ coricamuLib, pkgsLib, pkgs, config, ... }:
 
 with pkgsLib;
-with types;
+with pkgsLib.types;
+with coricamuLib.types;
 
 {
   options.files = mkOption {
     description = "Attribute set containing files by path.";
-    type = attrsOf (coercedTo package toString path);
+    type = attrsOf file;
     default = {};
   };
 

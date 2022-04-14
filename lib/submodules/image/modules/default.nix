@@ -1,7 +1,8 @@
-{ pkgsLib, pkgs, config, ... }:
+{ coricamuLib, pkgsLib, pkgs, config, ... }:
 
 with pkgsLib;
 with pkgsLib.types;
+with coricamuLib.types;
 
 {
   options = {
@@ -12,7 +13,7 @@ with pkgsLib.types;
 
     file = mkOption {
       description = "The image.";
-      type = either path package;
+      type = file;
     };
 
     outputFile = mkOption {
