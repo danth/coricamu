@@ -1,7 +1,8 @@
-{ pkgsLib, config, ... }:
+{ coricamuLib, pkgsLib, config, ... }@args:
 
 with pkgsLib;
 with pkgsLib.types;
+with coricamuLib;
 
 {
   options = {
@@ -12,8 +13,8 @@ with pkgsLib.types;
       '';
       default =
         # TODO: Scan body after templates have been resolved
-        hasInfix "class=\"mermaid\"" config.body.output ||
-        hasInfix "templates-mermaid" config.body.output;
+        pageContains "class=\"mermaid\"" args ||
+        pageContains "templates-mermaid" args;
       defaultText = ''
         <literal>true</literal> if <literal>class="mermaid"</literal> is
         found anywhere in the generated HTML for the body, otherwise

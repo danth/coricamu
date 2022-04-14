@@ -9,6 +9,7 @@
     <h1>Coricamu Example Site</h1>
 
     <templates-note title="Example">
+      <i class="fa-solid fa-book"></i>
       This is an example website for
       <a href="https://github.com/danth/coricamu">Coricamu</a>.
     </templates-note>

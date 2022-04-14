@@ -1,7 +1,8 @@
-{ pkgs, pkgsLib, config, ... }:
+{ coricamuLib, pkgsLib, pkgs, config, ... }@args:
 
 with pkgsLib;
 with pkgsLib.types;
+with coricamuLib;
 
 let
   fontAwesome = pkgs.fetchzip {
@@ -16,8 +17,8 @@ in {
         Whether to support Font Awesome 6 icons on this page.
       '';
       default =
-        hasInfix "fa-" config.body.output &&
-        hasInfix "<i " config.body.output;
+        pageContains "fa-" args &&
+        pageContains "<i " args;
       defaultText = ''
         <literal>true</literal> if <literal>fa-</literal> and
         <literal>&lt;i </literal> are found anywhere in the generated
