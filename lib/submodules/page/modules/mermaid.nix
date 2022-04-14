@@ -10,7 +10,10 @@ with pkgsLib.types;
         Whether to install the JavaScript for rendering Mermaid diagrams on
         this page.
       '';
-      default = hasInfix "class=\"mermaid\"" config.body.output;
+      default =
+        # TODO: Scan body after templates have been resolved
+        hasInfix "class=\"mermaid\"" config.body.output ||
+        hasInfix "templates-mermaid" config.body.output;
       defaultText = ''
         <literal>true</literal> if <literal>class="mermaid"</literal> is
         found anywhere in the generated HTML for the body, otherwise

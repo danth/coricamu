@@ -94,7 +94,6 @@
           graph LR
           Client ---> Server
           Server ---> Client
-          </templates-mermaid>
         '';
       };
     }
