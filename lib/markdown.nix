@@ -17,4 +17,18 @@
         --to=html --output=$out $markdownPath
     '';
     in builtins.readFile htmlFile;
+
+  convertMarkdownFile =
+    { name, file }:
+    let htmlFile = pkgs.runCommand "${name}.html" {
+      # This is import-from-derivation, and is needed every time a user wants
+      # to preview the site, so must be built quickly.
+      preferLocalBuild = true;
+      allowSubstitutes = false;
+    } ''
+      ${pkgs.multimarkdown}/bin/multimarkdown \
+        --snippet --notransclude \
+        --to=html --output=$out ${file}
+    '';
+    in builtins.readFile htmlFile;
 }

@@ -31,13 +31,16 @@ let
   };
 
 in {
-  minifyFile =
-    file:
-    let inherit (splitFilename file.name) baseName extension;
+  minifyFileWithPath =
+    path: file:
+    let inherit (splitFilename path) baseName extension;
     in pkgs.runCommand "${baseName}.min.${extension}" { } ''
       cp --no-preserve=mode,ownership ${file} $out
       ${minifyCommands.${extension} "$out"}
     '';
+
+  minifyFile =
+    file: minifyFileWithPath file.name file;
 
   writeMinified =
     { name, text, checkPhase ? "" }:

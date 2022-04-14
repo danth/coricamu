@@ -3,14 +3,22 @@
 with pkgsLib;
 with pkgsLib.types;
 with coricamuLib;
+with coricamuLib.types;
 
 let
   sourceFunctions = rec {
     html = id;
 
+    htmlFile = builtins.readFile;
+
     markdown = source: convertMarkdown {
       inherit name;
       markdown = source;
+    };
+
+    markdownFile = source: convertMarkdownFile {
+      inherit name;
+      file = source;
     };
   };
 
@@ -48,6 +56,20 @@ in {
       default = null;
     };
 
+    htmlFile = mkOption {
+      description = ''
+        A file containing HTML.
+
+        May contain <literal>templates-«name»</literal> tags which will call
+        the corresponding template. HTML attributes (if present) will be
+        passed to the template as an attribute set, along with any HTML
+        inside the tag as the <literal>contents</literal> attribute.
+      '';
+      example = "./example.html";
+      type = nullOr file;
+      default = null;
+    };
+
     markdown = mkOption {
       description = ''
         Markdown content.
@@ -73,6 +95,27 @@ in {
         - <templates.user id="67890">John Doe</templates.user>
       '';
       type = nullOr lines;
+      default = null;
+    };
+
+    markdownFile = mkOption {
+      description = ''
+        A file containing Markdown.
+
+        May contain <literal>templates.«name»</literal> HTML tags in places
+        where Markdown allows embedded HTML. This will call the corresponding
+        template. HTML attributes (if present) will be passed to the template
+        as an attribute set, along with any converted Markdown inside the tag
+        as the <literal>contents</literal> attribute. Template tags are not
+        guaranteed to work in all places when using Markdown - if you need more
+        flexibility, consider writing in pure HTML instead.
+
+        This uses MultiMarkdown, which is an extension to the common Markdown
+        syntax. A full cheat sheet can be found on
+        <link xlink:href="https://rawgit.com/fletcher/MultiMarkdown-6-Syntax-Guide/master/index.html">the MultiMarkdown website</link>.
+      '';
+      example = "./example.md";
+      type = nullOr file;
       default = null;
     };
 

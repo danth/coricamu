@@ -31,7 +31,7 @@ in {
   config = mkIf config.installFontAwesome {
     styles = [{
       path = "fontawesome/all.css";
-      css = builtins.readFile "${fontAwesome}/css/all.css";
+      cssFile = "${fontAwesome}/css/all.css";
     }];
 
     files = {

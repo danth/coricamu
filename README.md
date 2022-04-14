@@ -111,7 +111,7 @@ boilerplate for you:
       path = "about.html";
       title = "About Us";
       # File only needs to contain the insides of <body>, not an entire page
-      body.html = builtins.readFile ./about.html;
+      body.htmlFile = ./about.html;
     }
   ];
 }
@@ -154,14 +154,14 @@ Posts can be defined in a list:
       title = "Lorem Ipsum";
       datetime = "2022-01-31 20:10:05Z";
       authors = [ "John Doe" "Jane Doe" ];
-      body.markdown = builtins.readFile ./lorem_ipsum.md;
+      body.markdownFile = ./lorem_ipsum.md;
     }
     {
       title = "Ut Enim Ad Minim";
       datetime = "2022-01-31 20:10:05Z";
       edited = "2022-03-10 07:55:00Z";
       authors = [ "Jane Doe" ];
-      body.html = builtins.readFile ./ut_enim_ad_minim.html;
+      body.htmlFile = ./ut_enim_ad_minim.html;
     }
   ];
 }
@@ -195,7 +195,7 @@ the example above, and optionally `keywords`:
   datetime = "2022-02-26 11:29:26Z";
   authors = [ "John Doe" ];
   keywords = [ "lorem" "ipsum" "dolor" "sit amet" ];
-  body.markdown = builtins.readFile ./lorem_ipsum_dolor.md;
+  body.markdownFile = ./lorem_ipsum_dolor.md;
 }
 ```
 
@@ -220,7 +220,7 @@ If you define any style-sheets of your own...
 {
   styles = [{
     path = "style.css";
-    css = builtins.readFile ./style.css;
+    cssFile = ./style.css;
   }];
 }
 ```
@@ -236,7 +236,7 @@ this:
   styles = options.styles.default ++ [{
     custom = {
       path = "style.css";
-      css = builtins.readFile ./style.css;
+      cssFile = ./style.css;
     };
   }];
 }
@@ -251,7 +251,7 @@ this:
     path = "style.css";
 
     # This is the input file
-    scss = builtins.readFile ./style.scss;
+    scssFile = ./style.scss;
   }];
 }
 ```

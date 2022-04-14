@@ -50,7 +50,7 @@
         author = "Jane Doe";
         description = "An example page for Coricamu";
       };
-      body.html = builtins.readFile ./about.html;
+      body.htmlFile = ./about.html;
     }
     {
       path = "contact.html";

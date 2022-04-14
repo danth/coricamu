@@ -3,6 +3,7 @@
 with pkgsLib;
 with pkgsLib.types;
 with coricamuLib;
+with coricamuLib.types;
 
 let
   convertSass =
@@ -17,13 +18,27 @@ let
         $sourcePath $out
     '';
 
+  convertSassFile =
+    sourceFile: isSCSS:
+    pkgs.runCommand config.path { } ''
+      ${pkgs.sass}/bin/sass \
+        ${optionalString isSCSS "--scss"} \
+        --sourcemap=none \
+        ${sourceFile} $out
+    '';
+
   sourceFunctions = rec {
     css = source: writeMinified {
       name = config.path;
       text = source;
     };
-    scss = source: minifyFile (convertSass source true);
-    sass = source: minifyFile (convertSass source false);
+    cssFile = minifyFileWithPath config.path;
+
+    scss = source: (convertSass source true);
+    scssFile = source: minifyFile (convertSassFile source true);
+
+    sass = source: (convertSass source false);
+    sassFile = source: minifyFile (convertSassFile source false);
   };
 
   # Name of the source type which was used,
@@ -40,8 +55,14 @@ let
 in {
   options = {
     css = mkOption {
-      description = "CSS style sheet.";
+      description = "CSS code.";
       type = nullOr lines;
+      default = null;
+    };
+
+    cssFile = mkOption {
+      description = "CSS code as a file.";
+      type = nullOr file;
       default = null;
     };
 
@@ -55,6 +76,16 @@ in {
       default = null;
     };
 
+    scssFile = mkOption {
+      description = ''
+        SCSS style sheet as a file.
+
+        This will be automatically converted to CSS.
+      '';
+      type = nullOr file;
+      default = null;
+    };
+
     sass = mkOption {
       description = ''
         Sass style sheet.
@@ -62,6 +93,16 @@ in {
         This will be automatically converted to CSS.
       '';
       type = nullOr lines;
+      default = null;
+    };
+
+    sassFile = mkOption {
+      description = ''
+        Sass style sheet as a file.
+
+        This will be automatically converted to CSS.
+      '';
+      type = nullOr file;
       default = null;
     };
 
