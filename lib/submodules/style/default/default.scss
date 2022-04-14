@@ -109,10 +109,34 @@ hr {
   }
 }
 
+/***** Icons *****/
+
+@mixin icon($size) {
+  width: $size;
+  height: $size;
+  vertical-align: $size / -8;
+}
+
 .font-awesome {
-  width: 1em;
-  height: 1em;
-  vertical-align: -.125em;
+  @include icon(1em);
+}
+
+.font-awesome-box {
+  display: flex;
+  align-items: center;
+
+  $size: 2em;
+
+  gap: $size / 4;
+  padding-right: $size;
+
+  > .font-awesome {
+    @include icon($size);
+  }
+
+  > div {
+    flex-grow: 1;
+  }
 }
 
 /***** General post elements *****/

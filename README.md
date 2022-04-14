@@ -399,6 +399,14 @@ For logos, you need to add `style="brands"`:
 The `style` attribute can also used to switch between `regular` and `solid`
 for the non-branded icons.
 
+You can add content to the template to have it written alongside the icon:
+
+```html
+<templates-font-awesome icon="book">
+  <p>These are some notes next to a book icon.</p>
+</templates-font-awesome>
+```
+
 Icons and styles from Font Awesome Pro are not yet supported.
 
 ### Diagrams

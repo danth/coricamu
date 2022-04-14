@@ -25,6 +25,16 @@
       body.html = ''
         <h1>Home</h1>
 
+        <p>This is some text outside of the icon box.</p>
+
+        <templates-font-awesome icon="file-lines" style="solid">
+          <p>This is some text next to an icon.</p>
+          <p>This is a second paragraph next to the icon.</p>
+          <p>...and a third.</p>
+        </templates-font-awesome>
+
+        <p>This is some text outside of the icon box.</p>
+
         ${config.templates.note {
           title="Clouds";
           contents = ''
