@@ -1,3 +1,4 @@
+{ insertDefault }:
 { coricamuLib, pkgsLib, config, ... }@args:
 
 with pkgsLib;
@@ -12,9 +13,15 @@ with coricamuLib.types;
       coercedTo attrs attrValues
       # Current type
       (listOf (style config));
-    default = [(import ./default)];
-    defaultText = "Basic style sheet bundled with Coricamu.";
-  };
+  } //
+    (if insertDefault
+    then {
+      default = [(import ./default)];
+      defaultText = "Basic style sheet bundled with Coricamu.";
+    }
+    else {
+      default = [];
+    });
 
   config.files = listToAttrs (map (style:
     nameValuePair style.path style.output

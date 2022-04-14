@@ -15,7 +15,9 @@ with pkgsLib;
         ./modules/posts.nix
         ./modules/sitemap.nix
         ../image/option.nix
-        ../style/option.nix
+        (import ../style/option.nix {
+          insertDefault = true;
+        })
       ] ++ modules;
       specialArgs = args // specialArgs;
     };

@@ -11,7 +11,9 @@ submoduleWith {
     ./modules/mermaid.nix
     ./modules/sitemap.nix
     ../image/option.nix
-    ../style/option.nix
+    (import ../style/option.nix {
+      insertDefault = false;
+    })
   ];
   specialArgs = args // { inherit websiteConfig; };
   shorthandOnlyDefinesConfig = true;
