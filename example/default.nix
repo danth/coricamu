@@ -57,6 +57,7 @@
       title = "Contact";
       body.markdown = ''
         <templates-note title="Office hours">
+          <i class="fa-solid fa-clock"></i>
           We will only reply between 9AM and 4PM on weekdays.
         </templates-note>
 

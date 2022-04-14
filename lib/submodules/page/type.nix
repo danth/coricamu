@@ -7,6 +7,7 @@ websiteConfig:
 submoduleWith {
   modules = [
     ./modules/default.nix
+    ./modules/fontawesome.nix
     ./modules/mermaid.nix
     ./modules/sitemap.nix
     ../image/option.nix
