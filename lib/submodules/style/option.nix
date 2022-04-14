@@ -12,7 +12,7 @@ with coricamuLib.types;
       coercedTo attrs attrValues
       # Current type
       (listOf (style config));
-    default = [(import ../../style/default)];
+    default = [(import ./default)];
     defaultText = "Basic style sheet bundled with Coricamu.";
   };
 

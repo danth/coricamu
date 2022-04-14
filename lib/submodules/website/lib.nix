@@ -10,12 +10,12 @@ with pkgsLib;
       modules = [
         ./modules/default.nix
         ./modules/files.nix
-        ./modules/images.nix
         ./modules/mermaid.nix
         ./modules/pages.nix
         ./modules/posts.nix
         ./modules/sitemap.nix
-        ./modules/styles.nix
+        ../image/option.nix
+        ../style/option.nix
       ] ++ modules;
       specialArgs = args // specialArgs;
     };

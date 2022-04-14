@@ -9,6 +9,8 @@ submoduleWith {
     ./modules/default.nix
     ./modules/mermaid.nix
     ./modules/sitemap.nix
+    ../image/option.nix
+    ../style/option.nix
   ];
   specialArgs = args // { inherit websiteConfig; };
   shorthandOnlyDefinesConfig = true;

@@ -59,11 +59,10 @@ with coricamuLib.types;
       type = content;
     };
 
-    file = mkOption {
-      description = "Compiled HTML file for this page.";
-      internal = true;
-      readOnly = true;
-      type = package;
+    files = mkOption {
+      description = "Attribute set containing files by path.";
+      type = attrsOf (either package path);
+      default = {};
     };
   };
 
@@ -85,12 +84,16 @@ with coricamuLib.types;
 
       <link rel="canonical" href="/${config.path}">
 
-      ${concatMapStringsSep "\n" (style: ''
-        <link rel="stylesheet" href="/${style.path}">
-      '') websiteConfig.styles}
+      ${pipe (config.styles ++ websiteConfig.styles) [
+        (catAttrs "path")
+        lists.unique
+        (concatMapStringsSep "\n" (path: ''
+          <link rel="stylesheet" href="/${path}">
+        ''))
+      ]}
     '';
 
-    file = absolutifyUrls {
+    files.${config.path} = absolutifyUrls {
       name = config.path;
       baseUrl = "${websiteConfig.baseUrl}${config.path}";
       html = fillTemplates {

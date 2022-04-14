@@ -67,6 +67,5 @@ with coricamuLib.types;
     };
   };
 
-  config.files =
-    listToAttrs (map (page: nameValuePair page.path page.file) config.pages);
+  config.files = mkMerge (catAttrs "files" config.pages);
 }

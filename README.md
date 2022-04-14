@@ -120,6 +120,10 @@ boilerplate for you:
 This is all validated by the Nix module system, so you will be warned if any
 information is missing or improperly formatted.
 
+It is also possible to add `files` and `images` from within a page. This will
+behave exactly the same as if you defined them in the main configuration,
+however it makes it clearer where the resource is needed when reading your code.
+
 ### Header / Footer
 
 You can define a header and footer which will be repeated on every page of
@@ -251,6 +255,10 @@ this:
   }];
 }
 ```
+
+Styles can either be added to the whole website, or to an individual page. If you
+use the same `path` from multiple pages, it will cause a conflict unless the
+corresponding stylesheets are exactly the same.
 
 ### Templates
 

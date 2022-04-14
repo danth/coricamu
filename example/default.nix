@@ -33,6 +33,10 @@
 
         <templates-recent-posts count="1" />
       '';
+      images = [{
+        path = "clouds.png";
+        file = ./clouds.png;
+      }];
       sitemap = {
         lastModified = "2022-01-30";
         # Encourage search engines to check the homepage before other pages
@@ -71,6 +75,15 @@
           Don't send us phishing emails
         </templates-note>
       '';
+      styles = [{
+        path = "note-left-border.css";
+        css = ''
+          .note {
+            border: 3px solid black !important;
+            padding: 5px;
+          }
+        '';
+      }];
     }
     {
       path = "mermaid.html";
@@ -121,13 +134,6 @@
           <a href="https://lipsum.com">lipsum.com</a>.</p>
         </templates-note>
       '';
-    }
-  ];
-
-  images = [
-    {
-      path = "clouds.png";
-      file = ./clouds.png;
     }
   ];
 

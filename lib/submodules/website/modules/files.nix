@@ -6,7 +6,7 @@ with types;
 {
   options.files = mkOption {
     description = "Attribute set containing files by path.";
-    type = attrsOf (either package path);
+    type = attrsOf (coercedTo package toString path);
     default = {};
   };
 
