@@ -9,7 +9,7 @@
     <h1>Coricamu Example Site</h1>
 
     <templates-note title="Example">
-      <i class="fa-solid fa-book"></i>
+      <templates-font-awesome icon="book" style="solid"></templates-font-awesome>
       This is an example website for
       <a href="https://github.com/danth/coricamu">Coricamu</a>.
     </templates-note>
@@ -58,7 +58,7 @@
       title = "Contact";
       body.markdown = ''
         <templates-note title="Office hours">
-          <i class="fa-solid fa-clock"></i>
+          <templates-font-awesome icon="clock"></templates-font-awesome>
           We will only reply between 9AM and 4PM on weekdays.
         </templates-note>
 

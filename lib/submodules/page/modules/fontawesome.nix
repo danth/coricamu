@@ -17,26 +17,22 @@ in {
         Whether to support Font Awesome 6 icons on this page.
       '';
       default =
-        pageContains "fa-" args &&
-        pageContains "<i " args;
+        pageContains "templates-font-awesome" args ||
+        pageContains "xlink:href=\"/fontawesome/fa-" args;
       defaultText = ''
-        <literal>true</literal> if <literal>fa-</literal> and
-        <literal>&lt;i </literal> are found anywhere in the generated
-        HTML for the body (indicating that a Font Awesome icon might
-        be used), otherwise <literal>false</literal>.
+        <literal>true</literal> if
+        <literal>templates-font-awesome</literal> or
+        <literal>href="/fontawesome/fa-</literal>
+        is found anywhere in the generated HTML for the
+        body, otherwise <literal>false</literal>.
       '';
       type = bool;
     };
   };
 
   config = mkIf config.installFontAwesome {
-    styles = [{
-      path = "fontawesome/all.css";
-      cssFile = "${fontAwesome}/css/all.css";
-    }];
-
     files = {
-      "fontawesome/webfonts" = "${fontAwesome}/webfonts";
+      "fontawesome" = "${fontAwesome}/sprites";
     };
   };
 }

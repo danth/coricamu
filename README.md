@@ -381,6 +381,26 @@ case-insensitive when used via template tags.
 splices are available; just be aware that they can require a little extra
 computation when the site is built. Use whichever style you prefer.
 
+### Icons
+
+Icons from [Font Awesome 6](https://fontawesome.com/search?m=free) can be
+inserted by using the built-in `font-awesome` template:
+
+```html
+<templates-font-awesome icon="book"></templates-font-awesome>
+```
+
+For logos, you need to add `style="brands"`:
+
+```html
+<templates-font-awesome style="brands" icon="github"></templates-font-awesome>
+```
+
+The `style` attribute can also used to switch between `regular` and `solid`
+for the non-branded icons.
+
+Icons and styles from Font Awesome Pro are not yet supported.
+
 ### Diagrams
 
 [Mermaid diagrams](https://mermaid-js.github.io/) can be inserted by using the

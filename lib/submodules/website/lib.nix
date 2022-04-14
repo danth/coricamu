@@ -10,6 +10,7 @@ with pkgsLib;
       modules = [
         ./modules/default.nix
         ./modules/files.nix
+        ./modules/fontawesome.nix
         ./modules/mermaid.nix
         ./modules/pages.nix
         ./modules/posts.nix
