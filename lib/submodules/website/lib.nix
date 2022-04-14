@@ -54,6 +54,7 @@ with pkgsLib;
 
         simple-http-server \
           --silent \
+          --nocache \
           --port 8000 \
           --index \
           ${previewSite}
