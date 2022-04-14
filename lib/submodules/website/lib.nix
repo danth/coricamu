@@ -28,7 +28,7 @@ with pkgsLib;
     args:
     let
       previewModule = { config, ... }: {
-        baseUrl = mkForce "file://coricamu-preview/";
+        baseUrl = mkForce "http://localhost:8000/";
       };
 
       newArgs = args // {
@@ -39,23 +39,23 @@ with pkgsLib;
 
     in pkgs.writeShellApplication {
       name = "coricamu-preview";
-
-      runtimeInputs = with pkgs; [ xdg-utils ];
-
+      runtimeInputs = with pkgs; [ simple-http-server ];
       text = ''
-        dir="''${XDG_CACHE_HOME:-$HOME/.cache}/coricamu"
-        mkdir -p "$dir"
-        rm -rf "$dir/preview"
+        cat <<EOF
 
-        # Dereference will replace all symlinks with editable files
-        cp -r --dereference --no-preserve=mode,ownership \
-          ${previewSite} "$dir/preview"
+        The preview server is starting now. Press Ctrl+C to stop it.
+        Open http://localhost:8000 in your browser to view the website!
 
-        find "$dir" -type f | while read -r file; do
-          sed -e "s|file://coricamu-preview|file://$dir/preview|g" -i "$file"
-        done
+        The preview files can also be inspected here:
+        ${previewSite}
 
-        xdg-open "$dir/preview/''${1:-index}.html"
+        EOF
+
+        simple-http-server \
+          --silent \
+          --port 8000 \
+          --index \
+          ${previewSite}
       '';
     };
 }
