@@ -18,11 +18,11 @@ in {
       '';
       default =
         pageContains "templates-font-awesome" args ||
-        pageContains "xlink:href=\"/fontawesome/fa-" args;
+        pageContains "href=\"/fontawesome/" args;
       defaultText = ''
         <literal>true</literal> if
         <literal>templates-font-awesome</literal> or
-        <literal>href="/fontawesome/fa-</literal>
+        <literal>href="/fontawesome/</literal>
         is found anywhere in the generated HTML for the
         body, otherwise <literal>false</literal>.
       '';
