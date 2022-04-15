@@ -6,9 +6,7 @@ use std::io;
 
 fn escape_nix_string(content: &str) -> String {
     // A multiline string is used as it only has two things to escape.
-    let content = content.replace("''", "'''");
-    let content = content.replace("${", "''${");
-    return content;
+    content.replace("''", "'''").replace("${", "''${")
 }
 
 fn call_template(
