@@ -13,7 +13,7 @@ let
       pkgs = import nixpkgs {
         inherit system;
         overlays = [
-          (final: prev: {
+          (final: _prev: {
             coricamu = self.packages.${final.system};
           })
         ];

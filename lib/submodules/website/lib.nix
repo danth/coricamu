@@ -28,7 +28,7 @@ with pkgsLib;
   buildSitePreview =
     args:
     let
-      previewModule = { config, ... }: {
+      previewModule = {
         baseUrl = mkForce "http://localhost:8000/";
       };
 

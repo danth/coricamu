@@ -118,7 +118,7 @@ in {
           ${optionalString authorIndexIsUseful ''
             <h2>By author</h2>
             <ul class="pills">
-              ${concatStringsSep "\n" (mapAttrsToList (author: posts:
+              ${concatStringsSep "\n" (mapAttrsToList (author: _posts:
                 config.templates.author-pill { inherit author; }
               ) allAuthors)}
             </ul>
@@ -127,7 +127,7 @@ in {
           ${optionalString keywordIndexIsUseful ''
             <h2>By keyword</h2>
             <ul class="pills">
-              ${concatStringsSep "\n" (mapAttrsToList (keyword: posts:
+              ${concatStringsSep "\n" (mapAttrsToList (keyword: _posts:
                 config.templates.keyword-pill { inherit keyword; }
               ) allKeywords)}
             </ul>

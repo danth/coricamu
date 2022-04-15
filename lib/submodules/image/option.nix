@@ -1,4 +1,4 @@
-{ coricamuLib, pkgsLib, config, ... }@args:
+{ coricamuLib, pkgsLib, config, ... }:
 
 with pkgsLib;
 with pkgsLib.types;

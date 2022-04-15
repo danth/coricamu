@@ -7,7 +7,7 @@ with coricamuLib;
   fillTemplates =
     { name, html, templates, phase ? 1 }:
     let
-      inherit (splitFilename name) baseName extension;
+      inherit (splitFilename name) baseName;
       nixName = "${baseName}-templates-phase${toString phase}.nix";
 
       nixFile = pkgs.runCommand nixName {
