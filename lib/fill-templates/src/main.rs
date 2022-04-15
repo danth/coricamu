@@ -65,6 +65,12 @@ fn process_node(template_calls: &mut Vec<String>, node: &NodeRef) {
             node.detach();
             return;
         }
+
+        for attribute in element.attributes.borrow_mut().map.values_mut() {
+            let escaped_value = escape_nix_string(&attribute.value);
+            attribute.value.clear();
+            attribute.value.push_str(&escaped_value);
+        }
     }
 
     if let Some(text) = node.as_text() {
