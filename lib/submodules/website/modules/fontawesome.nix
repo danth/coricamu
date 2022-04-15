@@ -1,7 +1,7 @@
 {
   templates.font-awesome =
     { style ? "regular", icon, contents ? null }:
-    if isNull contents
+    if contents == null
     then ''
       <svg class="font-awesome">
         <use href="/fontawesome/${style}.svg#${icon}"></use>
