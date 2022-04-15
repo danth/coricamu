@@ -8,7 +8,7 @@ fn escape_nix_string(content: &str) -> String {
     // A multiline string is used as it only has two things to escape.
     let content = content.replace("''", "'''");
     let content = content.replace("${", "''${");
-    format!("''{}''", content)
+    return content;
 }
 
 fn call_template(
@@ -42,7 +42,7 @@ fn process_node(template_calls: &mut Vec<String>, node: &NodeRef) {
             }
             if !content_string.trim().is_empty() {
                 let content_string = escape_nix_string(&content_string);
-                let content_argument = format!("contents = {};", content_string);
+                let content_argument = format!("contents = ''{}'';", content_string);
                 template_arguments.push_str(&content_argument);
             }
 
@@ -51,7 +51,7 @@ fn process_node(template_calls: &mut Vec<String>, node: &NodeRef) {
             in &element.attributes.borrow().map {
                 let attribute_name = attribute_name.local.to_string();
                 let attribute_value = escape_nix_string(&attribute.value);
-                let argument = format!("{} = {};", attribute_name, attribute_value);
+                let argument = format!("{} = ''{}'';", attribute_name, attribute_value);
                 template_arguments.push_str(&argument);
             }
 
@@ -65,6 +65,14 @@ fn process_node(template_calls: &mut Vec<String>, node: &NodeRef) {
             node.detach();
             return;
         }
+    }
+
+    if let Some(text) = node.as_text() {
+        let escaped_text = escape_nix_string(&text.take());
+        let escaped_node = NodeRef::new_text(escaped_text);
+        node.insert_after(escaped_node);
+        node.detach();
+        return;
     }
 
     for child in node.children() {

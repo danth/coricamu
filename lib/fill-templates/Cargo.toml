@@ -3,7 +3,7 @@ name = "fill-templates"
 description = "Convert HTML into Nix code which calls Coricamu templates"
 license = "MIT"
 publish = false
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 [dependencies]
