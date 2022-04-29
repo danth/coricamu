@@ -35,7 +35,7 @@
 
         <p>This is some text outside of the icon box.</p>
 
-        ${config.templates.note {
+        ${config.templates.note.function {
           title="Clouds";
           contents = ''
             <img src="clouds.png" alt="A cloudy sky.">
@@ -44,6 +44,7 @@
 
         <templates-recent-posts count="1" />
       '';
+      usedTemplates = [ config.templates.note ];
       images = [{
         path = "clouds.png";
         file = ./clouds.png;
@@ -100,13 +101,14 @@
     {
       path = "mermaid.html";
       title = "Mermaid diagram";
-      body.html = config.templates.mermaid {
+      body.html = config.templates.mermaid.function {
         contents = ''
           graph LR
           Client ---> Server
           Server ---> Client
         '';
       };
+      usedTemplates = [ config.templates.mermaid ];
     }
   ];
 

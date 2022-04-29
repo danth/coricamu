@@ -123,7 +123,7 @@ in {
       <ul class="pills">
         ${
           concatMapStringsSep "\n"
-          (author: websiteConfig.templates.author-pill {
+          (author: websiteConfig.templates.author-pill.function {
             inherit author;
             itemprop = true;
           })
@@ -136,7 +136,7 @@ in {
         <ul itemprop="keywords" class="pills">
           ${
             concatMapStringsSep "\n"
-            (keyword: websiteConfig.templates.keyword-pill {
+            (keyword: websiteConfig.templates.keyword-pill.function {
               inherit keyword;
             })
             keywords
@@ -184,6 +184,11 @@ in {
       '';
 
     page = {
+      usedTemplates =
+        with websiteConfig.templates;
+        [ author-pill posts-navigation ]
+        ++ optional (length keywords > 0) keyword-pill;
+
       path = "posts/post/${config.slug}.html";
 
       inherit (config) title;
@@ -201,7 +206,7 @@ in {
           <footer class="post-meta">
             ${postInfo}
             <link itemprop="url" href="/${config.page.path}">
-            ${websiteConfig.templates.posts-navigation {}}
+            ${websiteConfig.templates.posts-navigation.function {}}
           </footer>
         </article>
       '';

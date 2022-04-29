@@ -5,7 +5,26 @@ with pkgsLib.types;
 with coricamuLib;
 with coricamuLib.types;
 
-{
+let
+  filledTemplates = fillTemplates {
+    inherit (websiteConfig) templates;
+    name = config.path;
+    body = ''
+      ${
+        optionalString
+        (websiteConfig.header != null)
+        "<header>${websiteConfig.header.output}</header>"
+      }
+      <main>${config.body.output}</main>
+      ${
+        optionalString
+        (websiteConfig.footer != null)
+        "<footer>${websiteConfig.footer.output}</footer>"
+      }
+    '';
+  };
+
+in {
   options = {
     path = mkOption {
       description = "Path of the page relative to the root URL.";
@@ -44,6 +63,7 @@ with coricamuLib.types;
         <script type="text/javascript" src="https://example.com/externalscript.js" />
       '';
       type = lines;
+      default = "";
     };
 
     body = mkOption {
@@ -59,6 +79,19 @@ with coricamuLib.types;
       type = content;
     };
 
+    usedTemplates = mkOption {
+      description = ''
+        Templates for which page resources should be installed.
+
+        If you call a template's function directly, you must add that
+        template to this list so that any required resources will be
+        installed onto the page. Templates used via template tags are
+        registered automatically.
+      '';
+      type = listOf template;
+      default = [];
+    };
+
     files = mkOption {
       description = "Attribute set containing files by path.";
       type = attrsOf file;
@@ -67,12 +100,14 @@ with coricamuLib.types;
   };
 
   config = {
-    meta = {
+    inherit (filledTemplates) usedTemplates;
+
+    meta = mkMerge ([{
       viewport = mkDefault "width=device-width, initial-scale=1";
       generator = mkDefault "Coricamu";  # We do a little advertising
-    };
+    }] ++ catAttrs "meta" config.usedTemplates);
 
-    head = ''
+    head = mkMerge ([''
       <title>${config.title}</title>
 
       <meta charset="UTF-8">
@@ -91,34 +126,23 @@ with coricamuLib.types;
           <link rel="stylesheet" href="/${path}">
         ''))
       ]}
-    '';
+    ''] ++ catAttrs "head" config.usedTemplates);
 
-    files.${config.path} = absolutifyUrls {
-      name = config.path;
-      baseUrl = "${websiteConfig.baseUrl}${config.path}";
-      html = fillTemplates {
+    files = mkMerge ([{
+      ${config.path} = absolutifyUrls {
+        name = config.path;
+        baseUrl = "${websiteConfig.baseUrl}${config.path}";
         html = ''
           <!DOCTYPE html>
           <html lang="${websiteConfig.language}">
             <head>${config.head}</head>
-            <body>
-              ${
-                optionalString
-                (websiteConfig.header != null)
-                "<header>${websiteConfig.header.output}</header>"
-              }
-              <main>${config.body.output}</main>
-              ${
-                optionalString
-                (websiteConfig.footer != null)
-                "<footer>${websiteConfig.footer.output}</footer>"
-              }
-            </body>
+            ${filledTemplates.body}
           </html>
         '';
-        name = config.path;
-        inherit (websiteConfig) templates;
       };
-    };
+    }] ++ catAttrs "files" config.usedTemplates);
+
+    styles = mkMerge (catAttrs "styles" config.usedTemplates);
+    images = mkMerge (catAttrs "images" config.usedTemplates);
   };
 }

@@ -4,8 +4,6 @@ with pkgsLib.types;
 
 {
   types = {
-    template = functionTo lines;
-
     file = coercedTo package builtins.toString path;
 
     content = import ./submodules/content/type.nix args;
@@ -13,5 +11,9 @@ with pkgsLib.types;
     page = import ./submodules/page/type.nix args;
     post = import ./submodules/post/type.nix args;
     style = import ./submodules/style/type.nix args;
+    template = coercedTo
+      (functionTo lines)
+      (f: { function = f; })
+      (import ./submodules/template/type.nix args);
   };
 }

@@ -2,6 +2,7 @@ extern crate kuchiki;
 
 use kuchiki::{parse_html, NodeRef};
 use kuchiki::traits::*;
+use std::collections::HashSet;
 use std::io;
 
 fn escape_nix_string(content: &str) -> String {
@@ -15,22 +16,25 @@ fn call_template(
     template_arguments: &str
 ) -> String {
     let template_number = template_calls.len();
-    let template_call = format!("templates.{} {}", template_name, template_arguments);
+    let template_call = format!(
+        "templates.{}.function {}",
+        template_name, template_arguments
+    );
     template_calls.push(template_call);
     format!("${{template{}}}", template_number)
 }
 
-fn serialize_template_calls(template_calls: &[String]) -> String {
-    template_calls.iter().enumerate()
-        .map(|(i, c)| format!("template{} = {};", i, c))
-        .fold(String::new(), |a, b| a + &b + "\n")
-}
-
-fn process_node(template_calls: &mut Vec<String>, node: &NodeRef) {
+fn process_node(
+    used_templates: &mut HashSet<String>,
+    template_calls: &mut Vec<String>,
+    node: &NodeRef
+) {
     if let Some(element) = node.as_element() {
         let name = element.name.local.to_string();
         if let Some(template_name) = name.strip_prefix("templates-") {
-            let mut template_arguments = String::from("{");
+            used_templates.insert(template_name.to_string());
+
+            let mut template_arguments = String::from("{\n");
 
             // Add content to the template arguments
             let mut content_string = "".to_string();
@@ -40,7 +44,7 @@ fn process_node(template_calls: &mut Vec<String>, node: &NodeRef) {
             }
             if !content_string.trim().is_empty() {
                 let content_string = escape_nix_string(&content_string);
-                let content_argument = format!("contents = ''{}'';", content_string);
+                let content_argument = format!("contents = ''{}'';\n", content_string);
                 template_arguments.push_str(&content_argument);
             }
 
@@ -49,7 +53,7 @@ fn process_node(template_calls: &mut Vec<String>, node: &NodeRef) {
             in &element.attributes.borrow().map {
                 let attribute_name = attribute_name.local.to_string();
                 let attribute_value = escape_nix_string(&attribute.value);
-                let argument = format!("{} = ''{}'';", attribute_name, attribute_value);
+                let argument = format!("{} = ''{}'';\n", attribute_name, attribute_value);
                 template_arguments.push_str(&argument);
             }
 
@@ -80,7 +84,7 @@ fn process_node(template_calls: &mut Vec<String>, node: &NodeRef) {
     }
 
     for child in node.children() {
-        process_node(template_calls, &child);
+        process_node(used_templates, template_calls, &child);
     }
 }
 
@@ -89,16 +93,33 @@ fn main() {
     let document = parse_html()
         .from_utf8()
         .read_from(&mut io::stdin().lock())
-        .expect("Parsing input");
+        .expect("Parsing input")
+        // The input is automatically wrapped in <html>, which we don't want
+        .children()
+        .next()
+        .expect("Selecting document body");
 
     // Fill templates
+    let mut used_templates = HashSet::new();
     let mut template_calls = Vec::new();
-    process_node(&mut template_calls, &document);
+    process_node(&mut used_templates, &mut template_calls, &document);
 
     // Write Nix code to stdout
     println!("templates:");
     if !template_calls.is_empty() {
-        println!("let {} in", serialize_template_calls(&template_calls));
+        println!("let");
+        for (template_number, template_call) in template_calls.iter().enumerate() {
+            println!("template{} = {};", &template_number, &template_call);
+        }
+        println!("in {{");
+    } else {
+        println!("{{");
     }
-    println!("''{}''", &document.to_string());
+    print!("usedTemplates = [");
+    for template_name in &used_templates {
+        print!("templates.{} ", &template_name);
+    }
+    println!("];");
+    println!("body = ''{}'';", &document.to_string());
+    println!("}}");
 }

@@ -64,10 +64,11 @@ in {
         title = "All posts";
         body.html = ''
           <h1>${title}</h1>
-          ${config.templates.posts-navigation {}}
+          ${config.templates.posts-navigation.function {}}
 
           ${makePostList allPosts}
         '';
+        usedTemplates = [ config.templates.posts-navigation ];
       })
 
       # Individual authors
@@ -78,10 +79,11 @@ in {
           title = "Posts by ${author}";
           body.html = ''
             <h1>${title}</h1>
-            ${config.templates.posts-navigation {}}
+            ${config.templates.posts-navigation.function {}}
 
             ${makePostList posts}
           '';
+          usedTemplates = [ config.templates.posts-navigation ];
         }
       ) allAuthors)
 
@@ -99,10 +101,12 @@ in {
 
           body.html = ''
             <h1>Posts about <q>${keyword}</q></h1>
-            ${config.templates.posts-navigation {}}
+            ${config.templates.posts-navigation.function {}}
 
             ${makePostList posts}
           '';
+
+          usedTemplates = [ config.templates.posts-navigation ];
         }
       ) allKeywords)
 
@@ -113,13 +117,13 @@ in {
 
         body.html = ''
           <h1>${title}</h1>
-          ${config.templates.posts-navigation {}}
+          ${config.templates.posts-navigation.function {}}
 
           ${optionalString authorIndexIsUseful ''
             <h2>By author</h2>
             <ul class="pills">
               ${concatStringsSep "\n" (mapAttrsToList (author: _posts:
-                config.templates.author-pill { inherit author; }
+                config.templates.author-pill.function { inherit author; }
               ) allAuthors)}
             </ul>
           ''}
@@ -128,19 +132,22 @@ in {
             <h2>By keyword</h2>
             <ul class="pills">
               ${concatStringsSep "\n" (mapAttrsToList (keyword: _posts:
-                config.templates.keyword-pill { inherit keyword; }
+                config.templates.keyword-pill.function { inherit keyword; }
               ) allKeywords)}
             </ul>
           ''}
         '';
+
+        usedTemplates =
+          with config.templates;
+          [ posts-navigation ]
+          ++ optional authorIndexIsUseful author-pill
+          ++ optional keywordIndexIsUseful keyword-pill;
       });
 
     footer.html = mkIf (length allPosts > 0) (mkDefault ''
       <a class="rss-link" href="/rss/posts.xml">
-        ${config.templates.font-awesome {
-          style = "solid";
-          icon = "rss";
-        }}
+        <templates-font-awesome style="solid" icon="rss"></templates-font-awesome>
         RSS feed
       </a>
     '');

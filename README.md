@@ -271,12 +271,13 @@ Custom templates can be added to the `templates` attribute set:
 
 ```nix
 {
-  templates.info = { title, contents }: ''
-    <div class="info">
-      <h2>${title}</h2>
-      <p>${contents}</p>
-    </div>
-  '';
+  templates.info.function =
+    { title, contents }: ''
+      <div class="info">
+        <h2>${title}</h2>
+        <p>${contents}</p>
+      </div>
+    '';
 }
 ```
 
@@ -285,46 +286,37 @@ A template is just a Nix function which takes an arbitrary set of parameters
 Templates can rely on other templates; they can even call themselves, if you
 are careful to avoid infinite recursion.
 
-#### Nix splices
-
-The most basic way to use a template is by calling its function, and splicing
-the return value into your HTML:
+Most page settings can be specified from within templates too. Template settings
+will be added to any page where that template is used. This can be used to
+install extra files to make the template work, for example a stylesheet:
 
 ```nix
-{ config, ... }:
-
 {
-  pages = [{
-    path = "lorem_ipsum.html";
-    title = "Lorem Ipsum";
-    body.html = ''
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
-      </p>
-      ${config.templates.note {
-        title = "An important note";
-        contents = ''
-          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-          nisi ut aliquip ex ea commodo consequat.
-        '';
-      }}
-      <p>
-        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-        dolore eu fugiat nulla pariatur.
-      </p>
-    '';
-  }];
+  templates.info = {
+    function =
+      { title, contents }: ''
+        <div class="info">
+          <h2>${title}</h2>
+          <p>${contents}</p>
+        </div>
+      '';
+
+    styles = [{
+      path = "info.css";
+      css = ''
+        .info {
+          border: 3px solid black;
+          padding: 5px;
+        }
+      '';
+    }];
+  };
 }
 ```
 
-This relies on a Nix feature, so you can no longer import the body from a
-separate HTML file.
-
 #### Template tags
 
-This is where template tags come in. Rather than directly calling the template
-function, you can format the arguments as pseudo-HTML:
+Templates are inserted by using the following HTML-like syntax within a page body.
 
 ```html
 <p>
@@ -341,45 +333,57 @@ function, you can format the arguments as pseudo-HTML:
 </p>
 ```
 
-This doesn't directly rely on Nix, so it will work when the body is loaded from
-a file.
+Text inside the template tag is passed to the template function as the `contents`
+argument; this is a special argument used to create containers which fit around other
+content. Any attributes on the tag are converted to corresponding function arguments.
 
-Coricamu will detect that a template tag was used, and enable some
-import-from-derivation magic which automatically reformats the above HTML to
-behave as if you wrote:
+*Note:* because HTML tags are case-insensitive, template names are also
+case-insensitive.
+
+#### Nix splices
+
+It is also possible to insert templates by calling their Nix function directly.
+This is more efficient as it does not require HTML to be parsed during evaluation.
+However, there are more steps required to get it working correctly, so this method
+of using templates is more prone to bugs.
 
 ```nix
-''
-<p>
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-  tempor incididunt ut labore et dolore magna aliqua.
-</p>
-${config.templates.note {
-  title = "An important note";
-  contents = ''
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-    ut aliquip ex ea commodo consequat.
-  '';
-}}
-<p>
-  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-  dolore eu fugiat nulla pariatur.
-</p>
-''
+{ config, ... }:
+
+{
+  pages = [{
+    path = "lorem_ipsum.html";
+    title = "Lorem Ipsum";
+
+    body.html = ''
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+      </p>
+      ${config.templates.note.function {
+        title = "An important note";
+        contents = ''
+          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+          nisi ut aliquip ex ea commodo consequat.
+        '';
+      }}
+      <p>
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+        dolore eu fugiat nulla pariatur.
+      </p>
+    '';
+
+    usedTemplates = [ config.templates.note ];
+  }];
+}
 ```
 
-Any attributes on the tag are converted to function arguments. Notice how the
-text inside the `<templates-note>` tag has become the `contents` argument; this
-is a special argument intended for templates which fit around other content.
-Text, HTML and even other template tags can be placed inside a template like
-this.
+Note that you must manually register each template as used. If this is not
+done, settings from the template will not be added to the page, which means that
+required resources such as images could be missing.
 
-*Note:* because HTML tags are case-insensitive, template names will also be
-case-insensitive when used via template tags.
-
-*Note:* There is nothing to prevent you from using template tags even when Nix
-splices are available; just be aware that they can require a little extra
-computation when the site is built. Use whichever style you prefer.
+Calling templates in this way relies on a Nix feature, so you cannot import the
+body from a separate HTML file while using this method.
 
 ### Icons
 

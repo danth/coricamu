@@ -5,21 +5,21 @@ with coricamuLib;
 
 {
   fillTemplates =
-    { name, html, templates, phase ? 1 }:
+    { name, body, templates, phase ? 1, usedTemplates ? [] }:
     let
       inherit (splitFilename name) baseName;
       nixName = "${baseName}-templates-phase${toString phase}.nix";
 
       nixFile = pkgs.runCommand nixName {
-        inherit html;
-        passAsFile = [ "html" ];
+        inherit body;
+        passAsFile = [ "body" ];
 
         # This is import-from-derivation, and is needed every time a user wants
         # to preview the site, so must be built quickly.
         preferLocalBuild = true;
         allowSubstitutes = false;
       } ''
-        ${pkgs.coricamu.fill-templates}/bin/fill-templates <$htmlPath >$out
+        ${pkgs.coricamu.fill-templates}/bin/fill-templates <$bodyPath >$out
       '';
 
       wrappedTemplates = mapAttrs' (templateName: template: {
@@ -30,13 +30,18 @@ with coricamuLib;
 
       # If this string isn't present, template tags are definitely not used,
       # so the import-from-derivation can be skipped.
-      mayContainTemplateTag = hasInfix "<templates-" html;
+      mayContainTemplateTag = hasInfix "<templates-" body;
 
     in if mayContainTemplateTag
-       then fillTemplates {
+       then let
+         output = (import nixFile) wrappedTemplates;
+       in fillTemplates {
          inherit name templates;
+         inherit (output) body;
          phase = phase + 1;
-         html = (import nixFile) wrappedTemplates;
+         usedTemplates = usedTemplates ++ output.usedTemplates;
        }
-       else html;
+       else {
+         inherit usedTemplates body;
+       };
 }
