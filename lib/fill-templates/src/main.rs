@@ -95,8 +95,9 @@ fn main() {
         .read_from(&mut io::stdin().lock())
         .expect("Parsing input")
         // The input is automatically wrapped in <html>, which we don't want
-        .children()
-        .next()
+        .children().next()
+        .expect("Selecting document body")
+        .children().nth(1)
         .expect("Selecting document body");
 
     // Fill templates
