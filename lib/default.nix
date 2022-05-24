@@ -1,6 +1,5 @@
 args:
-(import ./absolutify-urls/lib.nix args)
-// (import ./fill-templates/lib.nix args)
+(import ./fill-templates/lib.nix args)
 // (import ./markdown.nix args)
 // (import ./minify.nix args)
 // (import ./submodules/page/lib.nix args)

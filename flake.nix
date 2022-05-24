@@ -35,7 +35,6 @@
 
       libOutputs = mergeOutputs (map callOutputs [
         ./lib/flake-tools.nix
-        ./lib/absolutify-urls/outputs.nix
         ./lib/fill-templates/outputs.nix
       ]);
 

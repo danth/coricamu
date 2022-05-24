@@ -1,4 +1,4 @@
-{ coricamuLib, pkgsLib, config, websiteConfig, ... }:
+{ coricamuLib, pkgsLib, pkgs, config, websiteConfig, ... }:
 
 with pkgsLib;
 with pkgsLib.types;
@@ -129,17 +129,13 @@ in {
     ''] ++ catAttrs "head" config.usedTemplates);
 
     files = mkMerge ([{
-      ${config.path} = absolutifyUrls {
-        name = config.path;
-        baseUrl = "${websiteConfig.baseUrl}${config.path}";
-        html = ''
-          <!DOCTYPE html>
-          <html lang="${websiteConfig.language}">
-            <head>${config.head}</head>
-            ${filledTemplates.body}
-          </html>
-        '';
-      };
+      ${config.path} = pkgs.writeText config.path ''
+        <!DOCTYPE html>
+        <html lang="${websiteConfig.language}">
+          <head>${config.head}</head>
+          ${filledTemplates.body}
+        </html>
+      '';
     }] ++ catAttrs "files" config.usedTemplates);
 
     styles = mkMerge (catAttrs "styles" config.usedTemplates);
