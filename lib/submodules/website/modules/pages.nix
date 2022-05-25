@@ -36,7 +36,7 @@ with coricamuLib.types;
       example.html = ''
         <h1>My Website</h1>
       '';
-      type = nullOr content;
+      type = content { allowNull = true; };
       defaultText = ''
         Heading containing <literal>siteTitle</literal>, with a link
         to <literal>/index.html</literal>.
@@ -51,7 +51,7 @@ with coricamuLib.types;
       example.html = ''
         <a href="privacy.html">Privacy Policy</a>
       '';
-      type = nullOr content;
+      type = content { allowNull = true; };
       default = null;
     };
 

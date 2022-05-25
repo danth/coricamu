@@ -1,3 +1,4 @@
+{ allowNull ? false }:
 { coricamuLib, pkgsLib, config, name, ... }:
 
 with pkgsLib;
@@ -123,13 +124,16 @@ in {
       description = "Compiled HTML.";
       internal = true;
       readOnly = true;
-      type = lines;
+      type = if allowNull then nullOr lines else lines;
     };
   };
 
   config.output =
     if usedSource == "NONE"
-    then throw "One of ${sourceOptions} should be set"
+    then
+      if allowNull
+      then null
+      else throw "One of ${sourceOptions} should be set"
     else if usedSource == "MANY"
     then throw "Only one of ${sourceOptions} can be set"
     else sourceFunctions.${usedSource} config.${usedSource};

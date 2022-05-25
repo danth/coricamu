@@ -12,13 +12,13 @@ let
     body = ''
       ${
         optionalString
-        (websiteConfig.header != null)
+        (websiteConfig.header.output != null)
         "<header>${websiteConfig.header.output}</header>"
       }
       <main>${config.body.output}</main>
       ${
         optionalString
-        (websiteConfig.footer != null)
+        (websiteConfig.footer.output != null)
         "<footer>${websiteConfig.footer.output}</footer>"
       }
     '';
@@ -76,7 +76,7 @@ in {
         - <templates.user id="12345">Jane Doe</templates.user>
         - <templates.user id="67890">John Doe</templates.user>
       '';
-      type = content;
+      type = content {};
     };
 
     usedTemplates = mkOption {

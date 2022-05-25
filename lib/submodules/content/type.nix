@@ -1,9 +1,10 @@
 { pkgsLib, ... }@args:
+typeArgs:
 
 with pkgsLib.types;
 
 submoduleWith {
-  modules = [ ./modules/default.nix ];
+  modules = [ (import ./modules/default.nix typeArgs) ];
   specialArgs = args;
   shorthandOnlyDefinesConfig = true;
 }
