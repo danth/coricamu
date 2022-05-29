@@ -4,37 +4,8 @@ with pkgsLib;
 with coricamuLib;
 
 let
-  minifyCommands = {
-    css = path: ''
-      ${pkgs.nodePackages.clean-css-cli}/bin/cleancss \
-        -O2 \
-        -o ${path} ${path}
-    '';
-
-    html = path: ''
-      ${pkgs.nodePackages.html-minifier}/bin/html-minifier \
-        --collapse-boolean-attributes \
-        --collapse-whitespace --conservative-collapse \
-        --remove-comments \
-        --remove-optional-tags \
-        --remove-redundant-attributes \
-        --remove-script-type-attributes \
-        --remove-style-link-type-attributes \
-        --sort-attributes \
-        --sort-class-name \
-        ${path} --output ${path}
-    '';
-
-    js = path: ''
-      ${pkgs.minify}/bin/minify \
-        --type js \
-        --output ${path} ${path}
-    '';
-
-    xml = path: ''
-      ${pkgs.xmlformat}/bin/xmlformat -i ${path}
-    '';
-  };
+  minifyCommand = format: path:
+    "${pkgs.minify}/bin/minify --type ${format} --output ${path} ${path}";
 
 in {
   minifyFileWithPath =
@@ -42,7 +13,7 @@ in {
     let inherit (splitFilename path) baseName extension;
     in pkgs.runCommand "${baseName}.min.${extension}" { } ''
       cp --no-preserve=mode,ownership ${file} $out
-      ${minifyCommands.${extension} "$out"}
+      ${minifyCommand extension "$out"}
     '';
 
   minifyFile =
@@ -56,7 +27,7 @@ in {
       inherit text;
       checkPhase = ''
         ${checkPhase}
-        ${minifyCommands.${extension} "$target"}
+        ${minifyCommand extension "$target"}
       '';
     };
 }
