@@ -24,6 +24,11 @@ let
     '';
   };
 
+  usedTemplates =
+    let getUsedTemplates = thing:
+      thing.usedTemplates ++ concatMap getUsedTemplates thing.usedTemplates;
+    in filledTemplates.usedTemplates ++ getUsedTemplates config;
+
 in {
   options = {
     path = mkOption {
@@ -100,12 +105,10 @@ in {
   };
 
   config = {
-    inherit (filledTemplates) usedTemplates;
-
     meta = mkMerge ([{
       viewport = mkDefault "width=device-width, initial-scale=1";
       generator = mkDefault "Coricamu";  # We do a little advertising
-    }] ++ catAttrs "meta" config.usedTemplates);
+    }] ++ catAttrs "meta" usedTemplates);
 
     head = mkMerge ([''
       <title>${config.title}</title>
@@ -126,7 +129,7 @@ in {
           <link rel="stylesheet" href="/${path}">
         ''))
       ]}
-    ''] ++ catAttrs "head" config.usedTemplates);
+    ''] ++ catAttrs "head" usedTemplates);
 
     files = mkMerge ([{
       ${config.path} = pkgs.writeText config.path ''
@@ -136,9 +139,9 @@ in {
           ${filledTemplates.body}
         </html>
       '';
-    }] ++ catAttrs "files" config.usedTemplates);
+    }] ++ catAttrs "files" usedTemplates);
 
-    styles = mkMerge (catAttrs "styles" config.usedTemplates);
-    images = mkMerge (catAttrs "images" config.usedTemplates);
+    styles = mkMerge (catAttrs "styles" usedTemplates);
+    images = mkMerge (catAttrs "images" usedTemplates);
   };
 }
