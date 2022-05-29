@@ -193,23 +193,29 @@ in {
     });
 
     templates = {
-      all-posts =  { includeNavigation ? true }: ''
-        ${makePostList allPosts}
-        ${
-          optionalString
-          includeNavigation
-          (config.templates.posts-navigation.function {})
-        }
-      '';
+      all-posts = {
+        function = { includeNavigation ? true }: ''
+          ${makePostList allPosts}
+          ${
+            optionalString
+            includeNavigation
+            (config.templates.posts-navigation.function {})
+          }
+        '';
+        usedTemplates = [ config.templates.post-navigation.function ];
+      };
 
-      recent-posts = { count, includeNavigation ? true }: ''
-        ${makePostList (take (toInt count) allPosts)}
-        ${
-          optionalString
-          includeNavigation
-          (config.templates.posts-navigation.function {})
-        }
-      '';
+      recent-posts = {
+        function = { count, includeNavigation ? true }: ''
+          ${makePostList (take (toInt count) allPosts)}
+          ${
+            optionalString
+            includeNavigation
+            (config.templates.posts-navigation.function {})
+          }
+        '';
+        usedTemplates = [ config.templates.posts-navigation.function ];
+      };
 
       author-pill =
         { author, itemprop ? false }:
