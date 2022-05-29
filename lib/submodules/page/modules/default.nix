@@ -131,10 +131,12 @@ in {
       ]}
 
       ${pipe (config.scripts ++ websiteConfig.scripts) [
-        (catAttrs "path")
         lists.unique
-        (concatMapStringsSep "\n" (path: ''
-          <script src="/${path}"></script>
+        (concatMapStringsSep "\n" (script: ''
+          <script
+            src="/${script.path}"
+            ${optionalString script.defer "defer"}
+          ></script>
         ''))
       ]}
     ''] ++ catAttrs "head" usedTemplates);

@@ -44,6 +44,12 @@ in {
       type = strMatching ".*\\.js";
     };
 
+    defer = mkOption {
+      description = "Wait until the document has finished loading before running this script.";
+      type = bool;
+      default = false;
+    };
+
     output = mkOption {
       description = "JavaScript file.";
       internal = true;

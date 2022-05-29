@@ -250,6 +250,7 @@ in {
 
         scripts = [{
           path = "relative-time.js";
+          defer = true;
           javascript = ''
             const formatter = new Intl.RelativeTimeFormat('${config.language}');
             const elements = document.getElementsByClassName('relative-time');
