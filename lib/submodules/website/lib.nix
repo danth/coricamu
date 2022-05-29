@@ -29,6 +29,7 @@ with pkgsLib;
     let
       previewModule = {
         baseUrl = mkForce "http://localhost:8000/";
+        minified = mkForce false;
       };
 
       newArgs = args // {
