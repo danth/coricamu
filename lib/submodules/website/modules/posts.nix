@@ -64,11 +64,15 @@ in {
         title = "All posts";
         body.html = ''
           <h1>${title}</h1>
-          ${config.templates.posts-navigation.function {}}
+          ${
+            optionalString
+            pillsIndexIsUseful
+            (config.templates.posts-navigation.function {})
+          }
 
           ${makePostList allPosts}
         '';
-        usedTemplates = [ config.templates.posts-navigation ];
+        usedTemplates = optional pillsIndexIsUseful config.templates.posts-navigation;
       })
 
       # Individual authors
