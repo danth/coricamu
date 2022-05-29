@@ -27,7 +27,7 @@ let
   usedTemplates =
     let getUsedTemplates = thing:
       thing.usedTemplates ++ concatMap getUsedTemplates thing.usedTemplates;
-    in filledTemplates.usedTemplates ++ getUsedTemplates config;
+    in getUsedTemplates filledTemplates ++ getUsedTemplates config;
 
 in {
   options = {
