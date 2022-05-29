@@ -244,6 +244,7 @@ in {
             <time
               ${optionalString (itemprop != null) "itemprop=\"${itemprop}\""}
               datetime="${datetime}"
+              title="${datetime}"
               class="relative-time"
             >on ${date}</time>
           '';
@@ -261,20 +262,25 @@ in {
               second: 1000
             }
 
-            const formatter = new Intl.RelativeTimeFormat(
+            const relativeFormatter = new Intl.RelativeTimeFormat(
               '${config.language}', { numeric: 'auto' }
+            );
+            const absoluteFormatter = new Intl.DateTimeFormat(
+                '${config.language}', { dateStyle: 'medium', timeStyle: 'short' }
             );
 
             const elements = document.getElementsByClassName('relative-time');
 
             for (const element of elements) {
               const datetime = Date.parse(element.getAttribute('datetime'));
-              const delta = datetime - Date.now();
 
+              element.setAttribute('title', absoluteFormatter.format(datetime));
+
+              const delta = datetime - Date.now();
               for (const unit in UNITS) {
                 if (Math.abs(delta) >= UNITS[unit] || unit == 'second') {
                   const number = Math.round(delta / UNITS[unit]);
-                  element.innerHTML = formatter.format(number, unit);
+                  element.innerHTML = relativeFormatter.format(number, unit);
                   break;
                 }
               }
