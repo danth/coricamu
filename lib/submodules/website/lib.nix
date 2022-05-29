@@ -15,10 +15,8 @@ with pkgsLib;
         ./modules/pages.nix
         ./modules/posts.nix
         ./modules/sitemap.nix
-        ../image/option.nix
-        (import ../style/option.nix {
-          insertDefault = true;
-        })
+        (import ../image/option.nix { isToplevel = true; })
+        (import ../style/option.nix { isToplevel = true; })
       ] ++ modules;
       specialArgs = args // specialArgs;
     };

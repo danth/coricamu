@@ -141,7 +141,13 @@ in {
       '';
     }] ++ catAttrs "files" usedTemplates);
 
-    styles = mkMerge (catAttrs "styles" usedTemplates);
-    images = mkMerge (catAttrs "images" usedTemplates);
+    styles = mkMerge (map
+      (map (x: removeAttrs x [ "output" ]))
+      (catAttrs "styles" usedTemplates)
+    );
+    images = mkMerge (map
+      (map (x: removeAttrs x [ "output" ]))
+      (catAttrs "images" usedTemplates)
+    );
   };
 }

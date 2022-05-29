@@ -1,3 +1,4 @@
+{ isToplevel }:
 { coricamuLib, pkgsLib, config, ... }:
 
 with pkgsLib;
@@ -11,7 +12,9 @@ with coricamuLib.types;
     default = [];
   };
 
-  config.files = listToAttrs (map (image:
-    nameValuePair image.path image.outputFile
-  ) config.images);
+  config.files = pipe config.images [
+    (map (image: nameValuePair image.path image.outputFile))
+    listToAttrs
+    (mkIf isToplevel)
+  ];
 }

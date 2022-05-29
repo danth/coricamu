@@ -1,4 +1,4 @@
-{ insertDefault }:
+{ isToplevel }:
 { coricamuLib, pkgsLib, config, ... }:
 
 with pkgsLib;
@@ -14,7 +14,7 @@ with coricamuLib.types;
       # Current type
       (listOf (style config));
   } //
-    (if insertDefault
+    (if isToplevel
     then {
       default = [(import ./default)];
       defaultText = "Basic style sheet bundled with Coricamu.";
@@ -23,7 +23,9 @@ with coricamuLib.types;
       default = [];
     });
 
-  config.files = listToAttrs (map (style:
-    nameValuePair style.path style.output
-  ) config.styles);
+  config.files = pipe config.styles [
+    (map (style: nameValuePair style.path style.output))
+    listToAttrs
+    (mkIf isToplevel)
+  ];
 }
