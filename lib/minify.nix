@@ -25,6 +25,12 @@ let
         ${path} --output ${path}
     '';
 
+    js = path: ''
+      ${pkgs.minify}/bin/minify \
+        --type js \
+        --output ${path} ${path}
+    '';
+
     xml = path: ''
       ${pkgs.xmlformat}/bin/xmlformat -i ${path}
     '';

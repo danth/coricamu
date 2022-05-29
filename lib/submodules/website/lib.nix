@@ -17,6 +17,7 @@ with pkgsLib;
         ./modules/sitemap.nix
         (import ../image/option.nix { isToplevel = true; })
         (import ../style/option.nix { isToplevel = true; })
+        (import ../script/option.nix { isToplevel = true; })
       ] ++ modules;
       specialArgs = args // specialArgs;
     };

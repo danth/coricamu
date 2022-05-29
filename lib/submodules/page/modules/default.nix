@@ -129,6 +129,14 @@ in {
           <link rel="stylesheet" href="/${path}">
         ''))
       ]}
+
+      ${pipe (config.scripts ++ websiteConfig.scripts) [
+        (catAttrs "path")
+        lists.unique
+        (concatMapStringsSep "\n" (path: ''
+          <script src="/${path}"></script>
+        ''))
+      ]}
     ''] ++ catAttrs "head" usedTemplates);
 
     files = mkMerge ([{
@@ -141,6 +149,10 @@ in {
       '';
     }] ++ catAttrs "files" usedTemplates);
 
+    scripts = mkMerge (map
+      (map (x: removeAttrs x [ "output" ]))
+      (catAttrs "scripts" usedTemplates)
+    );
     styles = mkMerge (map
       (map (x: removeAttrs x [ "output" ]))
       (catAttrs "styles" usedTemplates)

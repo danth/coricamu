@@ -248,19 +248,18 @@ in {
             >on ${date}</time>
           '';
 
-        files."relative-time.js" = pkgs.writeText "relative-time.js" ''
-          const formatter = new Intl.RelativeTimeFormat('${config.language}');
-          const elements = document.getElementsByClassName('relative-time');
-          for (const element of elements) {
-            const datetime = Date.parse(element.getAttribute('datetime'));
-            const delta = (datetime - Date.now()) / (1000 * 3600 * 24);
-            element.innerHTML = formatter.format(Math.round(delta), 'days');
-          }
-        '';
-
-        head = ''
-          <script src="/relative-time.js" type="module"></script>
-        '';
+        scripts = [{
+          path = "relative-time.js";
+          javascript = ''
+            const formatter = new Intl.RelativeTimeFormat('${config.language}');
+            const elements = document.getElementsByClassName('relative-time');
+            for (const element of elements) {
+              const datetime = Date.parse(element.getAttribute('datetime'));
+              const delta = (datetime - Date.now()) / (1000 * 3600 * 24);
+              element.innerHTML = formatter.format(Math.round(delta), 'days');
+            }
+          '';
+        }];
       };
 
       author-pill =
