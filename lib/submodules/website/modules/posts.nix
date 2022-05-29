@@ -193,9 +193,23 @@ in {
     });
 
     templates = {
-      all-posts = _: makePostList allPosts;
+      all-posts =  { includeNavigation ? true }: ''
+        ${makePostList allPosts}
+        ${
+          optionalString
+          includeNavigation
+          (config.templates.posts-navigation.function {})
+        }
+      '';
 
-      recent-posts = { count }: makePostList (take (toInt count) allPosts);
+      recent-posts = { count, includeNavigation ? true }: ''
+        ${makePostList (take (toInt count) allPosts)}
+        ${
+          optionalString
+          includeNavigation
+          (config.templates.posts-navigation.function {})
+        }
+      '';
 
       author-pill =
         { author, itemprop ? false }:
