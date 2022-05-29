@@ -40,11 +40,14 @@ let
     sitemap.included = false;
   };
 
-  makePostList = posts: ''
-    <ol class="post-list">
-      ${concatMapStringsSep "\n" (post: "<li>${post.indexEntry}</li>") posts}
-    </ol>
-  '';
+  makePostList = posts: {
+    function = {}: ''
+      <ol class="post-list">
+        ${concatMapStringsSep "\n" (post: "<li>${post.indexEntry.function {}}</li>") posts}
+      </ol>
+    '';
+    usedTemplates = catAttrs "indexEntry" posts;
+  };
 
 in {
   options.posts = mkOption {
@@ -70,9 +73,11 @@ in {
             (config.templates.posts-navigation.function {})
           }
 
-          ${makePostList allPosts}
+          ${(makePostList allPosts).function {}}
         '';
-        usedTemplates = optional pillsIndexIsUseful config.templates.posts-navigation;
+        usedTemplates =
+          (makePostList allPosts).usedTemplates ++
+          optional pillsIndexIsUseful config.templates.posts-navigation;
       })
 
       # Individual authors
@@ -85,9 +90,11 @@ in {
             <h1>${title}</h1>
             ${config.templates.posts-navigation.function {}}
 
-            ${makePostList posts}
+            ${(makePostList posts).function {}}
           '';
-          usedTemplates = [ config.templates.posts-navigation ];
+          usedTemplates =
+            (makePostList posts).usedTemplates ++
+            [ config.templates.posts-navigation ];
         }
       ) allAuthors)
 
@@ -107,10 +114,12 @@ in {
             <h1>Posts about <q>${keyword}</q></h1>
             ${config.templates.posts-navigation.function {}}
 
-            ${makePostList posts}
+            ${(makePostList posts).function {}}
           '';
 
-          usedTemplates = [ config.templates.posts-navigation ];
+          usedTemplates =
+            (makePostList posts).usedTemplates ++
+            [ config.templates.posts-navigation ];
         }
       ) allKeywords)
 
@@ -195,26 +204,63 @@ in {
     templates = {
       all-posts = {
         function = { includeNavigation ? true }: ''
-          ${makePostList allPosts}
+          ${(makePostList allPosts).function {}}
           ${
             optionalString
             includeNavigation
             (config.templates.posts-navigation.function {})
           }
         '';
-        usedTemplates = [ config.templates.post-navigation.function ];
+        usedTemplates =
+          (makePostList allPosts).usedTemplates ++
+          [ config.templates.posts-navigation ];
       };
 
       recent-posts = {
         function = { count, includeNavigation ? true }: ''
-          ${makePostList (take (toInt count) allPosts)}
+          ${(makePostList (take (toInt count) allPosts)).function {}}
           ${
             optionalString
             includeNavigation
             (config.templates.posts-navigation.function {})
           }
         '';
-        usedTemplates = [ config.templates.posts-navigation.function ];
+        # TODO: Properly inherit pill templates from makePostList
+        usedTemplates = with config.templates; [
+          author-pill
+          keyword-pill
+          relative-time-pill
+          posts-navigation
+        ];
+      };
+
+      relative-time-pill = {
+        function =
+          { datetime, itemprop ? null }:
+          let
+            # This string will be shown if JavaScript is disabled
+            date = substring 0 10 datetime;
+          in ''
+            <time
+              ${optionalString (itemprop != null) "itemprop=\"${itemprop}\""}
+              datetime=${datetime}
+              class="relative-time"
+            >on ${date}</time>
+          '';
+
+        files."relative-time.js" = pkgs.writeText "relative-time.js" ''
+          const formatter = new Intl.RelativeTimeFormat('${config.language}');
+          const elements = document.getElementsByClassName('relative-time');
+          for (const element of elements) {
+            const datetime = Date.parse(element.getAttribute('datetime'));
+            const delta = (datetime - Date.now()) / (1000 * 3600 * 24);
+            element.innerHTML = formatter.format(Math.round(delta), 'days');
+          }
+        '';
+
+        head = ''
+          <script src="/relative-time.js" type="module"></script>
+        '';
       };
 
       author-pill =
