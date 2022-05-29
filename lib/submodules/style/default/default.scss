@@ -185,10 +185,6 @@ ul.pills {
 
 /***** Post list pages *****/
 
-.post-explore {
-  margin-top: -1em;
-}
-
 h1 + .post-explore {
   margin-top: -1.4em;
   text-align: center;
@@ -206,5 +202,9 @@ h1 + .post-explore {
   .post-summary h1 {
     margin-top: $gap;
     margin-bottom: $gap / 2;
+  }
+
+  & + .post-explore {
+    margin-top: -1em;
   }
 }
