@@ -165,7 +165,7 @@ in {
       </a>
     '');
 
-    files."rss/posts.xml" = mkIf (length allPosts > 0) (writeMinified {
+    files."rss/posts.xml" = mkIf (length allPosts > 0) (pkgs.writeTextFile {
       name = "posts.xml";
 
       text = ''

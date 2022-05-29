@@ -6,7 +6,7 @@ with types;
 
 {
   files = {
-    "sitemap.xml" = writeMinified {
+    "sitemap.xml" = pkgs.writeTextFile {
       name = "sitemap.xml";
 
       text = ''

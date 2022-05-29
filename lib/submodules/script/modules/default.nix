@@ -7,11 +7,8 @@ with coricamuLib.types;
 
 let
   sourceFunctions = rec {
-    javascript = source: writeMinified {
-      name = config.path;
-      text = source;
-    };
-    javascriptFile = minifyFileWithPath config.path;
+    javascript = pkgs.writeText config.path;
+    javascriptFile = id;
   };
 
   # Name of the source type which was used,
@@ -54,7 +51,7 @@ in {
       description = "JavaScript file.";
       internal = true;
       readOnly = true;
-      type = package;
+      type = file;
     };
   };
 

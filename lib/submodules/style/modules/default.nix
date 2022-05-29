@@ -28,17 +28,14 @@ let
     '';
 
   sourceFunctions = rec {
-    css = source: writeMinified {
-      name = config.path;
-      text = source;
-    };
-    cssFile = minifyFileWithPath config.path;
+    css = pkgs.writeText config.path;
+    cssFile = id;
 
-    scss = source: (convertSass source true);
-    scssFile = source: minifyFile (convertSassFile source true);
+    scss = source: convertSass source true;
+    scssFile = source: convertSassFile source true;
 
-    sass = source: (convertSass source false);
-    sassFile = source: minifyFile (convertSassFile source false);
+    sass = source: convertSass source false;
+    sassFile = source: convertSassFile source false;
   };
 
   # Name of the source type which was used,
@@ -115,7 +112,7 @@ in {
       description = "CSS file.";
       internal = true;
       readOnly = true;
-      type = package;
+      type = file;
     };
   };
 

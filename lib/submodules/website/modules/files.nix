@@ -11,6 +11,13 @@ with coricamuLib.types;
     default = {};
   };
 
-  config.package = pkgs.linkFarm "website"
-    (mapAttrsToList (name: path: { inherit name path; }) config.files);
+
+  config.package = pkgs.runCommand "website-minified" {
+    source = pkgs.linkFarm "website"
+      (mapAttrsToList (name: path: { inherit name path; }) config.files);
+  } ''
+    cp --recursive --dereference --no-preserve=mode,ownership $source website
+    ${pkgs.minify}/bin/minify --all --sync --output minified --recursive website
+    mv minified/website $out
+  '';
 }
