@@ -25,10 +25,32 @@ with coricamuLib.types;
       website = pkgs.linkFarm "website"
         (mapAttrsToList (name: path: { inherit name path; }) config.files);
 
-      websiteMinified = pkgs.runCommand "website-minified" { } ''
-        cp --recursive --dereference --no-preserve=mode,ownership ${website} website
-        ${pkgs.minify}/bin/minify --all --sync --output minified --recursive website
-        mv minified/website $out
+      websiteMinified = pkgs.runCommand "website-minified" {
+        passAsFile = [ "arguments" ];
+        arguments = pipe config.files [
+          (mapAttrsToList (path: file: "${path} ${file}"))
+          (concatStringsSep "\n")
+        ];
+      } ''
+        export supportedTypes=$(${pkgs.minify}/bin/minify --list | cut -f 1)
+
+        function buildFile {
+          extension="''${1##*.}"
+          if [[ "$supportedTypes" =~ (^|[[:space:]])$extension($|[[:space:]]) ]]
+          then
+            echo "Minifying $1"
+            ${pkgs.minify}/bin/minify --type $extension --output "$out/$1" "$2"
+          else
+            echo "Linking $1"
+            ln -s "$2" "$out/$1"
+          fi
+        }
+        export -f buildFile
+
+        xargs \
+          -a $argumentsPath -d '\n' \
+          -r -l -P $NIX_BUILD_CORES \
+          bash -c 'buildFile $1 $2' {}
       '';
     in
       if config.minified then websiteMinified else website;
