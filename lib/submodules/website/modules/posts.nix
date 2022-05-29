@@ -243,7 +243,7 @@ in {
           in ''
             <time
               ${optionalString (itemprop != null) "itemprop=\"${itemprop}\""}
-              datetime=${datetime}
+              datetime="${datetime}"
               class="relative-time"
             >on ${date}</time>
           '';
