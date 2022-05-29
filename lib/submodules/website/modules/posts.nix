@@ -252,12 +252,32 @@ in {
           path = "relative-time.js";
           defer = true;
           javascript = ''
-            const formatter = new Intl.RelativeTimeFormat('${config.language}');
+            const UNITS = {
+              year: 24 * 60 * 60 * 1000 * 365.25,
+              month: 24 * 60 * 60 * 1000 * 365.25/12,
+              day: 24 * 60 * 60 * 1000,
+              hour: 60 * 60 * 1000,
+              minute: 60 * 1000,
+              second: 1000
+            }
+
+            const formatter = new Intl.RelativeTimeFormat(
+              '${config.language}', { numeric: 'auto' }
+            );
+
             const elements = document.getElementsByClassName('relative-time');
+
             for (const element of elements) {
               const datetime = Date.parse(element.getAttribute('datetime'));
-              const delta = (datetime - Date.now()) / (1000 * 3600 * 24);
-              element.innerHTML = formatter.format(Math.round(delta), 'days');
+              const delta = datetime - Date.now();
+
+              for (const unit in UNITS) {
+                if (Math.abs(delta) >= UNITS[unit] || unit == 'second') {
+                  const number = Math.round(delta / UNITS[unit]);
+                  element.innerHTML = formatter.format(number, unit);
+                  break;
+                }
+              }
             }
           '';
         }];
