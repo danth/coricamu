@@ -42,6 +42,7 @@ with coricamuLib.types;
             ${pkgs.minify}/bin/minify --type $extension --output "$out/$1" "$2"
           else
             echo "Linking $1"
+            mkdir -p "$(dirname "$out/$1")"
             ln -s "$2" "$out/$1"
           fi
         }
