@@ -39,7 +39,10 @@ with coricamuLib.types;
           if [[ "$supportedTypes" =~ (^|[[:space:]])$extension($|[[:space:]]) ]]
           then
             echo "Minifying $1"
-            ${pkgs.minify}/bin/minify --type $extension --output "$out/$1" "$2"
+            ${pkgs.minify}/bin/minify \
+              --type $extension \
+              --html-keep-whitespace \
+              --output "$out/$1" "$2"
           else
             echo "Linking $1"
             mkdir -p "$(dirname "$out/$1")"
