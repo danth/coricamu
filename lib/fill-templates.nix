@@ -111,7 +111,7 @@ let
       fill = match:
         if isString match
         then { body = match; usedTemplates = []; }
-        else expandTemplate templates template match
+        else expandTemplate templates template match;
     in
       concatFillResults (map fill matches);
 
