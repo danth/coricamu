@@ -42,7 +42,7 @@
           '';
         }}
 
-        <templates-recent-posts count="1" />
+        <templates-recent-posts count="1"></templates-recent-posts>
       '';
       usedTemplates = [ config.templates.note ];
       images = [{
