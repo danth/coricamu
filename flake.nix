@@ -33,10 +33,7 @@
       # libOutputs contains the value of `«Coricamu's flake».lib`,
       # which is used to build the example website.
 
-      libOutputs = mergeOutputs (map callOutputs [
-        ./lib/flake-tools.nix
-        ./lib/fill-templates/outputs.nix
-      ]);
+      libOutputs = callOutputs ./lib/flake-tools.nix;
 
       exampleOutputs = libOutputs.lib.generateFlakeOutputs {
         outputName = "example";

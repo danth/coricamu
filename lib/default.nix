@@ -1,5 +1,5 @@
 args:
-(import ./fill-templates/lib.nix args)
+(import ./fill-templates.nix args)
 // (import ./markdown.nix args)
 // (import ./submodules/page/lib.nix args)
 // (import ./submodules/website/lib.nix args)

@@ -8,7 +8,6 @@ with coricamuLib.types;
 let
   filledTemplates = fillTemplates {
     inherit (websiteConfig) templates;
-    name = config.path;
     body = ''
       ${
         optionalString
