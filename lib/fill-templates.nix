@@ -38,8 +38,8 @@ let
   matchTemplate = name: input:
     let
       splitted = builtins.split "(${templateStartPattern name}|${templateEndPattern name})" input;
-      isStartTag = match: isList match && elemAt match 2 != null;
-      isEndTag = match: isList match && elemAt match 2 == null;
+      isStartTag = match: isList match && elemAt match 1 != null;
+      isEndTag = match: isList match && elemAt match 1 == null;
       collate = collated: item:
         let
           # Operations on the output value.
