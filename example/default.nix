@@ -12,6 +12,9 @@
       <templates-font-awesome icon="book" style="solid"></templates-font-awesome>
       This is an example website for
       <a href="https://github.com/danth/coricamu">Coricamu</a>.
+      <templates-note title="Nesting">
+        You can nest templates!
+      </templates-note>
     </templates-note>
   '';
 

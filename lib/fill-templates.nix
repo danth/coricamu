@@ -41,19 +41,65 @@ let
       isStartTag = match: isList match && elemAt match 2 != null;
       isEndTag = match: isList match && elemAt match 2 == null;
       collate = collated: item:
-        if isStartTag item
-        then collated ++ [{
-          arguments = matchArguments (elemAt item 1);
-        }]
-        else
-          if isEndTag item
-          then collated
+        let
+          # Operations on the output value.
+          # We can either add a new match object, or update the latest one.
+          append = value: collated ++ [value];
+          updateLast = attrs: init collated ++ [(last collated // attrs)];
+
+          # If true, we have not reached a closing tag for the current call yet.
+          lastIsOpen =
+            (length collated > 0) &&
+            isAttrs (last collated) &&
+            (last collated).open > 0;
+        in
+          if isStartTag item
+          then
+            if lastIsOpen
+            # There is already a template open, so we convert another opening
+            # tag back to a string. This string will be passed to the already
+            # open template as its contents, and possibly returned to us later,
+            # when it will be parsed as a template again. This process allows
+            # template calls to be nested.
+            then updateLast {
+              contents = (last collated).contents + (elemAt item 0);
+              # We must count how many times we have seen a nested opening tag
+              # so that the corresponding number of closing tags can be processed.
+              open = (last collated).open + 1;
+            }
+            # There is no template open, so we open a new one.
+            else append {
+              open = 1;
+              arguments = matchArguments (elemAt item 1);
+              contents = "";
+            }
           else
-            if (length collated == 0) || (last collated)?contents
-            then collated ++ [item]
-            else init collated ++ [(last collated // {
-              contents = item;
-            })];
+            if isEndTag item
+            then
+              if (last collated).open > 1
+              # This closing tag corresponds to an opening tag which was nested,
+              # therefore is is converted to a string as per the comment above.
+              then updateLast {
+                contents = (last collated).contents + (elemAt item 0);
+                # Count how many times we have seen a nested closing tag so that
+                # we know when the template should be finished.
+                open = (last collated).open - 1;
+              }
+              # This is a normal closing tag.
+              else updateLast {
+                # We know that open <= 1, so we can skip decrementing and simply
+                # set it to zero.
+                open = 0;
+              }
+            else
+              # This is a string of content, not a relevant template tag.
+              if !lastIsOpen
+              # Between calls, we just insert content to the output list directly.
+              then append item
+              # Within a template call, we must add to the content of the template.
+              else updateLast {
+                contents = (last collated).contents + item;
+              };
     in
       foldl collate [] splitted;
 
