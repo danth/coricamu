@@ -76,21 +76,25 @@ let
           else
             if isEndTag item
             then
-              if (last collated).open > 1
-              # This closing tag corresponds to an opening tag which was nested,
-              # therefore is is converted to a string as per the comment above.
-              then updateLast {
-                contents = (last collated).contents + (elemAt item 0);
-                # Count how many times we have seen a nested closing tag so that
-                # we know when the template should be finished.
-                open = (last collated).open - 1;
-              }
-              # This is a normal closing tag.
-              else updateLast {
-                # We know that open <= 1, so we can skip decrementing and simply
-                # set it to zero.
-                open = 0;
-              }
+              if isAttrs (last collated)
+              then
+                if (last collated).open > 1
+                # This closing tag corresponds to an opening tag which was nested,
+                # therefore is is converted to a string as per the comment above.
+                then updateLast {
+                  contents = (last collated).contents + (elemAt item 0);
+                  # Count how many times we have seen a nested closing tag so that
+                  # we know when the template should be finished.
+                  open = (last collated).open - 1;
+                }
+                # This is a normal closing tag.
+                else updateLast {
+                  # We know that open <= 1, so we can skip decrementing and simply
+                  # set it to zero.
+                  open = 0;
+                }
+              else
+                throw "Unexpected closing template tag: ${elemAt item 0}"
             else
               # This is a string of content, not a relevant template tag.
               if !lastIsOpen
