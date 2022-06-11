@@ -11,19 +11,6 @@ with coricamuLib.types;
       type = functionTo lines;
     };
 
-    usedTemplates = mkOption {
-      description = ''
-        Templates used within the return value of this template's function.
-
-        If you call a template's function directly, you must add that
-        template to this list so that any required resources will be
-        installed onto the page. Templates used via template tags are
-        registered automatically.
-      '';
-      type = listOf template;
-      default = [];
-    };
-
     head = mkOption {
       description = ''
         HTML head of the page.

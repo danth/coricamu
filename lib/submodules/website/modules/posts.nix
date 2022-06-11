@@ -40,14 +40,11 @@ let
     sitemap.included = false;
   };
 
-  makePostList = posts: {
-    function = {}: ''
-      <ol class="post-list">
-        ${concatMapStringsSep "\n" (post: "<li>${post.indexEntry.function {}}</li>") posts}
-      </ol>
-    '';
-    usedTemplates = catAttrs "indexEntry" posts;
-  };
+  makePostList = posts: ''
+    <ol class="post-list">
+      ${concatMapStringsSep "\n" (post: "<li>${post.indexEntry}</li>") posts}
+    </ol>
+  '';
 
 in {
   options.posts = mkOption {
@@ -67,17 +64,9 @@ in {
         title = "All posts";
         body.html = ''
           <h1>${title}</h1>
-          ${
-            optionalString
-            pillsIndexIsUseful
-            (config.templates.posts-navigation.function {})
-          }
-
-          ${(makePostList allPosts).function {}}
+          ${optionalString pillsIndexIsUseful "<templates-posts-navigation />"}
+          ${makePostList allPosts}
         '';
-        usedTemplates =
-          (makePostList allPosts).usedTemplates ++
-          optional pillsIndexIsUseful config.templates.posts-navigation;
       })
 
       # Individual authors
@@ -88,13 +77,9 @@ in {
           title = "Posts by ${author}";
           body.html = ''
             <h1>${title}</h1>
-            ${config.templates.posts-navigation.function {}}
-
-            ${(makePostList posts).function {}}
+            <templates-posts-navigation />
+            ${makePostList posts}
           '';
-          usedTemplates =
-            (makePostList posts).usedTemplates ++
-            [ config.templates.posts-navigation ];
         }
       ) allAuthors)
 
@@ -112,14 +97,9 @@ in {
 
           body.html = ''
             <h1>Posts about <q>${keyword}</q></h1>
-            ${config.templates.posts-navigation.function {}}
-
-            ${(makePostList posts).function {}}
+            <templates-posts-navigation />
+            ${makePostList posts}
           '';
-
-          usedTemplates =
-            (makePostList posts).usedTemplates ++
-            [ config.templates.posts-navigation ];
         }
       ) allKeywords)
 
@@ -130,32 +110,26 @@ in {
 
         body.html = ''
           <h1>${title}</h1>
-          ${config.templates.posts-navigation.function {}}
+          <templates-posts-navigation />
 
           ${optionalString authorIndexIsUseful ''
             <h2>By author</h2>
             <ul class="pills">
-              ${concatStringsSep "\n" (mapAttrsToList (author: _posts:
-                config.templates.author-pill.function { inherit author; }
-              ) allAuthors)}
+              ${concatStringsSep "\n" (mapAttrsToList (author: _posts: ''
+                <templates-author-pill author="${author}" />
+              '') allAuthors)}
             </ul>
           ''}
 
           ${optionalString keywordIndexIsUseful ''
             <h2>By keyword</h2>
             <ul class="pills">
-              ${concatStringsSep "\n" (mapAttrsToList (keyword: _posts:
-                config.templates.keyword-pill.function { inherit keyword; }
-              ) allKeywords)}
+              ${concatStringsSep "\n" (mapAttrsToList (keyword: _posts: ''
+                <templates-keyword-pill keyword="${keyword}" />
+              '') allKeywords)}
             </ul>
           ''}
         '';
-
-        usedTemplates =
-          with config.templates;
-          [ posts-navigation ]
-          ++ optional authorIndexIsUseful author-pill
-          ++ optional keywordIndexIsUseful keyword-pill;
       });
 
     footer.html = mkIf (length allPosts > 0) (mkDefault ''
@@ -203,35 +177,25 @@ in {
 
     templates = {
       all-posts = {
-        function = { includeNavigation ? true }: ''
-          ${(makePostList allPosts).function {}}
+        function = { includeNavigation ? "true" }: ''
+          ${makePostList allPosts}
           ${
             optionalString
-            includeNavigation
-            (config.templates.posts-navigation.function {})
+            (includeNavigation == "true")
+            "<templates-posts-navigation />"
           }
         '';
-        usedTemplates =
-          (makePostList allPosts).usedTemplates ++
-          [ config.templates.posts-navigation ];
       };
 
       recent-posts = {
-        function = { count, includeNavigation ? true }: ''
-          ${(makePostList (take (toInt count) allPosts)).function {}}
+        function = { count, includeNavigation ? "true" }: ''
+          ${makePostList (take (toInt count) allPosts)}
           ${
             optionalString
-            includeNavigation
-            (config.templates.posts-navigation.function {})
+            (includeNavigation == "true")
+            "<templates-posts-navigation />"
           }
         '';
-        # TODO: Properly inherit pill templates from makePostList
-        usedTemplates = with config.templates; [
-          author-pill
-          keyword-pill
-          relative-time-pill
-          posts-navigation
-        ];
       };
 
       relative-time-pill = {
@@ -290,11 +254,15 @@ in {
       };
 
       author-pill =
-        { author, itemprop ? false }:
+        { author, itemprop ? "false" }:
         if authorIndexIsUseful
         then ''
           <li
-            ${optionalString itemprop "itemprop=\"author\""}
+            ${
+              optionalString
+              (itemprop == "true")
+              "itemprop=\"author\""
+            }
             itemscope
             itemtype="https://schema.org/Person"
           ><a

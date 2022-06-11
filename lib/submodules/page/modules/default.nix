@@ -23,10 +23,7 @@ let
     '';
   };
 
-  usedTemplates =
-    let getUsedTemplates = thing:
-      thing.usedTemplates ++ concatMap getUsedTemplates thing.usedTemplates;
-    in getUsedTemplates filledTemplates ++ getUsedTemplates config;
+  inherit (filledTemplates) usedTemplates;
 
 in {
   options = {
@@ -81,19 +78,6 @@ in {
         - <templates.user id="67890">John Doe</templates.user>
       '';
       type = content {};
-    };
-
-    usedTemplates = mkOption {
-      description = ''
-        Templates for which page resources should be installed.
-
-        If you call a template's function directly, you must add that
-        template to this list so that any required resources will be
-        installed onto the page. Templates used via template tags are
-        registered automatically.
-      '';
-      type = listOf template;
-      default = [];
     };
 
     files = mkOption {

@@ -73,7 +73,7 @@ in {
     indexEntry = mkOption {
       description = "Entry in the posts index page for this post.";
       internal = true;
-      type = template;
+      type = lines;
     };
 
     rssEntry = mkOption {
@@ -104,69 +104,57 @@ in {
     authors = sort (a: b: a < b) config.authors;
     keywords = sort (a: b: a < b) config.keywords;
 
-    postInfo = {
-      function = {}: ''
-        Posted
-        ${websiteConfig.templates.relative-time-pill.function {
-          itemprop = "datePublished";
-          inherit (config) datetime;
-        }}
+    postInfo = ''
+      Posted
+      <templates-relative-time-pill
+        itemprop="datePublished"
+        datetime="${config.datetime}" />
 
-        ${optionalString (config.edited != null) ''
-          and edited
-          ${websiteConfig.templates.relative-time-pill.function {
-            itemprop = "dateModified";
-            datetime = config.edited;
-          }}
-        ''}
+      ${optionalString (config.edited != null) ''
+        and edited
+        <templates-relative-time-pill
+          itemprop="dateModified"
+          datetime="${config.edited}" />
+      ''}
 
-        by
-        <ul class="pills">
+      by
+      <ul class="pills">
+        ${
+          concatMapStringsSep "\n"
+          (author: ''
+            <templates-author-pill author="${author}" itemprop="true" />
+          '')
+          authors
+        }
+      </ul>
+
+      ${optionalString (length keywords > 0) ''
+        with keywords
+        <ul itemprop="keywords" class="pills">
           ${
             concatMapStringsSep "\n"
-            (author: websiteConfig.templates.author-pill.function {
-              inherit author;
-              itemprop = true;
-            })
-            authors
+            (keyword: ''
+              <templates-keyword-pill keyword="${keyword}" />
+            '')
+            keywords
           }
         </ul>
-
-        ${optionalString (length keywords > 0) ''
-          with keywords
-          <ul itemprop="keywords" class="pills">
-            ${
-              concatMapStringsSep "\n"
-              (keyword: websiteConfig.templates.keyword-pill.function {
-                inherit keyword;
-              })
-              keywords
-            }
-          </ul>
-        ''}
-      '';
-      usedTemplates =
-        with websiteConfig.templates;
-        [ author-pill relative-time-pill posts-navigation ]
-        ++ optional (length keywords > 0) keyword-pill;
-    };
+      ''}
+    '';
 
   in {
-    indexEntry = {
-      function = {}: ''
-        <section
-          itemscope
-          itemtype="https://schema.org/BlogPosting"
-          class="post-summary"
-        >
-          <a itemprop="url"
-             href="/${config.page.path}"
-          ><h1 itemprop="headline">${config.title}</h1></a>
-          <div class="post-meta">${postInfo.function {}}</div>
-        </section>
-      '';
-      usedTemplates = [ postInfo ];
-    };
+    indexEntry = ''
+      <section
+        itemscope
+        itemtype="https://schema.org/BlogPosting"
+        class="post-summary"
+      >
+        <a itemprop="url"
+           href="/${config.page.path}"
+        ><h1 itemprop="headline">${config.title}</h1></a>
+        <div class="post-meta">${postInfo}</div>
+      </section>
+    '';
 
     rssEntry =
       let
@@ -193,8 +181,6 @@ in {
       '';
 
     page = {
-      usedTemplates = [ postInfo ];
-
       path = "posts/post/${config.slug}.html";
 
       inherit (config) title;
@@ -210,9 +196,9 @@ in {
             ${config.body.output}
           </div>
           <footer class="post-meta">
-            ${postInfo.function {}}
+            ${postInfo}
             <link itemprop="url" href="/${config.page.path}">
-            ${websiteConfig.templates.posts-navigation.function {}}
+            <templates-posts-navigation />
           </footer>
         </article>
       '';

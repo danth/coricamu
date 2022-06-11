@@ -93,7 +93,7 @@ let
               # template with the arguments from this self-closing tag.
               else append {
                 open = 0;
-                contents = null;
+                contents = "";
                 arguments = matchArguments (elemAt item 6);
               }
             else
