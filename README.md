@@ -348,13 +348,13 @@ Icons from [Font Awesome 6](https://fontawesome.com/search?m=free) can be
 inserted by using the built-in `font-awesome` template:
 
 ```html
-<templates-font-awesome icon="book"></templates-font-awesome>
+<templates-font-awesome icon="book" />
 ```
 
 For logos, you need to add `style="brands"`:
 
 ```html
-<templates-font-awesome style="brands" icon="github"></templates-font-awesome>
+<templates-font-awesome style="brands" icon="github" />
 ```
 
 The `style` attribute can also used to switch between `regular` and `solid`
