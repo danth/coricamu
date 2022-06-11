@@ -258,11 +258,7 @@ in {
         if authorIndexIsUseful
         then ''
           <li
-            ${
-              optionalString
-              (itemprop == "true")
-              "itemprop=\"author\""
-            }
+            ${optionalString (itemprop == "true") "itemprop=\"author\""}
             itemscope
             itemtype="https://schema.org/Person"
           ><a
@@ -276,7 +272,7 @@ in {
         ''
         else ''
           <li
-            ${optionalString itemprop "itemprop=\"author\""}
+            ${optionalString (itemprop == "true") "itemprop=\"author\""}
             itemscope
             itemtype="https://schema.org/Person"
           ><span
