@@ -38,11 +38,10 @@ can also be done in a Coricamu module.
 
 ### Basic information
 
-- `baseUrl` must contain the root URL where your site will be served.
-- `siteTitle` optionally provides a human-readable title for the site.
-  If it's not given, this will be `baseUrl` minus the protocol name and
-  special characters.
-- `language` is the language the site's content is written in.
+- `baseUrl` is the root URL where your site will be served.
+- `siteTitle` provides a human-readable title for the site.
+  If it's not given, this will be the domain name part of `baseUrl`.
+- `language` is a code representing the human language which the website is written in.
 
 ```nix
 {
