@@ -37,10 +37,10 @@ let
   startTagPattern = name:
     "<[[:space:]]*templates-${escapeRegex name}(([[:space:]]*${argumentPattern})*)[[:space:]]*(/)?>";
 
-  isSelfClosingTag = match: isList match && elemAt match 6 == "/";
-  isStartTag = match: isList match && elemAt match 1 != null && elemAt match 6 == null;
+  isStartOrSelfClosingTag = match: elemAt match 1 != null;
+  isSelfClosingTag = match: elemAt match 6 == "/";
 
-  collateStartTag = collated: match:
+  collateStartOrSelfClosingTag = collated: match:
     let
       # Self-closing tags create a template call but never open it,
       # so no content will be picked up and a closing tag is not required.
@@ -67,8 +67,6 @@ let
 
   endTagPattern = name:
     "</[[:space:]]*templates-${escapeRegex name}[[:space:]]*>";
-
-  isEndTag = match: isList match && elemAt match 1 == null;
 
   collateEndTag = collated: match:
     if isAttrs (last collated)
@@ -106,12 +104,12 @@ let
     };
 
   collateMatches = collated: match:
-    if isStartTag match || isSelfClosingTag match then
-      collateStartTag collated match
-    else if isEndTag match then
-      collateEndTag collated match
+    if isString match then
+      collateContent collated match
+    else if isStartOrSelfClosingTag match then
+      collateStartOrSelfClosingTag collated match
     else
-      collateContent collated match;
+      collateEndTag collated match;
 
   # This function uses regular expressions to parse template
   # tags into a list of:
