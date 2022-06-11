@@ -7,8 +7,8 @@ with coricamuLib.types;
 {
   options = {
     path = mkOption {
-      description = "Path of the image relative to the root URL.";
-      type = strMatching ".+\\..+";
+      description = "Path of the optimised image relative to the root URL.";
+      type = strMatching ".+\\.webp";
     };
 
     file = mkOption {
@@ -25,24 +25,7 @@ with coricamuLib.types;
   };
 
   config.outputFile =
-    pkgs.runCommand
-    config.path
-    {
-      optim = pkgs.image_optim.override {
-        # Disabled due to unfree license
-        withPngout = false;
-      };
-      optimConfig = ''
-        nice: 0
-        pngout: false
-        allow_lossy: true
-      '';
-      passAsFile = [ "optimConfig" ];
-    }
-    ''
-      cp ${config.file} $out
-
-      ln -s $optimConfigPath .image_optim.yml
-      $optim/bin/image_optim --no-progress $out
+    pkgs.runCommand config.path { } ''
+      ${pkgs.imagemagick}/bin/convert ${config.file} $out
     '';
 }

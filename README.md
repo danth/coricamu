@@ -67,20 +67,22 @@ For lots of file types, there are smarter options, for example:
 
 ### Images
 
-There is a separate option for image files which will perform some compression
-to improve website loading speed, with minimal quality reduction. Currently,
-[`image_optim`](https://github.com/toy/image_optim) is used behind the scenes.
+There is a separate option for image files which will automatically convert them
+to the modern `webp` format, which generally makes the file a lot smaller.
 
 ```nix
 {
   images = [
     {
-      path = "clouds.png";
+      path = "clouds.webp";
       file = ./clouds.png;
     }
   ];
 }
 ```
+
+Vector images such as `svg`s don't need this conversion: they should be added directly
+to the files option.
 
 ### Pages
 

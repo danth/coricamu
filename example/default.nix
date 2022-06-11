@@ -38,12 +38,12 @@
 
         <p>This is some text outside of the icon box.</p>
 
-        <img src="clouds.png" alt="A cloudy sky.">
+        <img src="clouds.webp" alt="A cloudy sky.">
 
         <templates-recent-posts count="1"></templates-recent-posts>
       '';
       images = [{
-        path = "clouds.png";
+        path = "clouds.webp";
         file = ./clouds.png;
       }];
       sitemap = {
