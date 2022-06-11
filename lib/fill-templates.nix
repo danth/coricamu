@@ -32,10 +32,12 @@ let
     isAttrs (last collated) &&
     (last collated).open > 0;
 
-  selfClosingTagPattern = name:
-    "<[[:space:]]*templates-${escapeRegex name}(([[:space:]]*${argumentPattern})*)[[:space:]]*(/)>";
+  # Start tags and self-closing tags are matched by the same pattern.
+  # If a "/" is captured by the last group, then we know it's self-closing.
+  startTagPattern = name:
+    "<[[:space:]]*templates-${escapeRegex name}(([[:space:]]*${argumentPattern})*)[[:space:]]*(/)?>";
 
-  isSelfClosingTag = match: isList match && elemAt match 11 == "/";
+  isSelfClosingTag = match: isList match && elemAt match 6 == "/";
 
   collateSelfClosingTag = collated: match:
     if lastIsOpen collated
@@ -51,13 +53,10 @@ let
     else append collated {
       open = 0;
       contents = "";
-      arguments = matchArguments (elemAt match 6);
+      arguments = matchArguments (elemAt match 1);
     };
 
-  startTagPattern = name:
-    "<[[:space:]]*templates-${escapeRegex name}(([[:space:]]*${argumentPattern})*)[[:space:]]*>";
-
-  isStartTag = match: isList match && elemAt match 1 != null;
+  isStartTag = match: isList match && elemAt match 1 != null && elemAt match 6 == null;
 
   collateStartTag = collated: match:
     if lastIsOpen collated
@@ -104,7 +103,7 @@ let
       throw "Unexpected closing template tag: ${elemAt match 0}";
 
   templatePattern = name:
-    "(${startTagPattern name}|${selfClosingTagPattern name}|${endTagPattern name})";
+    "(${startTagPattern name}|${endTagPattern name})";
 
   collateContent = collated: match:
     # This is a string of content, not a relevant template tag.
