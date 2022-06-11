@@ -38,42 +38,32 @@ let
     "<[[:space:]]*templates-${escapeRegex name}(([[:space:]]*${argumentPattern})*)[[:space:]]*(/)?>";
 
   isSelfClosingTag = match: isList match && elemAt match 6 == "/";
-
-  collateSelfClosingTag = collated: match:
-    if lastIsOpen collated
-    # This self-closing tag is nested, so convert it to a string.
-    # This string will be passed to the already open template as its
-    # contents, and possibly returned to us later, when it will be parsed
-    # as a template again. This process allows template calls to be nested.
-    then updateLast collated {
-      contents = (last collated).contents + (elemAt match 0);
-    }
-    # There is no template open, so we can create an already-closed
-    # template with the arguments from this self-closing tag.
-    else append collated {
-      open = 0;
-      contents = "";
-      arguments = matchArguments (elemAt match 1);
-    };
-
   isStartTag = match: isList match && elemAt match 1 != null && elemAt match 6 == null;
 
   collateStartTag = collated: match:
-    if lastIsOpen collated
-    # There is already a template open, so we convert another opening
-    # tag back to a string as per the comment in collateSelfClosingTag.
-    then updateLast collated {
-      contents = (last collated).contents + (elemAt match 0);
-      # We must count how many times we have seen a nested opening tag
-      # so that the corresponding number of closing tags can be processed.
-      open = (last collated).open + 1;
-    }
-    # There is no template open, so we open a new one.
-    else append collated {
-      open = 1;
-      contents = "";
-      arguments = matchArguments (elemAt match 1);
-    };
+    let
+      # Self-closing tags create a template call but never open it,
+      # so no content will be picked up and a closing tag is not required.
+      open = if isSelfClosingTag match then 0 else 1;
+    in
+      if lastIsOpen collated
+      # This tag is nested, so convert it to a string. The string will be passed
+      # to the already open template as part of its contents, and possibly returned
+      # to us later, when it will be parsed as a template again. This process allows
+      # template calls to be nested without causing problems.
+      then updateLast collated {
+        # The first capturing group is the entire tag as a string.
+        contents = (last collated).contents + (elemAt match 0);
+        # We must count how many times we have seen a nested opening tag
+        # so that the corresponding number of closing tags can be processed.
+        open = (last collated).open + open;
+      }
+      # There is no template open, so we can start a new one.
+      else append collated {
+        inherit open;
+        contents = "";
+        arguments = matchArguments (elemAt match 1);
+      };
 
   endTagPattern = name:
     "</[[:space:]]*templates-${escapeRegex name}[[:space:]]*>";
@@ -86,7 +76,7 @@ let
       if (last collated).open > 1
       # This closing tag corresponds to an opening tag which was nested,
       # therefore is is converted to a string as per the comment in
-      # collateSelfClosingTag.
+      # collateStartTag.
       then updateLast collated {
         contents = (last collated).contents + (elemAt match 0);
         # Count how many times we have seen a nested closing tag so that
@@ -116,10 +106,8 @@ let
     };
 
   collateMatches = collated: match:
-    if isStartTag match then
+    if isStartTag match || isSelfClosingTag match then
       collateStartTag collated match
-    else if isSelfClosingTag match then
-      collateSelfClosingTag collated match
     else if isEndTag match then
       collateEndTag collated match
     else
