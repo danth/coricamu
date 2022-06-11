@@ -1,18 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-
     utils.url = "github:numtide/flake-utils";
-
-    # We could use `rustPlatform` from Nixpkgs to build the Rust helper
-    # programs, but Crane splits the build into multiple derivations which may
-    # be cached during development. It also provides the Clippy linter which is
-    # used in the checks output.
-    crane = {
-      url = "github:ipetkov/crane";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.utils.follows = "utils";
-    };
   };
 
   outputs =
