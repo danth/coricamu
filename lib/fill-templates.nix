@@ -21,11 +21,17 @@ let
     in
       foldl foldMatch {} matches;
 
+  templateSelfClosingPattern = name:
+    "<[[:space:]]*templates-${escapeRegex name}(([[:space:]]*${argumentPattern})*)[[:space:]]*(/)>";
+
   templateStartPattern = name:
     "<[[:space:]]*templates-${escapeRegex name}(([[:space:]]*${argumentPattern})*)[[:space:]]*>";
 
   templateEndPattern = name:
     "</[[:space:]]*templates-${escapeRegex name}[[:space:]]*>";
+
+  templatePattern = name:
+    "(${templateStartPattern name}|${templateSelfClosingPattern name}|${templateEndPattern name})";
 
   # This rather complex function uses regular expressions to parse template
   # tags into a list of:
@@ -37,8 +43,9 @@ let
   # - Lists representing end tags
   matchTemplate = name: input:
     let
-      splitted = builtins.split "(${templateStartPattern name}|${templateEndPattern name})" input;
+      splitted = builtins.split (templatePattern name) input;
       isStartTag = match: isList match && elemAt match 1 != null;
+      isSelfClosingTag = match: isList match && elemAt match 11 == "/";
       isEndTag = match: isList match && elemAt match 1 == null;
       collate = collated: item:
         let
@@ -70,40 +77,56 @@ let
             # There is no template open, so we open a new one.
             else append {
               open = 1;
-              arguments = matchArguments (elemAt item 1);
               contents = "";
+              arguments = matchArguments (elemAt item 1);
             }
           else
-            if isEndTag item
+            if isSelfClosingTag item
             then
-              if isAttrs (last collated)
-              then
-                if (last collated).open > 1
-                # This closing tag corresponds to an opening tag which was nested,
-                # therefore is is converted to a string as per the comment above.
-                then updateLast {
-                  contents = (last collated).contents + (elemAt item 0);
-                  # Count how many times we have seen a nested closing tag so that
-                  # we know when the template should be finished.
-                  open = (last collated).open - 1;
-                }
-                # This is a normal closing tag.
-                else updateLast {
-                  # We know that open <= 1, so we can skip decrementing and simply
-                  # set it to zero.
-                  open = 0;
-                }
-              else
-                throw "Unexpected closing template tag: ${elemAt item 0}"
+              if lastIsOpen
+              # This self-closing tag is nested, so convert it to a string
+              # as per the comment above.
+              then updateLast {
+                contents = (last collated).contents + (elemAt item 0);
+              }
+              # There is no template open, so we can create an already-closed
+              # template with the arguments from this self-closing tag.
+              else append {
+                open = 0;
+                contents = null;
+                arguments = matchArguments (elemAt item 6);
+              }
             else
-              # This is a string of content, not a relevant template tag.
-              if !lastIsOpen
-              # Between calls, we just insert content to the output list directly.
-              then append item
-              # Within a template call, we must add to the content of the template.
-              else updateLast {
-                contents = (last collated).contents + item;
-              };
+              if isEndTag item
+              then
+                if isAttrs (last collated)
+                then
+                  if (last collated).open > 1
+                  # This closing tag corresponds to an opening tag which was nested,
+                  # therefore is is converted to a string as per the comment above.
+                  then updateLast {
+                    contents = (last collated).contents + (elemAt item 0);
+                    # Count how many times we have seen a nested closing tag so that
+                    # we know when the template should be finished.
+                    open = (last collated).open - 1;
+                  }
+                  # This is a normal closing tag.
+                  else updateLast {
+                    # We know that open <= 1, so we can skip decrementing and simply
+                    # set it to zero.
+                    open = 0;
+                  }
+                else
+                  throw "Unexpected closing template tag: ${elemAt item 0}"
+              else
+                # This is a string of content, not a relevant template tag.
+                if !lastIsOpen
+                # Between calls, we just insert content to the output list directly.
+                then append item
+                # Within a template call, we must add to the content of the template.
+                else updateLast {
+                  contents = (last collated).contents + item;
+                };
     in
       foldl collate [] splitted;
 

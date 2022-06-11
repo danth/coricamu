@@ -9,7 +9,7 @@
     <h1>Coricamu Example Site</h1>
 
     <templates-note title="Example">
-      <templates-font-awesome icon="book" style="solid"></templates-font-awesome>
+      <templates-font-awesome icon="book" style="solid" />
       This is an example website for
       <a href="https://github.com/danth/coricamu">Coricamu</a>.
       <templates-note title="Nesting">
