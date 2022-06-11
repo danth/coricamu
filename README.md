@@ -316,7 +316,9 @@ install extra files to make the template work, for example a stylesheet:
 
 #### Template tags
 
-Templates are inserted by using the following HTML-like syntax within a page body.
+Templates are inserted by using template tag syntax. This looks similar to a HTML
+tag, but its name must match up with one of the templates you have defined for your
+website.
 
 ```html
 <p>
@@ -333,57 +335,11 @@ Templates are inserted by using the following HTML-like syntax within a page bod
 </p>
 ```
 
+Coricamu will parse the tag and call the correct template function, all within Nix.
+
 Text inside the template tag is passed to the template function as the `contents`
 argument; this is a special argument used to create containers which fit around other
 content. Any attributes on the tag are converted to corresponding function arguments.
-
-*Note:* because HTML tags are case-insensitive, template names are also
-case-insensitive.
-
-#### Nix splices
-
-It is also possible to insert templates by calling their Nix function directly.
-This is more efficient as it does not require HTML to be parsed during evaluation.
-However, there are more steps required to get it working correctly, so this method
-of using templates is more prone to bugs.
-
-```nix
-{ config, ... }:
-
-{
-  pages = [{
-    path = "lorem_ipsum.html";
-    title = "Lorem Ipsum";
-
-    body.html = ''
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
-      </p>
-      ${config.templates.note.function {
-        title = "An important note";
-        contents = ''
-          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-          nisi ut aliquip ex ea commodo consequat.
-        '';
-      }}
-      <p>
-        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-        dolore eu fugiat nulla pariatur.
-      </p>
-    '';
-
-    usedTemplates = [ config.templates.note ];
-  }];
-}
-```
-
-Note that you must manually register each template as used. If this is not
-done, settings from the template will not be added to the page, which means that
-required resources such as images could be missing.
-
-Calling templates in this way relies on a Nix feature, so you cannot import the
-body from a separate HTML file while using this method.
 
 ### Icons
 
