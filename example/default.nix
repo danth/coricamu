@@ -123,6 +123,7 @@
         occaecat cupidatat non proident, sunt in culpa qui officia deserunt
         mollit anim id est laborum.
       '';
+      page.meta.description = "A traditional Lorem Ipsum passage.";
     }
     {
       title = "Lorem Ipsum 2.0";

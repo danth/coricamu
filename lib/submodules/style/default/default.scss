@@ -190,21 +190,27 @@ h1 + .post-explore {
   text-align: center;
 }
 
+$post-summary-spacing: 0.4em;
+
 .post-list {
   @include hidden-list;
 
-  $margin: 1.5em;
-  $gap: 0.4em;
+  margin-top: $post-summary-spacing * 4;
+  margin-bottom: $post-summary-spacing * 4;
 
-  margin-top: $margin - $gap;
-  margin-bottom: $margin;
+  display: flex;
+  flex-direction: column;
+  gap: $post-summary-spacing * 2;
+}
 
-  .post-summary h1 {
-    margin-top: $gap;
-    margin-bottom: $gap / 2;
-  }
+.post-summary {
+  display: flex;
+  flex-direction: column;
+  gap: $post-summary-spacing;
 
-  & + .post-explore {
-    margin-top: -1em;
+  * {
+    margin-top: 0;
+    margin-bottom: 0;
   }
 }
+

@@ -152,6 +152,11 @@ in {
         <a itemprop="url"
            href="/${config.page.path}"
         ><h1 itemprop="headline">${config.title}</h1></a>
+        ${
+          optionalString
+          (config.page.meta ? description)
+          "<p itemprop=\"abstract\">${config.page.meta.description}</p>"
+        }
         <div class="post-meta">${postInfo}</div>
       </section>
     '';
