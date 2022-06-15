@@ -46,6 +46,42 @@ let
     </ol>
   '';
 
+  makeRSS = { path, title, description, posts }: pkgs.writeTextFile {
+    name = path;
+
+    text = ''
+      <?xml version="1.0" encoding="UTF-8" ?>
+      <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+        <channel>
+          <atom:link
+            href="${config.baseUrl}${path}"
+            rel="self"
+            type="application/rss+xml"
+          />
+          <link>${config.baseUrl}posts/index.html</link>
+
+          <language>${config.language}</language>
+          <title>${escapeXML title}</title>
+          <description>${escapeXML description}</description>
+          <generator>Coricamu</generator>
+
+          <pubDate>${
+            # Date of latest post
+            (elemAt allPosts 0).datetime
+          }</pubDate>
+
+          ${concatMapStringsSep "\n" (post: post.rssEntry) posts}
+        </channel>
+      </rss>
+    '';
+
+    # Convert all dates to RFC-822 format as required by RSS.
+    checkPhase =
+      let python = pkgs.python3.withPackages
+        (ps: with ps; [ beautifulsoup4 dateutil ]);
+      in "${python}/bin/python ${../rss_dates.py} $target $target";
+  };
+
 in {
   options.posts = mkOption {
     description = "List of all posts.";
@@ -64,7 +100,7 @@ in {
         title = "All posts";
         body.html = ''
           <h1>${title}</h1>
-          ${optionalString pillsIndexIsUseful "<templates-posts-navigation />"}
+          <templates-posts-navigation />
           ${makePostList allPosts}
         '';
       })
@@ -77,7 +113,9 @@ in {
           title = "Posts by ${author}";
           body.html = ''
             <h1>${title}</h1>
-            <templates-posts-navigation />
+            <templates-posts-navigation
+              rss-path="authors/${makeSlug author}.xml"
+              rss-label="this author's RSS feed" />
             ${makePostList posts}
           '';
         }
@@ -97,7 +135,9 @@ in {
 
           body.html = ''
             <h1>Posts about <q>${keyword}</q></h1>
-            <templates-posts-navigation />
+            <templates-posts-navigation
+              rss-path="keywords/${makeSlug keyword}.xml"
+              rss-label="this keyword's RSS feed" />
             ${makePostList posts}
           '';
         }
@@ -132,48 +172,33 @@ in {
         '';
       });
 
-    footer.html = mkIf (length allPosts > 0) (mkDefault ''
-      <a class="rss-link" href="/rss/posts.xml">
-        <templates-font-awesome style="solid" icon="rss"></templates-font-awesome>
-        RSS feed
-      </a>
-    '');
-
-    files."rss/posts.xml" = mkIf (length allPosts > 0) (pkgs.writeTextFile {
-      name = "posts.xml";
-
-      text = ''
-        <?xml version="1.0" encoding="UTF-8" ?>
-        <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-          <channel>
-            <atom:link
-              href="${config.baseUrl}rss/posts.xml"
-              rel="self"
-              type="application/rss+xml"
-            />
-            <link>${config.baseUrl}posts/index.html</link>
-
-            <language>${config.language}</language>
-            <title>${escapeXML config.siteTitle}</title>
-            <description>All posts from ${escapeXML config.siteTitle}.</description>
-            <generator>Coricamu</generator>
-
-            <pubDate>${
-              # Date of latest post
-              (elemAt allPosts 0).datetime
-            }</pubDate>
-
-            ${concatMapStringsSep "\n" (post: post.rssEntry) allPosts}
-          </channel>
-        </rss>
-      '';
-
-      # Convert all dates to RFC-822 format as required by RSS.
-      checkPhase =
-        let python = pkgs.python3.withPackages
-          (ps: with ps; [ beautifulsoup4 dateutil ]);
-        in "${python}/bin/python ${../rss_dates.py} $target $target";
-    });
+    files =
+      optionalAttrs (length allPosts > 0) {
+        "posts/rss/index.xml" = makeRSS {
+          path = "posts/rss/index.xml";
+          title = config.siteTitle;
+          description = "All posts from ${config.siteTitle}.";
+          posts = allPosts;
+        };
+      }
+      // optionalAttrs authorIndexIsUseful (mapAttrs' (
+        author: posts:
+        let path = "posts/rss/authors/${makeSlug author}.xml";
+        in nameValuePair path (makeRSS {
+          title = "${author} on ${config.siteTitle}";
+          description = "Posts by ${author} on ${config.siteTitle}.";
+          inherit path posts;
+        })
+      ) allAuthors)
+      // optionalAttrs keywordIndexIsUseful (mapAttrs' (
+        keyword: posts:
+        let path = "posts/rss/keywords/${makeSlug keyword}.xml";
+        in nameValuePair path (makeRSS {
+          title = "\"${keyword}\" on ${config.siteTitle}";
+          description = "Posts about \"${keyword}\" on ${config.siteTitle}.";
+          inherit path posts;
+        })
+      ) allKeywords);
 
     templates = {
       all-posts = {
@@ -294,15 +319,19 @@ in {
           <li>${keyword}</li>
         '';
 
-      posts-navigation = _: ''
-        <nav class="post-explore">
-          Explore
-          <a href="/posts/index.html">all posts</a>
-          ${optionalString pillsIndexIsUseful ''
-            or the <a href="/posts/pills.html">index</a>
-          ''}
-        </nav>
-      '';
+      posts-navigation =
+        { rss-path ? "index.xml", rss-label ? "the RSS feed" }: ''
+          <nav class="post-explore">
+            Explore
+            <a href="/posts/index.html">all posts</a>
+            ${optionalString pillsIndexIsUseful ''
+              or the <a href="/posts/pills.html">index</a>
+            ''}
+            &middot;
+            Subscribe to
+            <a href="/posts/rss/${rss-path}">${rss-label}</a>
+          </nav>
+        '';
     };
   };
 }

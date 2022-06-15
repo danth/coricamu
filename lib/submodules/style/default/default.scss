@@ -145,10 +145,6 @@ hr {
   font-size: 0.8em;
 }
 
-.rss-link {
-  text-decoration: none;
-}
-
 /***** Pills (author name, date and keywords) *****/
 
 %pill {
@@ -186,7 +182,7 @@ ul.pills {
 /***** Post list pages *****/
 
 h1 + .post-explore {
-  margin-top: -1.4em;
+  margin-top: -1em;
   text-align: center;
 }
 

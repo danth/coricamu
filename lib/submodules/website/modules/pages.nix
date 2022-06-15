@@ -52,7 +52,7 @@ with coricamuLib.types;
         <a href="privacy.html">Privacy Policy</a>
       '';
       type = content { allowNull = true; };
-      default = null;
+      default = {};
     };
 
     templates = mkOption {
