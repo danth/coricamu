@@ -1,5 +1,3 @@
-{ config, ... }:
-
 {
   baseUrl = "https://coricamu.example.com/";
   siteTitle = "Coricamu Example Site";

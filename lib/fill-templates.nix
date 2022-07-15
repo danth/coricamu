@@ -1,4 +1,4 @@
-{ coricamuLib, pkgsLib, pkgs, ... }:
+{ coricamuLib, pkgsLib, ... }:
 
 with pkgsLib;
 with coricamuLib;
@@ -141,7 +141,7 @@ let
   # into the body returned from the first filling. In this case, the newer body
   # should replace the old one, but we have still used all of the templates.
   updateFillResult = left: right: {
-    body = right.body;
+    inherit (right) body;
     usedTemplates = left.usedTemplates ++ right.usedTemplates;
   };
 
