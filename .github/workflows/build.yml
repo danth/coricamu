@@ -1,17 +1,21 @@
 name: Build
 
-on: push
+on:
+  pull_request:
+  push:
+    branches:
+      - master
 
 jobs:
-  build:
-    name: Build
-    uses: nixbuild/nixbuild-action/.github/workflows/ci-workflow.yml@v12
+  example:
+    name: Example
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Nix
+        uses: cachix/install-nix-action@v16
 
-    # Secret key will not be available to forks
-    if: github.repository_owner == 'danth'
-    secrets:
-      nixbuild_ssh_key: ${{ secrets.NIXBUILD_SSH_KEY }}
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    with:
-      filter_builds: '.system == "x86_64-linux"'
-      label_builds: '"\(.attr)"'
+      - name: Build example
+        run: nix -L build .#example
