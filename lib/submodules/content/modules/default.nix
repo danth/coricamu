@@ -21,6 +21,16 @@ let
       inherit name;
       file = source;
     };
+
+    docbook = source: convertDocbook {
+      inherit name;
+      docbook = source;
+    };
+
+    docbookFile = source: convertDocbookFile {
+      inherit name;
+      file = source;
+    };
   };
 
   # Name of the source type which was used,
@@ -116,6 +126,27 @@ in {
         <link xlink:href="https://rawgit.com/fletcher/MultiMarkdown-6-Syntax-Guide/master/index.html">the MultiMarkdown website</link>.
       '';
       example = "./example.md";
+      type = nullOr file;
+      default = null;
+    };
+
+    docbook = mkOption {
+      description = "DocBook content.";
+      example = ''
+        <title>Contact Us</title>
+        <para>You can reach us by contacting any of the following people:</para>
+        <itemizedlist>
+          <listitem><para>Jane Doe</para></listitem>
+          <listitem><para>John Doe</para></listitem>
+        </itemizedlist>
+      '';
+      type = nullOr lines;
+      default = null;
+    };
+
+    docbookFile = mkOption {
+      description = "A file containing DocBook.";
+      example = "./example.xml";
       type = nullOr file;
       default = null;
     };

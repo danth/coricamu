@@ -96,7 +96,7 @@ boilerplate for you:
       path = "index.html";
       title = "Home";
 
-      # Currently supports either HTML or Markdown input
+      # Currently supports HTML, Markdown or DocBook input
       body.markdown = ''
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
         eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad

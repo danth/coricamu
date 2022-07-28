@@ -104,6 +104,14 @@
         </templates-mermaid>
       '';
     }
+    {
+      path = "docbook.html";
+      title = "Docbook support";
+      body.docbook = ''
+        <para>Coricamu supports conversion of Docbook to HTML using
+        <literal>xsltproc</literal>.</para>
+      '';
+    }
   ];
 
   posts = [
