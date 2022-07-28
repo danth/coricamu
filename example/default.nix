@@ -1,3 +1,5 @@
+{ pkgs, pkgsLib, coricamuLib, ... }:
+
 {
   baseUrl = "https://coricamu.example.com/";
   siteTitle = "Coricamu Example Site";
@@ -105,12 +107,18 @@
       '';
     }
     {
-      path = "docbook.html";
-      title = "Docbook support";
-      body.docbook = ''
-        <para>Coricamu supports conversion of Docbook to HTML using
-        <literal>xsltproc</literal>.</para>
-      '';
+      path = "options.html";
+      title = "NixOS Options";
+      body.docbook =
+        let
+          nixosSystem = pkgsLib.nixosSystem {
+            system = pkgs.system;
+            modules = [];
+          };
+          inherit (nixosSystem) options;
+        in coricamuLib.makeOptionsPage {
+          inherit options;
+        };
     }
   ];
 
