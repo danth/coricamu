@@ -4,7 +4,7 @@ with coricamuLib;
 with pkgsLib;
 
 {
-  makeOptionSection = option: ''
+  makeOptionDocBook = option: ''
     <section>
       <title>${escapeXML option.name}</title>
 
@@ -34,7 +34,7 @@ with pkgsLib;
     </section>
   '';
 
-  makeOptionsPage = {
+  makeOptionsDocBook = {
     options,
     showInvisible ? false,
     showInternal ? false
@@ -46,9 +46,19 @@ with pkgsLib;
           (option.visible || showInvisible) &&
           (!option.internal || showInternal)
         ))
-        (map makeOptionSection)
+        (map makeOptionDocBook)
         (concatStringsSep "\n")
       ]}
     </section>
   '';
+
+  makeModulesDocBook =
+    { modules, ... }@args:
+    let
+      newArgs = removeAttrs args [ "modules" ];
+      evaluated = evalModules { inherit modules; };
+    in
+      makeOptionsDocBook (newArgs // {
+        inherit (evaluated) options;
+      });
 }

@@ -1,4 +1,4 @@
-{ pkgs, pkgsLib, coricamuLib, ... }:
+{ pkgs, coricamuLib, ... }:
 
 {
   baseUrl = "https://coricamu.example.com/";
@@ -109,16 +109,11 @@
     {
       path = "options.html";
       title = "NixOS Options";
-      body.docbook =
-        let
-          nixosSystem = pkgsLib.nixosSystem {
-            system = pkgs.system;
-            modules = [];
-          };
-          inherit (nixosSystem) options;
-        in coricamuLib.makeOptionsPage {
-          inherit options;
-        };
+      body.docbook = coricamuLib.makeModulesDocBook {
+        modules = (import "${pkgs.path}/nixos/modules/module-list.nix") ++ [
+          { nixpkgs.system = pkgs.system; }
+        ];
+      };
     }
   ];
 
