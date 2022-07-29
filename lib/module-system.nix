@@ -7,32 +7,16 @@ with pkgsLib;
   makeOptionDocBook =
     option:
     let
-      formatText = text:
-        if isString text
-        then text
-        else
-          if text._type == "literalDocBook"
-          then text.text
-          else
-            if text._type == "literalExpression"
-            then "<literal>${escapeXML (text.text)}</literal>"
-            else throw "Text type ${text._type} is not implemented";
-
-      default =
-        if option?defaultText
-        then formatText option.defaultText
-        else
-          if option?default
-          then "<literal>${escapeXML (showVal option.default)}</literal>"
-          else null;
-
-      example =
-        if option?example
+      formatValue = value:
+        if value?_type
         then
-          if option.example?_type
-          then formatText option.example
-          else "<literal>${escapeXML (showVal option.example)}</literal>"
-        else null;
+          if value._type == "literalDocBook"
+          then value.text
+          else
+            if value._type == "literalExpression"
+            then "<literal>${escapeXML (value.text)}</literal>"
+            else throw "Text type `${value._type}` is not implemented"
+        else "<literal>${escapeXML (showVal value)}</literal>";
 
     in ''
       <section>
@@ -43,16 +27,16 @@ with pkgsLib;
             <entry>Type:</entry>
             <entry>${option.type}</entry>
           </row>
-          ${optionalString (default != null) ''
+          ${optionalString (option?default) ''
             <row>
               <entry>Default:</entry>
-              <entry>${default}</entry>
+              <entry>${formatValue option.default}</entry>
             </row>
           ''}
-          ${optionalString (example != null) ''
+          ${optionalString (option?example) ''
             <row>
               <entry>Example:</entry>
-              <entry>${example}</entry>
+              <entry>${formatValue option.example}</entry>
             </row>
           ''}
         </tbody></tgroup></table>
