@@ -7,22 +7,33 @@ with pkgsLib;
   makeOptionDocBook =
     option:
     let
+      formatText = text:
+        if isString text
+        then text
+        else
+          if text._type == "literalDocBook"
+          then text.text
+          else
+            if text._type == "literalExpression"
+            then "<literal>${escapeXML (text.text)}</literal>"
+            else throw "Text type ${text._type} is not implemented";
+
       default =
         if option?defaultText
-        then
-          if isString option.defaultText
-          then option.defaultText
-          else
-            if option.defaultText._type == "literalDocBook"
-            then option.defaultText.text
-            else
-              if option.defaultText._type == "literalExpression"
-              then "<literal>${escapeXML (option.defaultText.text)}</literal>"
-              else throw "Text type ${option.defaultText._type} is not implemented"
+        then formatText option.defaultText
         else
           if option?default
           then "<literal>${escapeXML (showVal option.default)}</literal>"
           else null;
+
+      example =
+        if option?example
+        then
+          if option.example?_type
+          then formatText option.example
+          else "<literal>${escapeXML (showVal option.example)}</literal>"
+        else null;
+
     in ''
       <section>
         <title>${escapeXML option.name}</title>
@@ -36,6 +47,12 @@ with pkgsLib;
             <row>
               <entry>Default:</entry>
               <entry>${default}</entry>
+            </row>
+          ''}
+          ${optionalString (example != null) ''
+            <row>
+              <entry>Example:</entry>
+              <entry>${example}</entry>
             </row>
           ''}
         </tbody></tgroup></table>
