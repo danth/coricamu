@@ -39,7 +39,7 @@ with pkgsLib;
     showInvisible ? false,
     showInternal ? false
   }: ''
-    <section>
+    <section xmlns:xlink="http://www.w3.org/1999/xlink">
       ${pipe options [
         optionAttrSetToDocList
         (filter (option:
