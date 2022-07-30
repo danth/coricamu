@@ -102,8 +102,8 @@ in {
 
         You can reach us by contacting any of the following people:
 
-        - <templates.user id="12345">Jane Doe</templates.user>
-        - <templates.user id="67890">John Doe</templates.user>
+        - <templates-user id="12345">Jane Doe</templates.user>
+        - <templates-user id="67890">John Doe</templates.user>
       '';
       type = nullOr lines;
       default = null;
