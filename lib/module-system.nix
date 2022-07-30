@@ -69,12 +69,14 @@ with pkgsLib;
   makeOptionsDocBook = {
     options,
     showInvisible ? false,
-    showInternal ? false
+    showInternal ? false,
+    customFilter ? (option: true)
   }: ''
     <section xmlns:xlink="http://www.w3.org/1999/xlink">
       ${pipe options [
         optionAttrSetToDocList
         (filter (option:
+          (customFilter option) &&
           (option.visible || showInvisible) &&
           (!option.internal || showInternal)
         ))
