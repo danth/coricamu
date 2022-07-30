@@ -10,7 +10,7 @@ $foreground-color: null;
     & { @content; }
   }
 
-  $background-color: #1f1f2b !global;
+  $background-color: #14141a !global;
   $foreground-color: white !global;
   @media (prefers-color-scheme: dark) {
     & { @content; }
