@@ -7,6 +7,11 @@ with pkgsLib;
   makeOptionDocBook =
     option:
     let
+      formatVerbatim = text:
+        if hasInfix "\n" text
+        then "<programlisting>${escapeXML text}</programlisting>"
+        else "<literal>${escapeXML text}</literal>";
+
       formatValue = value:
         if value?_type
         then
@@ -14,9 +19,9 @@ with pkgsLib;
           then value.text
           else
             if value._type == "literalExpression"
-            then "<literal>${escapeXML (value.text)}</literal>"
+            then formatVerbatim value.text
             else throw "Text type `${value._type}` is not implemented"
-        else "<literal>${escapeXML (showVal value)}</literal>";
+        else formatVerbatim (showVal value);
 
     in ''
       <section>
