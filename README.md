@@ -390,6 +390,38 @@ will insert an unnecessary `code` tag into the generated page. You should
 prefer using the template to keep your page compatible with future updates to
 Coricamu.
 
+## Deploying a site
+
+### GitHub Pages
+
+There is a reusable GitHub Actions workflow for deploying to GitHub Pages.
+
+Copy this to `.github/workflows/docs.yml` in your repository to use it:
+
+```yaml
+name: Docs
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  pages:
+    name: Pages
+    uses: ./.github/workflows/pages.yml
+    with:
+      output_name: docs
+```
+
+`output_name` must correspond to the `outputName` you provided when calling
+`coricamu.lib.generateFlakeOutputs`.
+
+This will automatically deploy the website when it's pushed to your default
+branch. It will also check pull requests to make sure that the website can
+build successfully.
+
 ## Credits
 
 Coricamu was heavily inspired by [Styx](https://github.com/styx-static/styx).
