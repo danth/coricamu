@@ -12,11 +12,13 @@ with pkgsLib;
         then "<programlisting>${escapeXML text}</programlisting>"
         else "<literal>${escapeXML text}</literal>";
 
-      formatValue = value:
+      formatParagraph = replaceStrings [ "\n\n" ] [ "</para><para>" ];
+
+      formatAnything = value:
         if value?_type
         then
           if value._type == "literalDocBook"
-          then value.text
+          then formatParagraph value.text
           else
             if value._type == "literalExpression"
             then formatVerbatim value.text
@@ -35,19 +37,19 @@ with pkgsLib;
           ${optionalString (option?default) ''
             <row>
               <entry>Default:</entry>
-              <entry>${formatValue option.default}</entry>
+              <entry>${formatAnything option.default}</entry>
             </row>
           ''}
           ${optionalString (option?example) ''
             <row>
               <entry>Example:</entry>
-              <entry>${formatValue option.example}</entry>
+              <entry>${formatAnything option.example}</entry>
             </row>
           ''}
         </tbody></tgroup></table>
 
         ${optionalString (option.description != null) ''
-          <para>${option.description}</para>
+          <para>${formatParagraph option.description}</para>
         ''}
       </section>
     '';
