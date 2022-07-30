@@ -1,22 +1,26 @@
 /***** Sass initialisation *****/
 
 $background-color: null;
+$code-background-color: null;
 $foreground-color: null;
 
 @mixin themed {
   $background-color: #eee7d7 !global;
+  $code-background-color: #cfc9bc !global;
   $foreground-color: black !global;
   @media (prefers-color-scheme: light) {
     & { @content; }
   }
 
   $background-color: #14141a !global;
+  $code-background-color: #292933 !global;
   $foreground-color: white !global;
   @media (prefers-color-scheme: dark) {
     & { @content; }
   }
 
   $background-color: null !global;
+  $code-background-color: null;
   $foreground-color: null !global;
 }
 
@@ -92,6 +96,17 @@ pre:not(.mermaid) {
 
 code, samp, kbd {
   font-family: monospace;
+
+  @include themed {
+    background-color: $code-background-color;
+  }
+
+  padding: 0.05em 0.2em;
+
+  pre > & {
+    display: block;
+    padding: 0.2em;
+  }
 }
 
 figure, img {
