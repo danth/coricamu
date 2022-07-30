@@ -1,0 +1,14 @@
+name: Docs
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  pages:
+    name: Pages
+    uses: ./.github/workflows/pages.yml
+    with:
+      output_name: docs

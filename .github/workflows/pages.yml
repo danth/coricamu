@@ -1,10 +1,22 @@
 name: Pages
 
 on:
-  pull_request:
-  push:
-    branches:
-      - master
+  workflow_call:
+    inputs:
+      output_name:
+        type: string
+        required: true
+        description: |
+          Flake output to deploy to Pages. This is the string you passed as
+          `outputName` when calling `coricamu.lib.generateFlakeOutputs`.
+
+      directory:
+        type: string
+        default: '.'
+        required: false
+        description: |
+          This can be used to specify a subdirectory if your flake is not at
+          the repository root.
 
 jobs:
   build:
@@ -22,14 +34,12 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build documentation
-        run: nix -L build .#docs
+        run: nix -L build ${{inputs.directory}}#docs
 
       - name: Prepare directory for upload
-        if: github.ref == 'refs/heads/master'
         run: cp -r --dereference --no-preserve=mode,ownership result/ public/
 
       - name: Upload artifact
-        if: github.ref == 'refs/heads/master'
         uses: actions/upload-pages-artifact@v1
         with:
           path: public/
@@ -39,11 +49,7 @@ jobs:
 
     needs: build
 
-    if: github.ref == 'refs/heads/master'
-
-    concurrency:
-      group: pages
-      cancel-in-progress: true
+    if: github.ref == 'refs/heads/${{ github.event.repository.default_branch }}'
 
     permissions:
       pages: write
@@ -52,6 +58,10 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
+    concurrency:
+      group: github-pages
+      cancel-in-progress: true
 
     runs-on: ubuntu-latest
     steps:
