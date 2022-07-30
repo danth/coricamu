@@ -37,7 +37,7 @@ with coricamuLib.types;
         <h1>My Website</h1>
       '';
       type = content { allowNull = true; };
-      defaultText = ''
+      defaultText = literalDocBook ''
         Heading containing <literal>siteTitle</literal>, with a link
         to <literal>/index.html</literal>.
       '';

@@ -41,6 +41,7 @@ in {
       example = "lorem_ipsum";
       type = strMatching "[a-z0-9_]+";
       default = makeSlug config.title;
+      defaultText = "Generated from the post title.";
     };
 
     authors = mkOption {

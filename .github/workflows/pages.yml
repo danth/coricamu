@@ -1,0 +1,60 @@
+name: Pages
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build
+
+    permissions:
+      contents: read
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Nix
+        uses: cachix/install-nix-action@v16
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Build documentation
+        run: nix -L build .#docs
+
+      - name: Prepare directory for upload
+        if: github.ref == 'refs/heads/master'
+        run: cp -r --dereference --no-preserve=mode,ownership result/ public/
+
+      - name: Upload artifact
+        if: github.ref == 'refs/heads/master'
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: public/
+
+  deploy:
+    name: Deploy
+
+    needs: build
+
+    if: github.ref == 'refs/heads/master'
+
+    concurrency:
+      group: pages
+      cancel-in-progress: true
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1

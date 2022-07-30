@@ -20,14 +20,14 @@
       callOutputs = file: import file inputs;
 
       # libOutputs contains the value of `«Coricamu's flake».lib`,
-      # which is used to build the example website.
+      # which is used to build the docs website.
 
       libOutputs = callOutputs ./lib/flake-tools.nix;
 
-      exampleOutputs = libOutputs.lib.generateFlakeOutputs {
-        outputName = "example";
-        modules = [ ./example/default.nix ];
+      docsOutputs = libOutputs.lib.generateFlakeOutputs {
+        outputName = "docs";
+        modules = [ ./docs/default.nix ];
       };
 
-    in mergeOutputs [ libOutputs exampleOutputs ];
+    in mergeOutputs [ libOutputs docsOutputs ];
 }

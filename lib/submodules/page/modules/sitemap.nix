@@ -12,7 +12,7 @@ with coricamuLib;
       description = "Whether to include this page in the sitemap.";
       example = false;
       type = bool;
-      defaultText = literalDocbook ''
+      defaultText = literalDocBook ''
         True unless <literal>meta.robots == "noindex"</literal>.
       '';
       default =
