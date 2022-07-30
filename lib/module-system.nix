@@ -85,14 +85,4 @@ with pkgsLib;
       ]}
     </section>
   '';
-
-  makeModulesDocBook =
-    { modules, ... }@args:
-    let
-      newArgs = removeAttrs args [ "modules" ];
-      evaluated = evalModules { inherit modules; };
-    in
-      makeOptionsDocBook (newArgs // {
-        inherit (evaluated) options;
-      });
 }
