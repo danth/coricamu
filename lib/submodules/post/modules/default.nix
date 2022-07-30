@@ -151,7 +151,7 @@ in {
         class="post-summary"
       >
         <a itemprop="url"
-           href="/${config.page.path}"
+           href="${config.page.path}"
         ><h1 itemprop="headline">${config.title}</h1></a>
         ${
           optionalString
@@ -203,7 +203,7 @@ in {
           </div>
           <footer class="post-meta">
             ${postInfo}
-            <link itemprop="url" href="/${config.page.path}">
+            <link itemprop="url" href="${config.page.path}">
             <templates-posts-navigation />
           </footer>
         </article>

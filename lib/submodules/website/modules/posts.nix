@@ -288,7 +288,7 @@ in {
             itemtype="https://schema.org/Person"
           ><a
             itemprop="url"
-            href="/posts/authors/${makeSlug author}.html"
+            href="posts/authors/${makeSlug author}.html"
             title="View all posts by ${author}"
             aria-label="View all posts by ${author}"
           ><span
@@ -310,7 +310,7 @@ in {
         if keywordIndexIsUseful
         then ''
           <li><a
-            href="/posts/keywords/${makeSlug keyword}.html"
+            href="posts/keywords/${makeSlug keyword}.html"
             title="View all posts about &quot;${keyword}&quot;"
             aria-label="View all posts about &quot;${keyword}&quot;"
           >${keyword}</a></li>
@@ -323,13 +323,13 @@ in {
         { rss-path ? "index.xml", rss-label ? "the RSS feed" }: ''
           <nav class="post-explore">
             Explore
-            <a href="/posts/index.html">all posts</a>
+            <a href="posts/index.html">all posts</a>
             ${optionalString pillsIndexIsUseful ''
-              or the <a href="/posts/pills.html">index</a>
+              or the <a href="posts/pills.html">index</a>
             ''}
             &middot;
             Subscribe to
-            <a href="/posts/rss/${rss-path}">${rss-label}</a>
+            <a href="posts/rss/${rss-path}">${rss-label}</a>
           </nav>
         '';
     };

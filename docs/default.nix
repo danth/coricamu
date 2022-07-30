@@ -8,8 +8,8 @@
   header.html = ''
     <h1>Coricamu</h1>
     <nav>
-      <a href="/">Home</a>
-      <a href="/options.html">Options list</a>
+      <a href="">Home</a>
+      <a href="options.html">Options list</a>
       <a href="https://github.com/danth/coricamu">GitHub repository</a>
     </nav>
   '';

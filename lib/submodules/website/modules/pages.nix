@@ -39,10 +39,10 @@ with coricamuLib.types;
       type = content { allowNull = true; };
       defaultText = literalDocBook ''
         Heading containing <literal>siteTitle</literal>, with a link
-        to <literal>/index.html</literal>.
+        to <literal>index.html</literal>.
       '';
       default.html = ''
-        <h1><a href="/index.html">${config.siteTitle}</a></h1>
+        <h1><a href="">${config.siteTitle}</a></h1>
       '';
     };
 

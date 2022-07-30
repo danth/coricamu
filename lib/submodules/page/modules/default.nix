@@ -96,6 +96,8 @@ in {
     head = mkMerge ([''
       <title>${config.title}</title>
 
+      <base href="${websiteConfig.baseUrl}" />
+
       <meta charset="UTF-8">
       ${
         mapAttrsToString
@@ -103,13 +105,13 @@ in {
         (websiteConfig.meta // config.meta)
       }
 
-      <link rel="canonical" href="/${config.path}">
+      <link rel="canonical" href="${config.path}">
 
       ${pipe (config.styles ++ websiteConfig.styles) [
         (catAttrs "path")
         lists.unique
         (concatMapStringsSep "\n" (path: ''
-          <link rel="stylesheet" href="/${path}">
+          <link rel="stylesheet" href="${path}">
         ''))
       ]}
 
@@ -117,7 +119,7 @@ in {
         lists.unique
         (concatMapStringsSep "\n" (script: ''
           <script
-            src="/${script.path}"
+            src="${script.path}"
             ${optionalString script.defer "defer"}
           ></script>
         ''))

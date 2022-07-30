@@ -6,7 +6,22 @@ with types;
 {
   options = {
     baseUrl = mkOption {
-      description = "URL of the root of your website.";
+      description = ''
+        URL of the root of your website.
+
+        All links will be relative to this URL, <emphasis>not</emphasis> the
+        the page they are found on.
+        Linking to <literal>index.html</literal> from a subdirectory of your
+        site will link to <literal>index.html</literal> at the root,
+        <emphasis>not</emphasis> <literal>index.html</literal> within that
+        subdirectory as you might expect.
+
+        This is done so that sites can be hosted from a subdirectory of the
+        domain, as is the case on GitHub Pages, while still having a way to
+        make links relative to the site root.
+        It also means that the <literal>path</literal> option of pages is
+        exactly how you link to them, which is handy.
+      '';
       example = "https://example.com/";
       type =
         let pattern =
