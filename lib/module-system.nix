@@ -12,9 +12,16 @@ with pkgsLib;
         then "<programlisting>${escapeXML text}</programlisting>"
         else "<literal>${escapeXML text}</literal>";
 
-      formatParagraph = replaceStrings [ "\n\n" ] [ "</para><para>" ];
+      formatValue = value: formatVerbatim (showVal value);
 
-      formatAnything = value:
+      formatParagraph = text:
+        if builtins.match ".*</[a-z]+>.*" text != null
+        then "<para>${text}</para>"
+        else
+          let splitText = replaceStrings [ "\n\n" ] [ "</para><para>" ] text;
+          in "<para>${splitText}</para>";
+
+      formatAnything = fallback: value:
         if value?_type
         then
           if value._type == "literalDocBook"
@@ -22,8 +29,13 @@ with pkgsLib;
           else
             if value._type == "literalExpression"
             then formatVerbatim value.text
-            else throw "Text type `${value._type}` is not implemented"
-        else formatVerbatim (showVal value);
+            else
+              warn "Text type `${value._type}` is not implemented"
+              (formatVerbatim value.text)
+        else fallback value;
+
+        formatValue' = formatAnything formatValue;
+        formatParagraph' = formatAnything formatParagraph;
 
     in ''
       <section>
@@ -37,19 +49,19 @@ with pkgsLib;
           ${optionalString (option?default) ''
             <row>
               <entry>Default:</entry>
-              <entry>${formatAnything option.default}</entry>
+              <entry>${formatValue' option.default}</entry>
             </row>
           ''}
           ${optionalString (option?example) ''
             <row>
               <entry>Example:</entry>
-              <entry>${formatAnything option.example}</entry>
+              <entry>${formatValue' option.example}</entry>
             </row>
           ''}
         </tbody></tgroup></table>
 
         ${optionalString (option.description != null) ''
-          <para>${formatParagraph option.description}</para>
+          ${formatParagraph' option.description}
         ''}
       </section>
     '';
