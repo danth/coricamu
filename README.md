@@ -410,7 +410,7 @@ on:
 jobs:
   pages:
     name: Pages
-    uses: ./.github/workflows/pages.yml
+    uses: danth/coricamu/.github/workflows/pages.yml@755231f9591dd34d3d12fd508e76157f3edb7a89
     with:
       output_name: docs
 ```
