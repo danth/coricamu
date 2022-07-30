@@ -33,10 +33,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Build documentation
-        run: nix -L build ${{inputs.directory}}#docs
+      - name: Build ${{inputs.output_name}}
+        run: nix -L build ${{inputs.directory}}#${{inputs.output_name}}
 
-      - name: Prepare directory for upload
+      - name: Prepare ${{inputs.output_name}} for upload
         run: cp -r --dereference --no-preserve=mode,ownership result/ public/
 
       - name: Upload artifact
@@ -65,6 +65,6 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Deploy ${{inputs.output_name}} to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
