@@ -11,12 +11,26 @@ let
 
   formatValue = value: formatVerbatim (showVal value);
 
-  formatParagraph = text:
-    if builtins.match ".*</[a-z]+>.*" text != null
-    then "<para>${text}</para>"
-    else
-      let splitText = replaceStrings [ "\n\n" ] [ "</para><para>" ] text;
-      in "<para>${splitText}</para>";
+  formatParagraph = text: pipe text [
+    # We want to replace all occurences of \n\n with </para><para>, but not
+    # within code blocks and such. This allows us to skip over any paragraphs
+    # which are already surrounded by a tag.
+    (builtins.split "(\n\n<[a-z]+>.*</[a-z]+>\n\n)")
+
+    (map (item:
+      # Lists represent text which was already tagged.
+      # Element 0 is the entire match, unchanged.
+      if isList item then elemAt item 0
+      # Strings between matches are where we want to split the paragraphs.
+      else replaceStrings [ "\n\n" ] [ "</para><para>" ] item
+    ))
+
+    # Stick the tagged and untagged sections back together.
+    (concatStringsSep "\n")
+
+    # It's convention that the entire description is wrapped in a <para> tag.
+    (para: "<para>${para}</para>")
+  ];
 
   formatAnything = fallback: value:
     if value?_type
