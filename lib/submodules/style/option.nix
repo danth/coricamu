@@ -17,7 +17,7 @@ with coricamuLib.types;
     (if isToplevel
     then {
       default = [(import ./default)];
-      defaultText = "Basic style sheet bundled with Coricamu.";
+      defaultText = literalDocBook "Basic style sheet bundled with Coricamu.";
     }
     else {
       default = [];
