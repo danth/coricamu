@@ -1,4 +1,4 @@
-/***** Sass initialisation *****/
+/***** Color scheme infrastructure *****/
 
 $background-color: null;
 $code-background-color: null;
@@ -29,6 +29,32 @@ $foreground-color: null;
   list-style-type: none;
 }
 
+/***** Headings *****/
+
+header h1,
+footer h1,
+main > h1,
+article > h1 {
+  text-align: center;
+}
+
+@mixin heading($font-size, $margin-multiplier) {
+  font-size: $font-size;
+  margin-top: $font-size * 1.8 * $margin-multiplier;
+  margin-bottom: $font-size * 0.8 * $margin-multiplier;
+}
+
+@mixin headings($margin-multiplier) {
+  h1 { @include heading(2rem, $margin-multiplier); }
+  h2 { @include heading(1.6rem, $margin-multiplier); }
+  h3 { @include heading(1.4rem, $margin-multiplier); }
+  h4 { @include heading(1.2rem, $margin-multiplier); }
+  h5 { @include heading(1rem, $margin-multiplier); }
+  h6 { @include heading(0.8rem, $margin-multiplier); }
+}
+
+@include headings(1);
+
 /***** Page layout *****/
 
 body {
@@ -57,6 +83,8 @@ body {
     margin-bottom: 10px;
 
     text-align: center;
+
+    @include headings(0.5);
   }
 
   > footer {
@@ -67,17 +95,12 @@ body {
     margin-top: 10px;
 
     font-size: 0.8em;
+
+    @include headings(0.5);
   }
 }
 
 /***** General elements *****/
-
-header h1,
-footer h1,
-main > h1,
-article > h1 {
-  text-align: center;
-}
 
 a {
   color: inherit;
