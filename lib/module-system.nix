@@ -83,9 +83,10 @@ in {
             ''}
           </tbody></tgroup></table>
 
-          ${optionalString (option.description != null) ''
-            ${formatParagraph' option.description}
-          ''}
+          ${
+            optionalString (option?description)
+            (formatParagraph' option.description)
+          }
 
           ${
             optionalString (subOptions != {})
