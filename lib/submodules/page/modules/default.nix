@@ -96,7 +96,23 @@ in {
     head = mkMerge ([''
       <title>${config.title}</title>
 
-      <base href="${websiteConfig.baseUrl}" />
+      <base href="/${
+        # If a website is served over both HTTP and a decentralised protocol
+        # such as IPFS, users who have IPFS installed will load the website
+        # from localhost rather than its original domain.
+        #
+        # If the HTTP domain was specified in the base URL, resources for the
+        # page would always be loaded over HTTP rather than IPFS, nullifying
+        # any benefits of providing the IPFS mirror. Furthermore, requests to
+        # the HTTP server from a different domain are often blocked by CORS,
+        # which breaks the page.
+        #
+        # To solve this, we give a directory path as the base without including
+        # the domain name. The leading slash (above!) makes sure that the base
+        # is not itself interpreted as relative to the current page.
+
+        elemAt (builtins.match "[a-z]+://[^/]+/(.*)" websiteConfig.baseUrl) 0
+      }" />
 
       <meta charset="UTF-8">
       ${
