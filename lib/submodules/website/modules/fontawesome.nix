@@ -2,8 +2,8 @@
 
 let
   fontAwesome = pkgs.fetchzip {
-    url = "https://use.fontawesome.com/releases/v6.1.1/fontawesome-free-6.1.1-web.zip";
-    sha256 = "Jve63A5XpdBe+q9L2DhEU0zSnGj7LEHc24ouwe2KkMk=";
+    url = "https://use.fontawesome.com/releases/v6.1.2/fontawesome-free-6.1.2-web.zip";
+    sha256 = "qplVyWQTIe8ZG2IGWvmM+7ipzv7rnj9BBjTxoZ7DZOM=";
   };
 
 in {
