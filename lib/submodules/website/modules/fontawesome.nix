@@ -6,25 +6,19 @@ let
     sha256 = "qplVyWQTIe8ZG2IGWvmM+7ipzv7rnj9BBjTxoZ7DZOM=";
   };
 
-in {
-  templates.font-awesome = {
-    function =
-      { style ? "regular", icon, contents ? null }:
-      if contents == null
-      then ''
-        <svg class="font-awesome">
-          <use href="fontawesome/${style}.svg#${icon}"></use>
-        </svg>
-      ''
-      else ''
-        <div class="font-awesome-box">
-          <svg class="font-awesome">
-            <use href="fontawesome/${style}.svg#${icon}"></use>
-          </svg>
-          <div>${contents}</div>
-        </div>
-      '';
+  getIcon = style: icon:
+    builtins.replaceStrings ["<svg"] ["<svg class=\"font-awesome\""]
+    (builtins.readFile "${fontAwesome}/svgs/${style}/${icon}.svg");
 
-    files."fontawesome" = "${fontAwesome}/sprites";
-  };
+in {
+  templates.font-awesome.function =
+    { style ? "regular", icon, contents ? null }:
+    if contents == null
+    then getIcon style icon
+    else ''
+      <div class="font-awesome-box">
+        ${getIcon style icon}
+        <div>${contents}</div>
+      </div>
+    '';
 }
