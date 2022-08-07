@@ -42,6 +42,7 @@ with coricamuLib.types;
             ${pkgs.minify}/bin/minify \
               --type $extension \
               --html-keep-whitespace \
+              --svg-keep-comments \
               --output "$out/$1" "$2"
           else
             echo "Linking $1"
