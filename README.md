@@ -402,7 +402,6 @@ Copy this to `.github/workflows/docs.yml` in your repository to use it:
 name: Docs
 
 on:
-  pull_request:
   push:
     branches:
       - master
@@ -419,8 +418,11 @@ jobs:
 `coricamu.lib.generateFlakeOutputs`.
 
 This will automatically deploy the website when it's pushed to your default
-branch. It will also check pull requests to make sure that the website can
-build successfully.
+branch.
+
+The workflow attempts to skip the deployment step when it is run on other
+branches, however environment protection rules are checked before this, causing
+a failure. As such the workflow can only be used on the default branch for now.
 
 ## Credits
 
