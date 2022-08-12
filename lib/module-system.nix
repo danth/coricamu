@@ -64,24 +64,24 @@ in {
         <section xmlns:xlink="http://www.w3.org/1999/xlink">
           <title>${escapeXML (showOption option.loc)}</title>
 
-          <table><tgroup><tbody>
-            <row>
-              <entry>Type:</entry>
-              <entry>${option.type.description or "unspecified"}</entry>
-            </row>
+          <variablelist>
+            <varlistentry>
+              <term>Type</term>
+              <listitem>${option.type.description or "unspecified"}</listitem>
+            </varlistentry>
             ${optionalString (option?defaultText || option?default) ''
-              <row>
-                <entry>Default:</entry>
-                <entry>${formatValue' (option.defaultText or option.default)}</entry>
-              </row>
+              <varlistentry>
+                <term>Default</term>
+                <listitem>${formatValue' (option.defaultText or option.default)}</listitem>
+              </varlistentry>
             ''}
             ${optionalString (option?example) ''
-              <row>
-                <entry>Example:</entry>
-                <entry>${formatValue' option.example}</entry>
-              </row>
+              <varlistentry>
+                <term>Example</term>
+                <listitem>${formatValue' option.example}</listitem>
+              </varlistentry>
             ''}
-          </tbody></tgroup></table>
+          </variablelist>
 
           ${
             optionalString (option?description)

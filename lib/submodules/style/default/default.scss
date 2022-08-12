@@ -152,6 +152,23 @@ hr {
   }
 }
 
+
+dl {
+  display: grid;
+  grid-template: auto / fit-content(25%) 1fr;
+  row-gap: 0.3em;
+  column-gap: 1.5em;
+
+  dt {
+    font-weight: bold;
+    width: fit-content;
+  }
+
+  dd {
+    margin-left: 0;
+  }
+}
+
 /***** Icons *****/
 
 @mixin icon($size) {
