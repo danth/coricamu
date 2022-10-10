@@ -2,8 +2,8 @@
 
 let
   fontAwesome = pkgs.fetchzip {
-    url = "https://use.fontawesome.com/releases/v6.1.2/fontawesome-free-6.1.2-web.zip";
-    sha256 = "qplVyWQTIe8ZG2IGWvmM+7ipzv7rnj9BBjTxoZ7DZOM=";
+    url = "https://use.fontawesome.com/releases/v6.2.0/fontawesome-free-6.2.0-web.zip";
+    sha256 = "p1J/g7NvXTKAgBK8OTCPOmJIHuU9q0huVm9MzoRLbhk=";
   };
 
   getIcon = style: icon:
