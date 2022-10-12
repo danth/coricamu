@@ -187,21 +187,20 @@ You will learn more about how to use templates later in this document.
 
 #### Organisation
 
-Posts can be sorted into specific categories by adding `authors`, as seen in
-the example above, and optionally `keywords`:
+Posts can be categorised by adding one or more `sections`:
 
 ```nix
 {
   title = "Lorem Ipsum Dolor";
   datetime = "2022-02-26 11:29:26Z";
   authors = [ "John Doe" ];
-  keywords = [ "lorem" "ipsum" "dolor" "sit amet" ];
+  sections = [ "lorem" "ipsum" "dolor" "sit amet" ];
   body.markdownFile = ./lorem_ipsum_dolor.md;
 }
 ```
 
-If you have more than one author, or have used keywords, `posts/pills.html`
-will be generated. This allows visitors to filter posts by author or keyword.
+If you have more than one author, or have used sections, `posts/pills.html`
+will be generated. This allows visitors to filter posts by author or section.
 
 Coricamu asks search engines not to index `posts/index.html`,
 `posts/pills.html` and any filtered lists which they link to; this allows

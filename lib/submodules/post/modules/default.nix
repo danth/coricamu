@@ -50,8 +50,8 @@ in {
       type = listOf str;
     };
 
-    keywords = mkOption {
-      description = "Key words or phrases related to this post.";
+    sections = mkOption {
+      description = "Categories used to organise posts and assist browsing.";
       example = [ "lorem" "ipsum dolor" ];
       type = listOf str;
       default = [];
@@ -103,7 +103,7 @@ in {
     dateEdited = substring 0 10 config.edited;
 
     authors = sort (a: b: a < b) config.authors;
-    keywords = sort (a: b: a < b) config.keywords;
+    sections = sort (a: b: a < b) config.sections;
 
     postInfo = ''
       Posted
@@ -129,15 +129,15 @@ in {
         }
       </ul>
 
-      ${optionalString (length keywords > 0) ''
-        with keywords
-        <ul itemprop="keywords" class="pills">
+      ${optionalString (length sections > 0) ''
+        in section${optionalString (length sections > 1) "s"}
+        <ul itemprop="sections" class="pills">
           ${
             concatMapStringsSep "\n"
-            (keyword: ''
-              <templates-keyword-pill keyword="${keyword}" />
+            (section: ''
+              <templates-section-pill section="${section}" />
             '')
-            keywords
+            sections
           }
         </ul>
       ''}
@@ -209,10 +209,7 @@ in {
         </article>
       '';
 
-      meta = {
-        author = concatStringsSep ", " config.authors;
-        keywords = concatStringsSep ", " keywords;
-      };
+      meta.author = concatStringsSep ", " config.authors;
 
       sitemap.lastModified =
         if (config.edited == null) then datePosted else dateEdited;

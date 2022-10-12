@@ -18,17 +18,17 @@ let
   # If there is only one author then filtering is not useful
   authorIndexIsUseful = length (attrNames allAuthors) > 1;
 
-  # { keyword: [post]; }
-  keywordPair = post: keyword: nameValuePair keyword [post];
-  # { keyword_one: [post]; keyword_two: [post]; }
-  postKeywords = post: listToAttrs (map (keywordPair post) post.keywords);
-  # { keyword_one: [post_one post_two]; keyword_two: [post_one post_three]; }
-  allKeywords = foldAttrs concat [] (map postKeywords allPosts);
+  # { section: [post]; }
+  sectionPair = post: section: nameValuePair section [post];
+  # { section_one: [post]; section_two: [post]; }
+  postSections = post: listToAttrs (map (sectionPair post) post.sections);
+  # { section_one: [post_one post_two]; section_two: [post_one post_three]; }
+  allSections = foldAttrs concat [] (map postSections allPosts);
 
-  # If there are zero or one keywords then filtering is not useful
-  keywordIndexIsUseful = length (attrNames allKeywords) > 1;
+  # If there are no sections then filtering is not useful
+  sectionIndexIsUseful = length (attrNames allSections) > 0;
 
-  pillsIndexIsUseful = authorIndexIsUseful || keywordIndexIsUseful;
+  pillsIndexIsUseful = authorIndexIsUseful || sectionIndexIsUseful;
 
   indexConfig = {
     # There is no point having index pages appear on a search engine,
@@ -121,12 +121,12 @@ in {
         }
       ) allAuthors)
 
-      # Individual keywords
-      ++ optionals keywordIndexIsUseful (mapAttrsToList (
-        keyword: posts:
+      # Individual sections
+      ++ optionals sectionIndexIsUseful (mapAttrsToList (
+        section: posts:
         indexConfig // {
-          path = "posts/keywords/${makeSlug keyword}.html";
-          title = "Posts about \"${keyword}\"";
+          path = "posts/sections/${makeSlug section}.html";
+          title = "Posts in section \"${section}\"";
 
           # There is no point having this index appear on a search engine,
           # and it's not needed by the engine itself to discover other
@@ -134,16 +134,16 @@ in {
           meta.robots = "noindex";
 
           body.html = ''
-            <h1>Posts about <q>${keyword}</q></h1>
+            <h1>Posts in section <q>${section}</q></h1>
             <templates-posts-navigation
-              rss-path="keywords/${makeSlug keyword}.xml"
-              rss-label="this keyword's RSS feed" />
+              rss-path="sections/${makeSlug section}.xml"
+              rss-label="this section's RSS feed" />
             ${makePostList posts}
           '';
         }
-      ) allKeywords)
+      ) allSections)
 
-      # All posts by author / keyword
+      # All posts by author / section
       ++ optional pillsIndexIsUseful (indexConfig // rec {
         path = "posts/pills.html";
         title = "Posts index";
@@ -161,12 +161,12 @@ in {
             </ul>
           ''}
 
-          ${optionalString keywordIndexIsUseful ''
-            <h2>By keyword</h2>
+          ${optionalString sectionIndexIsUseful ''
+            <h2>By section</h2>
             <ul class="pills">
-              ${concatStringsSep "\n" (mapAttrsToList (keyword: _posts: ''
-                <templates-keyword-pill keyword="${keyword}" />
-              '') allKeywords)}
+              ${concatStringsSep "\n" (mapAttrsToList (section: _posts: ''
+                <templates-section-pill section="${section}" />
+              '') allSections)}
             </ul>
           ''}
         '';
@@ -190,15 +190,15 @@ in {
           inherit path posts;
         })
       ) allAuthors)
-      // optionalAttrs keywordIndexIsUseful (mapAttrs' (
-        keyword: posts:
-        let path = "posts/rss/keywords/${makeSlug keyword}.xml";
+      // optionalAttrs sectionIndexIsUseful (mapAttrs' (
+        section: posts:
+        let path = "posts/rss/sections/${makeSlug section}.xml";
         in nameValuePair path (makeRSS {
-          title = "\"${keyword}\" on ${config.siteTitle}";
-          description = "Posts about \"${keyword}\" on ${config.siteTitle}.";
+          title = "\"${section}\" on ${config.siteTitle}";
+          description = "Posts in section \"${section}\" on ${config.siteTitle}.";
           inherit path posts;
         })
-      ) allKeywords);
+      ) allSections);
 
     templates = {
       all-posts = {
@@ -305,18 +305,18 @@ in {
           >${author}</span></li>
         '';
 
-      keyword-pill =
-        { keyword }:
-        if keywordIndexIsUseful
+      section-pill =
+        { section }:
+        if sectionIndexIsUseful
         then ''
           <li><a
-            href="posts/keywords/${makeSlug keyword}.html"
-            title="View all posts about &quot;${keyword}&quot;"
-            aria-label="View all posts about &quot;${keyword}&quot;"
-          >${keyword}</a></li>
+            href="posts/sections/${makeSlug section}.html"
+            title="View all posts about &quot;${section}&quot;"
+            aria-label="View all posts about &quot;${section}&quot;"
+          >${section}</a></li>
         ''
         else ''
-          <li>${keyword}</li>
+          <li>${section}</li>
         '';
 
       posts-navigation =
