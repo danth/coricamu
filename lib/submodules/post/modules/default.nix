@@ -131,11 +131,11 @@ in {
 
       ${optionalString (length sections > 0) ''
         in section${optionalString (length sections > 1) "s"}
-        <ul itemprop="sections" class="pills">
+        <ul class="pills">
           ${
             concatMapStringsSep "\n"
             (section: ''
-              <templates-section-pill section="${section}" />
+              <templates-section-pill section="${section}" itemprop="true" />
             '')
             sections
           }

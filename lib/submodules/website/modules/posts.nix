@@ -306,10 +306,11 @@ in {
         '';
 
       section-pill =
-        { section }:
+        { section, itemprop ? "false" }:
         if sectionIndexIsUseful
         then ''
-          <li><a
+          <li ${optionalString (itemprop == "true") "itemprop=\"articleSection\""}>
+          <a
             href="posts/sections/${makeSlug section}.html"
             title="View all posts about &quot;${section}&quot;"
             aria-label="View all posts about &quot;${section}&quot;"
