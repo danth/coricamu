@@ -1,7 +1,12 @@
-args:
-(import ./fill-templates.nix args)
-// (import ./module-system.nix args)
-// (import ./submodules/page/lib.nix args)
-// (import ./submodules/website/lib.nix args)
-// (import ./types.nix args)
-// (import ./utils.nix args)
+{ callPackage }:
+
+{
+  chunk = {
+    fromMarkdown = callPackage ./chunk/fromMarkdown.nix {};
+  };
+  makePage = callPackage ./makePage.nix {};
+  makeWebsite = callPackage ./makeWebsite.nix {};
+  string = {
+    makeSlug = callPackage ./string/makeSlug.nix {};
+  };
+}

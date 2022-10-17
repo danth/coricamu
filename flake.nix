@@ -5,29 +5,54 @@
   };
 
   outputs =
-    { nixpkgs, ... }@inputs:
-
+    { nixpkgs, utils, self, ... }:
     let
-      # Coricamu's flake outputs are coded across multiple Nix files.
-      # The following two functions help to collect the outputs into
-      # one value so that they can be returned here.
+      makeFlakeOutputs =
+        { name, entrypoint }:
+        utils.lib.eachDefaultSystem (
+          system:
+          let
+            pkgs = import "${nixpkgs}" {
+              inherit system;
+              overlays = [(self: super: {
+                inherit coricamu;
+              })];
+            };
+            coricamu = pkgs.callPackage ./lib/default.nix {};
+          in rec {
+            packages.${name} = pkgs.callPackage entrypoint {};
 
-      mergeOutputs = 
-        outputs:
-        with nixpkgs.lib;
-        fold recursiveUpdate {} outputs;
+            apps."${name}-preview" = utils.lib.mkApp {
+              name = "${name}-preview";
+              drv = pkgs.writeShellApplication {
+                name = "${name}-preview";
+                runtimeInputs = [ pkgs.simple-http-server ];
+                text = ''
+                  cat <<EOF
+                  The preview server is starting now. Press Ctrl+C to stop it.
 
-      callOutputs = file: import file inputs;
+                  Open http://localhost:8000 in your browser to view the website!
 
-      # libOutputs contains the value of `«Coricamu's flake».lib`,
-      # which is used to build the docs website.
+                  The preview files can also be inspected here:
+                  ${packages.${name}}
+                  EOF
 
-      libOutputs = callOutputs ./lib/flake-tools.nix;
-
-      docsOutputs = libOutputs.lib.generateFlakeOutputs {
-        outputName = "docs";
-        modules = [ ./docs/default.nix ];
-      };
-
-    in mergeOutputs [ libOutputs docsOutputs ];
+                  simple-http-server \
+                    --silent \
+                    --nocache \
+                    --port 8000 \
+                    --index \
+                    ${packages.${name}}
+                '';
+              };
+            };
+          }
+        );
+    in {
+      lib = { inherit makeFlakeOutputs; };
+    } //
+    makeFlakeOutputs {
+      name = "docs";
+      entrypoint = ./docs/default.nix;
+    };
 }
