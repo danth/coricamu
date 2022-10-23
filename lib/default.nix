@@ -1,12 +1,18 @@
-{ callPackage }:
+{ lib, callPackage }:
 
-{
+let
+  importFunction =
+    file:
+    let function = callPackage file {};
+    in lib.makeOverridable function;
+
+in {
   chunk = {
-    fromMarkdown = callPackage ./chunk/fromMarkdown.nix {};
+    fromMarkdown = importFunction ./chunk/fromMarkdown.nix;
   };
-  makePage = callPackage ./makePage.nix {};
-  makeWebsite = callPackage ./makeWebsite.nix {};
+  makePage = importFunction ./makePage.nix;
+  makeWebsite = importFunction ./makeWebsite.nix;
   string = {
-    makeSlug = callPackage ./string/makeSlug.nix {};
+    makeSlug = importFunction ./string/makeSlug.nix;
   };
 }
