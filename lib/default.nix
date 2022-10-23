@@ -8,6 +8,7 @@ let
 
 in {
   chunk = {
+    fromHtml = importFunction ./chunk/fromHtml.nix;
     fromMarkdown = importFunction ./chunk/fromMarkdown.nix;
   };
   makePage = importFunction ./makePage.nix;

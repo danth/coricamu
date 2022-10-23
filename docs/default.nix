@@ -9,6 +9,10 @@ makeWebsite {
   files."index.html" = makePage {
     title = "Coricamu";
     chunks = [
+      (chunk.fromHtml {
+        type = "header";
+        string = "<h1>Coricamu</h1>";
+      })
       (chunk.fromMarkdown {
         type = "main";
         file = runCommand "index.md" {} ''
