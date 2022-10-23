@@ -8,6 +8,7 @@ let
 
 in {
   chunk = {
+    fromDocbook = importFunction ./chunk/fromDocbook.nix;
     fromHtml = importFunction ./chunk/fromHtml.nix;
     fromMarkdown = importFunction ./chunk/fromMarkdown.nix;
   };
