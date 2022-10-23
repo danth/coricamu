@@ -1,18 +1,21 @@
-{ pandoc, runCommand, writeText }:
+{ lib, pandoc }:
 
 {
   type,
   string ? null,
-  file ? writeText "chunk.xml" string
+  file ? null
 }:
 
 {
   inherit type;
 
-  file = runCommand "${builtins.baseNameOf file}.html" {
-    preferLocalBuild = true;
-    allowSubstitutes = false;
-  } ''
-    ${pandoc}/bin/pandoc -f docbook -t html <${file} >$out
-  '';
+  buildCommand = toString [
+    "${pandoc}/bin/pandoc"
+    "-f docbook"
+    "-t html"
+    ">> $out"
+    (if file != null
+     then "< ${file}"
+     else "<<< ${lib.escapeShellArg string}")
+  ];
 }

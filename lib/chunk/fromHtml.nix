@@ -1,11 +1,16 @@
-{ writeText }:
+{ lib }:
 
 {
   type,
   string ? null,
-  file ? writeText "chunk.html" string
+  file ? null
 }:
 
 {
-  inherit type file;
+  inherit type;
+
+  buildCommand =
+    if file != null
+    then "cat ${file} >> $out"
+    else "echo ${lib.escapeShellArg string} >> $out";
 }

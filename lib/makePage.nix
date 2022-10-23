@@ -12,10 +12,7 @@ let
 
   writeGroup = group: optionalString (groups ? ${group}) ''
     echo "<${group}>" >> $out
-    ${pipe groups.${group} [
-      (map (chunk: "cat ${chunk.file} >> $out"))
-      (concatStringsSep "\n")
-    ]}
+    ${concatStringsSep "\n" (catAttrs "buildCommand" groups.${group})}
     echo "</${group}>" >> $out
   '';
 

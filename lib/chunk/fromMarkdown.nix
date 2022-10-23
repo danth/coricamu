@@ -1,23 +1,22 @@
-{ multimarkdown, runCommand, writeText }:
+{ lib, multimarkdown }:
 
 {
   type,
   string ? null,
-  file ? writeText "chunk.md" string
+  file ? null
 }:
 
 {
   inherit type;
 
-  file = runCommand "${builtins.baseNameOf file}.html" {
-    preferLocalBuild = true;
-    allowSubstitutes = false;
-  } ''
-    ${multimarkdown}/bin/multimarkdown \
-      --snippet \
-      --notransclude \
-      --to=html \
-      --output=$out \
-      ${file}
-  '';
+  buildCommand = toString [
+    "${multimarkdown}/bin/multimarkdown"
+    "--snippet"
+    "--notransclude"
+    "--to=html"
+    ">> $out"
+    (if file != null
+     then "< ${file}"
+     else "<<< ${lib.escapeShellArg string}")
+  ];
 }
