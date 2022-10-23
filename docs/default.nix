@@ -6,7 +6,7 @@ makeWebsite {
   baseUrl = "https://danth.github.io/coricamu/";
   title = "Coricamu";
 
-  files."index.html" = makePage {
+  pages."index.html" = makePage {
     title = "Coricamu";
     chunks = [
       (chunk.fromHtml {

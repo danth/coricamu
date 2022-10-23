@@ -1,4 +1,4 @@
-{ coricamu, lib, runCommand }:
+{ coricamu, lib, runCommand, symlinkJoin }:
 
 with lib;
 
@@ -16,12 +16,21 @@ let
     echo "</${group}>" >> $out
   '';
 
-in runCommand "${coricamu.string.makeSlug title}.html" {} ''
-  echo "<!DOCTYPE html>" >> $out
-  echo "<body>" >> $out
-  ${writeGroup "header"}
-  ${writeGroup "main"}
-  ${writeGroup "footer"}
-  echo "</body>" >> $out
-  echo "</html>" >> $out
-''
+in {
+  page = runCommand "${coricamu.string.makeSlug title}.html" {} ''
+    echo "<!DOCTYPE html>" >> $out
+    echo "<body>" >> $out
+    ${writeGroup "header"}
+    ${writeGroup "main"}
+    ${writeGroup "footer"}
+    echo "</body>" >> $out
+    echo "</html>" >> $out
+  '';
+
+  auxiliary = pipe groups [
+    attrValues
+    concatLists
+    (catAttrs "auxiliary")
+    (zipAttrsWith (path: files: elemAt files 0))
+  ];
+}

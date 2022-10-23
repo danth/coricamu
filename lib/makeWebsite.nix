@@ -1,9 +1,12 @@
 { coricamu, lib, minify, runCommand, writeShellScript }:
 
+with lib;
+
 {
   baseUrl,
   title,
-  files,
+  files ? {},
+  pages ? [],
   dontMinify ? false
 }:
 
@@ -16,7 +19,6 @@ let
 
   minifyOrLink = writeShellScript "minify-or-link" ''
     if ${minify}/bin/minify \
-      --type $extension \
       --html-keep-whitespace \
       --svg-keep-comments \
       --output "$out/$1" \
@@ -29,12 +31,18 @@ let
     fi
   '';
 
+  makeAuxiliaryArguments = mapAttrsToList (path: file: "${path} ${file}");
+
+  makePageArguments = path: page:
+    [ "${path} ${page.page}" ] ++
+    (makeAuxiliaryArguments page.auxiliary);
+
 in runCommand (coricamu.string.makeSlug baseUrl) {
   passAsFile = [ "arguments" ];
-  arguments = with lib; pipe files [
-    (mapAttrsToList (path: file: "${path} ${file}"))
-    (concatStringsSep "\n")
-  ];
+  arguments = concatStringsSep "\n" (
+    (makeAuxiliaryArguments files) ++
+    (concatLists (mapAttrsToList makePageArguments pages))
+  );
 } ''
   xargs \
     --arg-file="$argumentsPath" \

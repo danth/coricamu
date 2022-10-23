@@ -11,6 +11,7 @@ in {
     fromDocbook = importFunction ./chunk/fromDocbook.nix;
     fromHtml = importFunction ./chunk/fromHtml.nix;
     fromMarkdown = importFunction ./chunk/fromMarkdown.nix;
+    includeScript = importFunction ./chunk/includeScript.nix;
   };
   makePage = importFunction ./makePage.nix;
   makeWebsite = importFunction ./makeWebsite.nix;

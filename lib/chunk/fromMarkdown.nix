@@ -3,11 +3,12 @@
 {
   type,
   string ? null,
-  file ? null
+  file ? null,
+  auxiliary ? {}
 }:
 
 {
-  inherit type;
+  inherit type auxiliary;
 
   buildCommand = toString [
     "${multimarkdown}/bin/multimarkdown"
