@@ -7,6 +7,7 @@ makeWebsite {
 
   files = [
     (makePage {
+      name = "index";
       title = "Coricamu";
       chunks = [
         (chunk.fromHtml {

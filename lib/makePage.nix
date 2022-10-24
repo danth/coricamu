@@ -4,6 +4,7 @@ with lib;
 
 {
   title,
+  name ? coricamu.string.makeSlug title,
   chunks ? []
 }:
 
@@ -16,11 +17,9 @@ let
     echo "</${group}>" >> $out
   '';
 
-  filename = "${coricamu.string.makeSlug title}.html";
-
 in coricamu.mergeFiles (
   [{
-    ${filename} = runCommand filename {} ''
+    "${name}.html" = runCommand "${name}.html" {} ''
       echo "<!DOCTYPE html>" >> $out
       echo "<body>" >> $out
       ${writeGroup "header"}
