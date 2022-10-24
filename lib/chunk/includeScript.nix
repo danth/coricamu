@@ -4,7 +4,7 @@
   name,
   string ? null,
   file ? writeText "script.js" string,
-  auxiliary ? {}
+  auxiliaryFiles ? {}
 }:
 
 let
@@ -17,7 +17,7 @@ in coricamu.chunk.fromHtml {
     <script src="${scriptUrl}" />
   '';
 
-  auxiliary = auxiliary // {
+  auxiliaryFiles = auxiliaryFiles // {
     ${scriptUrl} = file;
   };
 }

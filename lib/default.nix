@@ -14,7 +14,9 @@ in {
     includeScript = importFunction ./chunk/includeScript.nix;
   };
   makePage = importFunction ./makePage.nix;
+  makeSubdirectory = importFunction ./makeSubdirectory.nix;
   makeWebsite = importFunction ./makeWebsite.nix;
+  mergeFiles = importFunction ./mergeFiles.nix;
   string = {
     makeSlug = importFunction ./string/makeSlug.nix;
   };
