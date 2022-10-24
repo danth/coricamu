@@ -1,10 +1,7 @@
 { lib, callPackage }:
 
 let
-  importFunction =
-    file:
-    let function = callPackage file {};
-    in lib.makeOverridable function;
+  importFunction = file: callPackage file {};
 
 in {
   chunk = {

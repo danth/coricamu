@@ -17,9 +17,10 @@ let
     echo "</${group}>" >> $out
   '';
 
-in coricamu.mergeFiles (
-  [{
-    "${name}.html" = runCommand "${name}.html" {} ''
+  page = {
+    type = "page";
+
+    file = runCommand "${name}.html" {} ''
       echo "<!DOCTYPE html>" >> $out
       echo "<body>" >> $out
       ${writeGroup "header"}
@@ -28,6 +29,16 @@ in coricamu.mergeFiles (
       echo "</body>" >> $out
       echo "</html>" >> $out
     '';
+
+    addChunks = newChunks: coricamu.makePage {
+      inherit title name;
+      chunks = chunks ++ newChunks;
+    };
+  };
+
+in coricamu.mergeFiles (
+  [{
+    "${name}.html" = page;
   }] ++ 
   (pipe groups [
     attrValues

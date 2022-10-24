@@ -5,15 +5,18 @@ with coricamu;
 makeWebsite {
   baseUrl = "https://danth.github.io/coricamu/";
 
+  commonChunks = [
+    (chunk.fromHtml {
+      type = "header";
+      string = "<h1>Coricamu</h1>";
+    })
+  ];
+
   files = [
     (makePage {
       name = "index";
       title = "Coricamu";
       chunks = [
-        (chunk.fromHtml {
-          type = "header";
-          string = "<h1>Coricamu</h1>";
-        })
         (chunk.fromMarkdown {
           type = "main";
           file = runCommand "index.md" {} ''
