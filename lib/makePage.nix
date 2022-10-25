@@ -22,6 +22,7 @@ let
 
     file = runCommand "${name}.html" {} ''
       echo "<!DOCTYPE html>" >> $out
+      ${writeGroup "head"}
       echo "<body>" >> $out
       ${writeGroup "header"}
       ${writeGroup "main"}
