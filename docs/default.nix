@@ -10,6 +10,16 @@ makeWebsite {
       type = "header";
       string = "<h1>Coricamu</h1>";
     })
+    (chunk.includeStyle {
+      name = "docs";
+      string = ''
+        body {
+          margin: 3em auto;
+          max-width: 800px;
+          font-family: sans-serif;
+        }
+      '';
+    })
   ];
 
   files = [

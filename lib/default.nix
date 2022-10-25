@@ -9,6 +9,7 @@ in {
     fromHtml = importFunction ./chunk/fromHtml.nix;
     fromMarkdown = importFunction ./chunk/fromMarkdown.nix;
     includeScript = importFunction ./chunk/includeScript.nix;
+    includeStyle = importFunction ./chunk/includeStyle.nix;
   };
   makePage = importFunction ./makePage.nix;
   makeSubdirectory = importFunction ./makeSubdirectory.nix;
