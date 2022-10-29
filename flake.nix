@@ -5,7 +5,7 @@
   };
 
   outputs =
-    { nixpkgs, ... }@inputs:
+    { self, nixpkgs, ... }@inputs:
 
     let
       # Coricamu's flake outputs are coded across multiple Nix files.
@@ -29,5 +29,13 @@
         modules = [ ./docs/default.nix ];
       };
 
-    in mergeOutputs [ libOutputs docsOutputs ];
+    in mergeOutputs [
+      libOutputs
+      docsOutputs
+      {
+        hydraJobs = {
+          inherit (self.packages.x86_64-linux) docs;
+        };
+      }
+    ];
 }
