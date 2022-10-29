@@ -50,6 +50,10 @@
         );
     in {
       lib = { inherit makeFlakeOutputs; };
+
+      hydraJobs = {
+        inherit (self.packages.x86_64-linux) docs;
+      };
     } //
     makeFlakeOutputs {
       name = "docs";
