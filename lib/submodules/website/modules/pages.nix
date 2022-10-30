@@ -31,6 +31,21 @@ with coricamuLib.types;
       default = {};
     };
 
+    head = mkOption {
+      description = ''
+        HTML head shared by all pages.
+
+        Much of the head can be generated automatically based on other
+        options. You should check if a more specific option is available
+        before using this!
+      '';
+      example = ''
+        <link rel="icon" href="icon.svg">
+      '';
+      type = lines;
+      default = "";
+    };
+
     header = mkOption {
       description = "Header inserted before the body of every page.";
       example.html = ''

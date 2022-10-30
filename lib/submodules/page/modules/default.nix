@@ -140,6 +140,8 @@ in {
           ></script>
         ''))
       ]}
+
+      ${websiteConfig.head}
     ''] ++ catAttrs "head" usedTemplates);
 
     files = mkMerge ([{
