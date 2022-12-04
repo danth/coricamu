@@ -8,9 +8,9 @@ submoduleWith {
   modules = [
     ./modules/default.nix
     ./modules/sitemap.nix
-      (import ../image/option.nix { isToplevel = true; })
-      (import ../style/option.nix { isToplevel = true; })
-      (import ../script/option.nix { isToplevel = true; })
+      (import ../image/option.nix { isToplevel = false; })
+      (import ../style/option.nix { isToplevel = false; })
+      (import ../script/option.nix { isToplevel = false; })
   ];
   specialArgs = args // { inherit websiteConfig; };
   shorthandOnlyDefinesConfig = true;
